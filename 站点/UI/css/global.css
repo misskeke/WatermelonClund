@@ -1,0 +1,32 @@
+body {
+font-family: Tahoma, Arial;
+color:black;
+font-size:16px;
+background-color:white;
+}
+
+.dh {
+font-family: '微软雅黑';
+position:absolute;
+left:0;
+right:0;
+top:-35px;
+height:35px;
+opacity:0.9;
+background-color:rgba(0,0,0,0.7);
+box-shadow:0 1px 2px black;
+line-height:35px;
+font-size:18px;
+padding-left:24px;
+color:white;
+}
+
+.waterbate {
+font-size:15%;
+color:black;
+box-shadow:0 0 2px silver;
+background-color:silver;
+margin-left:4px;
+vertical-align:top;
+opacity: 0;
+}
