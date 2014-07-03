@@ -1,37 +1,37 @@
 body {
-font-family: Tahoma, Arial;
-color:black;
-font-size:16px;
-background-color:white;
+    font-family: Tahoma, Arial;
+    color: black;
+    font-size: 16px;
+    background-color: white;
 }
 
 .dh {
-font-family: '微软雅黑';
-position:absolute;
-left:0;
-right:0;
-top:-35px;
-height:35px;
-opacity:0.9;
-background-color:rgba(0,0,0,0.7);
-box-shadow:0 1px 2px black;
-line-height:35px;
-font-size:18px;
-padding-left:24px;
-color:white;
+    font-family: '微软雅黑';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -35px;
+    height: 35px;
+    opacity: 0.9;
+    background-color: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 1px 2px black;
+    line-height: 35px;
+    font-size: 18px;
+    padding-left: 24px;
+    color: white;
 }
 
 .waterbate {
-font-size:15%;
-color:black;
-box-shadow:0 0 2px silver;
-background-color:silver;
-margin-left:4px;
-vertical-align:top;
-opacity: 0;
+    font-size: 15%;
+    color: black;
+    box-shadow: 0 0 2px silver;
+    background-color: silver;
+    margin-left: 4px;
+    vertical-align: top;
+    opacity: 0;
 }
 
-.dh_content{
+.dh_content {
     margin-left: 35px;
 }
 
@@ -48,4 +48,36 @@ opacity: 0;
     display: inline-block;
     text-decoration: none;
     color: white;
+}
+.hidden {
+    opacity: 0;
+    line-height:0;
+    font-size:0;
+    overflow:hidden;
+}
+.content {
+    margin: 36px 0 0 0;
+    padding: 8px;
+}
+.hoverapa:hover {
+    opacity: 0.75;
+    cursor: default;
+}
+@font-face {
+    font-family: 'iconfont';
+    src: url('http://at.alicdn.com/t/font_1404382405_9489837.eot'); /* IE9*/
+    src: url('http://at.alicdn.com/t/font_1404382405_9489837.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('http://at.alicdn.com/t/font_1404382405_9489837.woff') format('woff'), /* chrome、firefox */
+    url('http://at.alicdn.com/t/font_1404382405_9489837.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+    url('http://at.alicdn.com/t/font_1404382405_9489837.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+.iconfont {
+    font-family: 'iconfont';
+}
+*::selection{
+    background-color: #8fe820;
+}
+.error {
+    color: #990000;
+    font-size: 80%;
 }
