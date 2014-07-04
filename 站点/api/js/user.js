@@ -70,7 +70,6 @@
     XAPI.loggedShow=function(){
         XAPI.log("logined sid: "+sid);
         var dh=XAPI.setdh("<a class='dh_link' href='javascript:XAPI.showWorld();'>世界</a>");
-        XAPI.showWorld();
     };
     XAPI.user.loginUsr=function(n,p,c){
         $.post("api/login_usr.php",{u:n,p:p},function(q){
@@ -120,6 +119,7 @@
                     localStorage.lastKrr=krr;
                     localStorage.lastUid=uid;
                     XAPI.loggedShow();
+                    XAPI.showWorld();
                 }else{
                     box.append($('<span class="error" style="position: relative; top: 30px;"></span>').text(m));
                     regbtn=XAPI.ui.createDBotton("登录").css({position:"absolute",right:"32px",bottom:"12px"}).click(cck);
@@ -202,6 +202,9 @@
                                     localStorage.lastUid=uid;
                                     localStorage.userName=username;
                                     XAPI.loggedShow();
+                                    setTimeout(function(){
+                                        XAPI.showWorld();
+                                    },2000);
                                 })
                             }
                             setTimeout(tof,10);

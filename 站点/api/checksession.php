@@ -2,5 +2,8 @@
 require "inc/sql.php";
 require "inc/session.php";
 $echo = array();
-$echo["successful"]=(chksio($_POST["sid"],$_POST["krr"],$mys)==true?1:0);
+$r=chksoretusr($_POST["sid"],$_POST["krr"],$mys);
+$echo["successful"]=($r!=false?true:false);
+$echo["uid"]=$r["uid"];
+$echo["name"]=$r["username"];
 die(json_encode($echo));
