@@ -10,12 +10,9 @@
     };
     XAPI.$cont=$('.content');
     XAPI.setdh = function (dh) {
-        $('.dh_content').html(dh).find('.dh_link').mouseenter(function () {
-            $(this).stop(true, true).animate({backgroundColor: "rgb(99,99,99)"}, 200);
-        }).mouseleave(function () {
-                $(this).stop(true, true).animate({backgroundColor: "transparent"}, 200);
-            });
-        return $('.dh_content');
+        var rt=$('.dh_content').html(dh);
+        XAPI.dhp();
+        return rt;
     };
     $.getScript("UI/JS/ui.js",function(){
         XAPI.log("WebsintUI loaded");
