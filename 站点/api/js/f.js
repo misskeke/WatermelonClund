@@ -20,7 +20,14 @@
             XAPI.log("User Api loaded");
         });
     });
-    XAPI.showCont=function(html){
+    var lastswit=function(){};
+    XAPI.showCont=function(html,onswitch){
+        lastswit();
+        if(onswitch){
+            lastswit=onswitch;
+        }else{
+            lastswit=function(){};
+        }
         XAPI.$cont.html(html);
         return XAPI.$cont;
     }

@@ -1,5 +1,5 @@
 body {
-    font-family: Tahoma, Arial;
+    font-family: '微软雅黑', Tahoma, Arial;
     color: black;
     font-size: 16px;
     background-color: white;
@@ -7,7 +7,8 @@ body {
 
 .dh {
     font-family: '微软雅黑';
-    position: absolute;
+    position: fixed;
+    z-index: 1500;
     left: 0;
     right: 0;
     top: -35px;

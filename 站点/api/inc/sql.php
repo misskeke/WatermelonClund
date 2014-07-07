@@ -1,10 +1,14 @@
 <?php
-function diemyerror()
+error_reporting(0);
+function diemyerror($str="")
 {
-    die("sqlerror");
+    $echo = array();
+    $echo["errid"] = 7;
+    $echo["errmsg"] = "Mysql错误: ".$str;
+    die(json_encode($echo));
 }
 
-$mys = new mysqli("localhost", "root", "0000", "websjiecao");
+$mys = new mysqli("websint.org", "root", "hH897h9h897897hgy8", "devwebs");
 if (mysqli_connect_errno()) {
     diemyerror();
 }

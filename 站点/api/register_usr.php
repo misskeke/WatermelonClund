@@ -40,7 +40,7 @@ if($res->num_rows>0){
     $echo["errmsg"]="邮箱存在";
     die(json_encode($echo));
 }
-$sql="INSERT INTO `user` (`username`, `password`, `email`, `sex`, `registerip`, `registerTime`, `QQ`, `emailCorrented`, `state`) VALUES ('".$mys->real_escape_string($name)."', '".$mys->real_escape_string($_POST["p"])."', '".$mys->real_escape_string($email)."', '0', '".$mys->real_escape_string(GetIP())."', '".time()."', '0', '0', '0')";
+$sql="INSERT INTO `user` (`username`, `password`, `email`, `sex`, `registerip`, `registerTime`, `QQ`, `emailCorrented`, `state`) VALUES ('".$mys->real_escape_string($name)."', '".$mys->real_escape_string(base64_encode($_POST["p"]))."', '".$mys->real_escape_string($email)."', '0', '".$mys->real_escape_string(GetIP())."', '".time()."', '0', '0', '0')";
 $succe=$mys->query($sql);
 if($succe){
     $echo=array();
@@ -51,9 +51,5 @@ if($succe){
     $mys->commit();
     die(json_encode($echo));
 }else{
-    $mys->rollback();
-    $echo=array();
-    $echo["errid"]=3;
-    $echo["errmsg"]="Mysql错误";
-    die(json_encode($echo));
+    diemyerror();
 }

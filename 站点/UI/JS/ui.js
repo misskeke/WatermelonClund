@@ -6,37 +6,39 @@ XAPI.ui = {
         var texttitle = $("<div style='position: absolute; left: 36px; line-height: 32px; white-space: nowrap; overflow: hidden; right: 0; font-size: 80%; top: 0; bottom: 0; z-index: 3; opacity: 0.6; pointer-events: none;'></div>");
         ipt.append(texttitle);
         ipt.append(icond);
-        texttitle.click(function(){
+        texttitle.click(function () {
             edit[0].select();
         });
         icond.click(function () {
             edit[0].select();
         });
         ipt.append(edit);
-        var lasthas=false;
-        function evtctitle(){
-            setTimeout(function(){
-                if(edit.val().length>0 && !lasthas){
-                    texttitle.stop(true,true,true).animate({opacity:0},150);
-                    lasthas=true;
-                }else if(edit.val().length==0 && lasthas){
-                    texttitle.stop(true,true,true).animate({opacity:0.6},150);
-                    lasthas=false;
+        var lasthas = false;
+
+        function evtctitle() {
+            setTimeout(function () {
+                if (edit.val().length > 0 && !lasthas) {
+                    texttitle.stop(true, true, true).animate({opacity: 0}, 150);
+                    lasthas = true;
+                } else if (edit.val().length == 0 && lasthas) {
+                    texttitle.stop(true, true, true).animate({opacity: 0.6}, 150);
+                    lasthas = false;
                 }
-            },1);
+            }, 1);
         }
+
         edit.keydown(evtctitle);
-        edit.bind("paste",evtctitle);
-        edit.bind("cut",evtctitle);
-        edit.bind("focus",function(){
-            edit.stop(true,true,true).animate({opacity:1},150);
+        edit.bind("paste", evtctitle);
+        edit.bind("cut", evtctitle);
+        edit.bind("focus", function () {
+            edit.stop(true, true, true).animate({opacity: 1}, 150);
             evtctitle();
         });
-        edit.bind("blur",function(){
-            edit.stop(true,true,true).animate({opacity:0.6},150);
+        edit.bind("blur", function () {
+            edit.stop(true, true, true).animate({opacity: 0.6}, 150);
             evtctitle();
         });
-        ipt.bind("mousemove",evtctitle);
+        ipt.bind("mousemove", evtctitle);
         return {text: function (text) {
             if (text) {
                 edit.val(text);
@@ -59,30 +61,90 @@ XAPI.ui = {
             },
             $edit: edit, $icon: icond, ipt: ipt, $texttitle: texttitle};
     },
-    createDBotton:function(text){
-        var btn=$("<div style='display: inline-block; box-shadow: 0 0 10px rgba(0, 0, 0, 0.51),0 -2px 0 rgba(0, 0, 0, 0.51) inset; color: #ffffff; cursor: pointer; background-color: #0059cd; font-size: 20px; line-height: 30px; margin: 4px; padding: 4px 8px 4px 8px;'></div>")
+    createDBotton: function (text) {
+        var btn = $("<div style='display: inline-block; box-shadow: 0 0 10px rgba(0, 0, 0, 0.51),0 -2px 0 rgba(0, 0, 0, 0.51) inset; color: #ffffff; cursor: pointer; background-color: #0059cd; margin: 4px; padding: 4px 8px 4px 8px;'></div>")
             .text(text);
-        btn.mouseenter(function(){
-            btn.stop(true,true,true).animate({backgroundColor:"#004DAB"},150);
+        btn.mouseenter(function () {
+            btn.stop(true, true, true).animate({backgroundColor: "#004DAB"}, 150);
         });
-        btn.mouseleave(function(){
-            btn.stop(true,true,true).animate({backgroundColor:"#0059CD"},150);
+        btn.mouseleave(function () {
+            btn.stop(true, true, true).animate({backgroundColor: "#0059CD"}, 150);
         });
         return btn;
+    },
+    createDTextArea: function (texttitletext) {
+        var are=$('<div style="position: relative; background-color: #ffffff; margin: 4px;"></div>');
+        var edit=$('<textarea style="font: inherit; border: none; margin: 0; border:0; resize: none; outline:none; position: absolute; left: 2px; right: 2px; top: 2px; bottom: 2px;"></textarea>');
+        var texttitle=$('<div style="position: absolute; opacity: 0.6; z-index: 2; left: 2px; right: 2px; top: 2px; bottom: 2px; pointer-events: none;"></div>').text(texttitletext);
+        are.append(edit);
+        are.append(texttitle);
+        var lasthas = false;
+
+        function evtctitle() {
+            setTimeout(function () {
+                if (edit.val().length > 0 && !lasthas) {
+                    texttitle.stop(true, true, true).animate({opacity: 0}, 150);
+                    lasthas = true;
+                } else if (edit.val().length == 0 && lasthas) {
+                    texttitle.stop(true, true, true).animate({opacity: 0.6}, 150);
+                    lasthas = false;
+                }
+                edit.css({width:(are.width()-8)+"px",height:(are.height()-8)+"px"});
+            }, 1);
+        }
+
+        edit.keydown(evtctitle);
+        edit.bind("paste", evtctitle);
+        edit.bind("cut", evtctitle);
+        edit.bind("focus", function () {
+            edit.stop(true, true, true).animate({opacity: 1}, 150);
+            are.stop(true, true, true).animate({opacity: 1}, 150);
+            evtctitle();
+        });
+        edit.bind("blur", function () {
+            edit.stop(true, true, true).animate({opacity: 0.6}, 150);
+            are.stop(true, true, true).animate({opacity: 0.6}, 150);
+            evtctitle();
+        });
+        edit.css({opacity: 0.6});
+        are.css({opacity: 0.6});
+        are.bind("mousemove", evtctitle);
+
+        texttitle.click(function () {
+            edit[0].select();
+        });
+
+        evtctitle();
+
+        return {text: function (text) {
+            if (text) {
+                edit.val(text);
+            } else {
+                return edit.val();
+            }
+        }, texttitle: function (text) {
+                if (text) {
+                    texttitle.text(text);
+                } else {
+                    return texttitle.text();
+                }
+            },
+            $edit: edit, ipt: are, $texttitle: texttitle};
     }
 };
-(function(){
-    var dhman=$('.dh');
-    XAPI.ui.dhst=$('<div class="dh_state" style="position: absolute; text-align: center; left: 0; right: 0; top: 0; bottom: 0; line-height: 32px; font-size: 14px; opacity: 0.7; pointer-events: none;"></div>');
+(function () {
+    var dhman = $('.dh');
+    XAPI.ui.dhst = $('<div class="dh_state" style="position: absolute; text-align: center; left: 0; right: 0; top: 0; bottom: 0; line-height: 32px; font-size: 14px; opacity: 0.7; pointer-events: none;"></div>');
     dhman.append(XAPI.ui.dhst);
 })();
-XAPI.ui.addState=function(s){
+XAPI.ui.addState = function (s) {
     XAPI.ui.dhst.text(s);
-    if(XAPI.ui.dhslastTimeout>0){
+    XAPI.log(s);
+    if (XAPI.ui.dhslastTimeout > 0) {
         clearTimeout(XAPI.ui.dhslastTimeout);
     }
-    XAPI.ui.dhslastTimeout=setTimeout(function(){
-        XAPI.ui.dhslastTimeout=0;
+    XAPI.ui.dhslastTimeout = setTimeout(function () {
+        XAPI.ui.dhslastTimeout = 0;
         XAPI.ui.dhst.text("");
-    },3000);
+    }, 3000);
 };

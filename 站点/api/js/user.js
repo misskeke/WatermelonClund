@@ -73,16 +73,53 @@
         }
     }
     setTimeout(rtt, 400);
+    XAPI.sendTieShow=function(){
+        var body=$('body');
+        var maint=$('<div style="background-color: rgba(0, 0, 0, 0.60); position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 500;"></div>');
+        body.append(maint);
+        var ttd=$('<div style="margin: 32px auto auto auto; position: relative; background-color: rgba(255, 255, 255, 0.80); height: 300px; width: 750px; padding: 4px;"></div>');
+        maint.append(ttd);
+        var edit=XAPI.ui.createDTextArea("推文...");
+        edit.ipt.css({position:"absolute",left:"2px",right:"2px",top:"16px",bottom:"40px"});
+        ttd.append(edit.ipt);
+        var dbd=$('<div style="position: absolute; font-size: 16px; left: 2px; right: 2px; bottom: 2px; height: 36px; text-align: right;"></div>');
+        var cancel=XAPI.ui.createDBotton("取消");
+        cancel.click(function(){
+            maint.animate({opacity:0,bottom:(window.innerHeight)+"px"},150,function(){
+                maint.remove();
+            });
+        });
+        var ok=XAPI.ui.createDBotton("发推");
+        ok.click(function(){
+            dbd.find(".log_and_error").remove();
+            cancel.css({display:"none"});
+            ok.css({display:"none"});
+            dbd.append($('<span class="log_and_error" style="font-size: 80%; color: #5d5d5d;">请稍候</span>'));
+            XAPI.send("api/send_tui.php",{content:edit.text()},function(q){
+                if(q.errid!=0){
+                    dbd.find(".log_and_error").remove();
+                    dbd.append($('<span class="log_and_error error" style="font-size: 80%;"></span>').text(q.errmsg));
+                    cancel.css({display:"inline-block"});
+                    ok.css({display:"inline-block"});
+                }else{
+                    cancel.click();
+                }
+            });
+        });
+        dbd.append(cancel).append(ok);
+        ttd.append(dbd);
+        maint.css({opacity:0,bottom:(window.innerHeight)+"px"}).animate({opacity:1,bottom:"0px"},150);
+    };
     XAPI.loggedShow=function(){
         XAPI.log("logined sid: "+sid);
-        var dh=XAPI.setdh("<a class='dh_link' href='javascript:XAPI.showWorld();'>世界</a>");
+        var dh=XAPI.setdh("<a class='dh_link' href='javascript:XAPI.showWorld();'>世界</a> <a class='dh_link' href='javascript:XAPI.sendTieShow();'>发推</a>");
         var userbar=$('<a class="dh_link" style="display: inline-block; position: relative; float: right; padding-left: 8px; padding-right: 8px; margin-right: 18px;" href="javascript:void(0)"></a>');
         userbar.text(username);
         userbar.append($('<span class="iconfont" style="margin-left: 4px; font-size: 75%;">&#xe607;</span>'));
         userbar.css({opacity:0,left:"100px",cursor:"pointer"}).animate({opacity:1,left:"0px"},300);
         $('.dh').append(userbar);
-        var usermenubak=$('<div style="display: none; position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 99; background-color: rgba(0,0,0,0)"></div>');
-        var usermenu=$('<div style="position: absolute; z-index: 100; background-color: #ffffff; box-shadow: 1px 1px 3px #000; min-height: 12px; min-width: 100px; padding-top: 4px; padding-bottom: 4px;"></div>');
+        var usermenubak=$('<div style="display: none; position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 99; background-color: rgba(0,0,0,0)"></div>');
+        var usermenu=$('<div style="position: fixed; z-index: 1501; background-color: #ffffff; box-shadow: 1px 1px 3px #000; min-height: 12px; min-width: 100px; padding-top: 4px; padding-bottom: 4px;"></div>');
         usermenu.css({display:"none",opacity:0});
         var lock=false;
         var opened=false;
@@ -93,7 +130,7 @@
             lock=true;
             var lt=userbar.offset();
             usermenu.stop(true,true,true);
-            usermenu.css({right:"18px",top:(lt.top+userbar.height())+"px",opacity:(opened?1:0),display:"block"}).animate({opacity:(opened?0:1)},80,function(){
+            usermenu.css({right:"18px",top:userbar.height()+"px",opacity:(opened?1:0),display:"block"}).animate({opacity:(opened?0:1)},80,function(){
                 if(opened){
                     usermenu.css({display:"none"});
                     usermenubak.css({display:"none"});

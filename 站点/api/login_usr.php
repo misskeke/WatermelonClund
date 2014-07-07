@@ -19,16 +19,22 @@ if (!isset($_POST["u"]) || !isset($_POST["p"])) {
 }
 $name = special_filter($_POST["u"]);
 $pass = $_POST["p"];
-$res = $mys->query("SELECT * FROM `user` WHERE `user`.username = '" . $mys->real_escape_string($name) . "' AND `user`.`password` = '" . $mys->real_escape_string($pass) . "'");
+$res = $mys->query("SELECT * FROM `user` WHERE `user`.username = '" . $mys->real_escape_string($name) . "' AND `user`.`password` = '" . $mys->real_escape_string(base64_encode($pass)) . "'");
 if ($res->num_rows > 0) {
     $ft = $res->fetch_assoc();
+    if($ft["uid"]==0){
+        $echo = array();
+        $echo["errid"] = 1100105;
+        $echo["errmsg"] = "未定义的错误。重新试试看？";
+        $echo["uid"] = $ft["uid"];
+        $echo["uname"] = "";
+        $echo["uname"] = "";
+        die(json_encode($echo));
+    }
     $krr=getRandStr(32);
     $bool = $mys->query("INSERT INTO `session` (`uid`, `krr`, `ip`, `time`) VALUES ('" . $ft["uid"] . "', '" . $mys->real_escape_string($krr) . "', '".$mys->real_escape_string(GetIP())."', '".time()."')");
     if(!$bool){
-        $echo = array();
-        $echo["errid"] = 7;
-        $echo["errmsg"] = "Mysql错误";
-        die(json_encode($echo));
+        diemyerror();
     }
     $echo = array();
     $echo["errid"] = 0;
