@@ -5,7 +5,8 @@
     var password = "";
     var sid=0;
     var krr="";
-    var uid=0;
+    var uid=-1;
+    var usrinfo;
     var autolog = false;
     if (!window.localStorage) {
         XAPI.log("You Boswer did not support localStorage!");
@@ -75,9 +76,9 @@
     setTimeout(rtt, 400);
     XAPI.sendTieShow=function(){
         var body=$('body');
-        var maint=$('<div style="background-color: rgba(0, 0, 0, 0.60); position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 500;"></div>');
+        var maint=$('<div style="background-color: rgba(0, 0, 0, 0.60); position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 1504;"></div>');
         body.append(maint);
-        var ttd=$('<div style="margin: 32px auto auto auto; position: relative; background-color: rgba(255, 255, 255, 0.80); height: 300px; width: 750px; padding: 4px;"></div>');
+        var ttd=$('<div style="margin: 32px auto auto auto; position: relative; border-radius: 4px; background-color: rgba(255, 255, 255, 0.80); height: 300px; width: 750px; padding: 4px;"></div>');
         maint.append(ttd);
         var edit=XAPI.ui.createDTextArea("推文...");
         edit.ipt.css({position:"absolute",left:"2px",right:"2px",top:"16px",bottom:"40px"});
@@ -90,10 +91,12 @@
             });
         });
         var ok=XAPI.ui.createDBotton("发推");
+        var picinp=XAPI.ui.createDBotton("插入图片");
         ok.click(function(){
             dbd.find(".log_and_error").remove();
             cancel.css({display:"none"});
             ok.css({display:"none"});
+            picinp.css({display:"none"});
             dbd.append($('<span class="log_and_error" style="font-size: 80%; color: #5d5d5d;">请稍候</span>'));
             XAPI.send("api/send_tui.php",{content:edit.text()},function(q){
                 if(q.errid!=0){
@@ -101,84 +104,153 @@
                     dbd.append($('<span class="log_and_error error" style="font-size: 80%;"></span>').text(q.errmsg));
                     cancel.css({display:"inline-block"});
                     ok.css({display:"inline-block"});
+                    picinp.css({display:"inline-block"});
                 }else{
                     cancel.click();
                 }
             });
         });
+        dbd.append(picinp);
         dbd.append(cancel).append(ok);
         ttd.append(dbd);
+        picinp.click(function(){
+            XAPI.user.updateImage(function(imgs){
+                var itext="";
+                for(var i=0;i<imgs.length;i++){
+                    (function(img){
+                        itext+="\\p="+img+"/";
+                    })(imgs[i]);
+                }
+                edit.text(edit.text()+itext);
+            },true);
+        });
         maint.css({opacity:0,bottom:(window.innerHeight)+"px"}).animate({opacity:1,bottom:"0px"},150);
+    };
+    XAPI.cpXXCode=function(xxcode){
+        // XXCODE示例：
+        // 这是文字这是文字这是文字这是文字这是文字这是\p=123456/pid为123456的图片这是刚刚的代码\\p=123456/。
+        var chunks=[];
+        for(var now=0; now<xxcode.length; now++){
+            if(xxcode.charAt(now)!="\\"){
+                chunks.push({str:xxcode.charAt(now)});
+            }else{
+                if(xxcode.charAt(now+1)=="p" && xxcode.charAt(now+2)=="="){
+                    var numsbui="";
+                    var nowc=2;
+                    while(true){
+                        nowc++;
+                        if(xxcode.charAt(now+nowc)=="/"){
+                            break;
+                        }else{
+                            numsbui+=xxcode.charAt(now+nowc);
+                        }
+                        if(xxcode.charAt(now+nowc).length<1){
+                            return [{str:"此处的代码有问题"}];
+                        }
+                    }
+                    chunks.push({picid:numsbui});
+                    now+=nowc;
+                }else if(xxcode.charAt(now+1)=="\\" && xxcode.charAt(now+2)=="p" && xxcode.charAt(now+3)=="="){
+                    chunks.push({str:"\\"});
+                    now++;
+                }else{
+                    chunks.push({str:"\\"+xxcode.charAt(now+1)});
+                    now++;
+                }
+            }
+        }
+        return chunks;
     };
     XAPI.loggedShow=function(){
         XAPI.log("logined sid: "+sid);
-        var dh=XAPI.setdh("<a class='dh_link' href='javascript:XAPI.showWorld();'>世界</a> <a class='dh_link' href='javascript:XAPI.sendTieShow();'>发推</a>");
-        var userbar=$('<a class="dh_link" style="display: inline-block; position: relative; float: right; padding-left: 8px; padding-right: 8px; margin-right: 18px;" href="javascript:void(0)"></a>');
-        userbar.text(username);
-        userbar.append($('<span class="iconfont" style="margin-left: 4px; font-size: 75%;">&#xe607;</span>'));
-        userbar.css({opacity:0,left:"100px",cursor:"pointer"}).animate({opacity:1,left:"0px"},300);
-        $('.dh').append(userbar);
-        var usermenubak=$('<div style="display: none; position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 99; background-color: rgba(0,0,0,0)"></div>');
-        var usermenu=$('<div style="position: fixed; z-index: 1501; background-color: #ffffff; box-shadow: 1px 1px 3px #000; min-height: 12px; min-width: 100px; padding-top: 4px; padding-bottom: 4px;"></div>');
-        usermenu.css({display:"none",opacity:0});
-        var lock=false;
-        var opened=false;
-        userbar.click(function(){
-            if(lock==true){
-                return;
+        XAPI.user.uid=uid;
+        XAPI.send("api/user_get_info.php",{user:username},function(q){
+            if(q.errid==0){
+                usrinfo= q.user;
             }
-            lock=true;
-            var lt=userbar.offset();
-            usermenu.stop(true,true,true);
-            usermenu.css({right:"18px",top:userbar.height()+"px",opacity:(opened?1:0),display:"block"}).animate({opacity:(opened?0:1)},80,function(){
-                if(opened){
-                    usermenu.css({display:"none"});
-                    usermenubak.css({display:"none"});
-                    opened=false;
-                }else{
-                    usermenubak.css({display:"block"});
-                    opened=true;
-                }
-                lock=false;
-            });
-        });
-        usermenubak.click(function(){
-            if(opened){
+            var dh=XAPI.setdh("<a class='dh_link' href='javascript:XAPI.showWorld();'>世界</a><span class='hidden'> </span><a class='dh_link' href='javascript:XAPI.sendTieShow();'>发推</a>");
+            var userbar=$('<a class="dh_link" style="display: inline-block; position: relative; float: right; padding-left: 8px; padding-right: 8px; margin-right: 18px;" href="javascript:void(0)"></a>');
+            userbar.text(username);
+            userbar.append($('<span class="iconfont" style="margin-left: 4px; font-size: 75%;">&#xe607;</span>'));
+            userbar.css({opacity:0,left:"100px",cursor:"pointer"}).animate({opacity:1,left:"0px"},300);
+            $('.dh').append(userbar);
+            var usermenubak=$('<div style="display: none; position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 1503; background-color: rgba(0,0,0,0)"></div>');
+            var usermenu=$('<div style="position: fixed; z-index: 1505; background-color: #ffffff; box-shadow: 1px 1px 3px #000; min-height: 12px; min-width: 100px; padding-top: 4px; padding-bottom: 4px;"></div>');
+            usermenu.css({display:"none",opacity:0});
+            var lock=false;
+            var opened=false;
+            userbar.click(function(){
                 if(lock==true){
                     return;
                 }
-                userbar.click();
-            }
-        });
-        usermenu.append($('<a href="javascript:void(0);" class="usermenu_item">登出</a>').click(function(){
-            XAPI.ui.addState("正在登出");
-            XAPI.send("api/logout.php",{},function(q){
-                XAPI.ui.addState("登出成功！");
-                username="";
-                password="";
-                sid=0;
-                krr="";
-                uid=0;
-                delete localStorage.lastSid;
-                delete localStorage.lastKrr;
-                delete localStorage.lastUid;
-                delete localStorage.userName;
-                delete localStorage.userPasswd;
-                $('body').append($('<div style="background-color: #000000; opacity: 0; position: absolute; z-index: 99999; top: 0; left: 0; right: 0; bottom: 0;"></div>').animate({opacity:0.75},900));
-                setTimeout(function(){
-                    window.location.reload();
-                },1000);
-            })
-        }));
-        usermenu.find('.usermenu_item').css({lineHeight:"28px",fontSize:"16px",cursor:"pointer",paddingLeft:"8px",display:"block"}).mouseenter(function(){
-            $(this).css({backgroundColor:"rgba(0,0,0,0.1)",color:"#034681"});
-        }).mouseleave(function(){
-                $(this).css({backgroundColor:"rgba(0,0,0,0)",color:"#000000"});
-            }).click(function(){
-                usermenubak.click();
+                lock=true;
+                var lt=userbar.offset();
+                usermenu.stop(true,true,true);
+                usermenu.css({right:"18px",top:userbar.height()+"px",opacity:(opened?1:0),display:"block"}).animate({opacity:(opened?0:1)},80,function(){
+                    if(opened){
+                        usermenu.css({display:"none"});
+                        usermenubak.css({display:"none"});
+                        opened=false;
+                    }else{
+                        usermenubak.css({display:"block"});
+                        opened=true;
+                    }
+                    lock=false;
+                });
             });
-        $('body').append(usermenu).append(usermenubak);
-        XAPI.dhp();
+            usermenubak.click(function(){
+                if(opened){
+                    if(lock==true){
+                        return;
+                    }
+                    userbar.click();
+                }
+            });
+            usermenu.append($('<a href="javascript:void(0);" class="usermenu_item"></a>').append($('<img style="display: inline-block; vertical-align: middle; margin: 3px;">')
+                .attr("src",XAPI.user_hadpic_get(usrinfo.email,42))).append(
+                    $('<div style="vertical-align: middle; margin: 3px; display: inline-block;"></div>')
+                        .append($('<div style="font-size: 110%; line-height: 25px;"></div>').text(username)).append(
+                            $('<div style="opacity: 0.75; font-size: 80%; line-height: 18px;"></div>').text(usrinfo.email))).click(function(){
+                    var hash=window.location.hash.substr(1);
+                    var hastt;
+                    try{
+                        hastt=JSON.parse(hash);
+                    }catch (e){
+                        XAPI.log("Page hash error: "+e);
+                        hastt={};
+                    }
+                    XAPI.showUser(usrinfo.uid,hastt);
+                }));
+            usermenu.append($('<a href="javascript:void(0);" class="usermenu_item">登出</a>').click(function(){
+                XAPI.ui.addState("正在登出");
+                XAPI.send("api/logout.php",{},function(q){
+                    XAPI.ui.addState("登出成功！");
+                    username="";
+                    password="";
+                    sid=0;
+                    krr="";
+                    uid=0;
+                    delete localStorage.lastSid;
+                    delete localStorage.lastKrr;
+                    delete localStorage.lastUid;
+                    delete localStorage.userName;
+                    delete localStorage.userPasswd;
+                    $('body').append($('<div style="background-color: #000000; opacity: 0; position: absolute; z-index: 99999; top: 0; left: 0; right: 0; bottom: 0;"></div>').animate({opacity:0.75},900));
+                    setTimeout(function(){
+                        window.location.reload();
+                    },1000);
+                })
+            }));
+            usermenu.find('.usermenu_item').css({lineHeight:"28px",fontSize:"16px",cursor:"pointer",paddingLeft:"8px",display:"block",color:"#000"}).mouseenter(function(){
+                $(this).css({backgroundColor:"rgba(0,0,0,0.1)",color:"#034681"});
+            }).mouseleave(function(){
+                    $(this).css({backgroundColor:"rgba(0,0,0,0)",color:"#000000"});
+                }).click(function(){
+                    usermenubak.click();
+                });
+            $('body').append(usermenu).append(usermenubak);
+            XAPI.dhp();
+        });
     };
     XAPI.user.loginUsr=function(n,p,c){
         $.post("api/login_usr.php",{u:n,p:p},function(q){
@@ -193,7 +265,7 @@
         p.sid=sid;
         p.krr=krr;
         $.post(u,p,q,'json');
-    }
+    };
     XAPI.showLogin = function () {
         var dlcont=XAPI.showCont("<h1 style='color: #ffffff;'>登录</h1>");
         dlcont.css({overflow:"hidden"});
@@ -203,12 +275,13 @@
         box.append($("<div style='font-size: 100px; text-align: center;' class='iconfont'>&#xe603;</div>"));
         var usernameIpt=XAPI.ui.createDInput("&#xe600;");
         usernameIpt.texttitle("用户名");
-        usernameIpt.ipt.css({width:"380px"});
+        usernameIpt.ipt.css({width:"412px"});
         box.append(usernameIpt.ipt);
+        usernameIpt.text(username);
         box.append($('<br>'));
         var passwordIpt=XAPI.ui.createDInput("&#xe601;");
         passwordIpt.texttitle("密码");
-        passwordIpt.ipt.css({width:"380px"});
+        passwordIpt.ipt.css({width:"412px"});
         passwordIpt.$edit.attr("type","password");
         box.append(passwordIpt.ipt);
         box.append($('<br>'));
@@ -255,24 +328,24 @@
         box.append($("<div style='font-size: 100px; text-align: center;' class='iconfont'>&#xe604;</div>"));
         var usernameIpt=XAPI.ui.createDInput("&#xe600;");
         usernameIpt.texttitle("用户名");
-        usernameIpt.ipt.css({width:"380px"});
+        usernameIpt.ipt.css({width:"412px"});
         box.append(usernameIpt.ipt);
         box.append($('<br>'));
         var passwordIpt=XAPI.ui.createDInput("&#xe601;");
         passwordIpt.texttitle("密码");
-        passwordIpt.ipt.css({width:"380px"});
+        passwordIpt.ipt.css({width:"412px"});
         passwordIpt.$edit.attr("type","password");
         box.append(passwordIpt.ipt);
         box.append($('<br>'));
         var passwordConfIpt=XAPI.ui.createDInput("&#xe606;");
         passwordConfIpt.texttitle("再输入一遍密码");
-        passwordConfIpt.ipt.css({width:"380px"});
+        passwordConfIpt.ipt.css({width:"412px"});
         passwordConfIpt.$edit.attr("type","password");
         box.append(passwordConfIpt.ipt);
         box.append($('<br>'));
         var emailIpt=XAPI.ui.createDInput("&#xe605;");
         emailIpt.texttitle("邮箱");
-        emailIpt.ipt.css({width:"380px"});
+        emailIpt.ipt.css({width:"412px"});
         box.append(emailIpt.ipt);
         box.append($('<br>'));
         var registerFunc=function(){
@@ -333,22 +406,34 @@
         box.css({fontFamily:"'微软雅黑'",padding:"32px"});
         XAPI.chgUrl({registerPage:true});
     };
+    XAPI.user_hadpic_get=function(email,size){
+        return "https://www.gravatar.com/avatar/"+ $.md5(email)+"?d=mm&r=pg&s="+size;
+    };
     XAPI.chgUrl=function(url){
         window.location="#"+JSON.stringify(url);
     };
+    $.getScript("UI/JS/imageupd.js",function(){
+        XAPI.log("imageupd.js Loaded");
+    });
     $.getScript("api/js/p_world.js",function(){
         XAPI.log("World Page loaded");
-        $.getScript("api/js/pages.js",function(){
-            XAPI.log("Pages loaded");
-            var hash=window.location.hash.substr(1);
-            var hastt;
-            try{
-                hastt=JSON.parse(hash);
-            }catch (e){
-                XAPI.log("Page hash error: "+e);
-                hastt={};
-            }
-            XAPI.pages.startPage(hastt);
-        });
+        $.getScript("api/js/p_user.js",function(){
+            XAPI.log("user page loaded");
+            $.getScript("api/js/p_img.js",function(){
+                XAPI.log("p_img.js loaded");
+                $.getScript("api/js/pages.js",function(){
+                    XAPI.log("Pages loaded");
+                    var hash=window.location.hash.substr(1);
+                    var hastt;
+                    try{
+                        hastt=JSON.parse(hash);
+                    }catch (e){
+                        XAPI.log("Page hash error: "+e);
+                        hastt={};
+                    }
+                    XAPI.pages.startPage(hastt);
+                });
+            });
+        })
     });
 })();

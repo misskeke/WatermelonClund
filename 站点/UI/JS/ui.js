@@ -1,7 +1,7 @@
 XAPI.ui = {
     createDInput: function (icontext) {
         var ipt = $("<div style='display: inline-block; margin: 4px; padding: 0; min-height: 32px; height: 32px; width: 250px; position: relative; font-size: 18px;'></div>");
-        var edit = $('<input style="display: inline-block; opacity: 0.6; overflow: hidden; white-space: nowrap;  position: absolute; left: 32px; right: 0; width:100%; top: 0; line-height: 32px; background-color: #ffffff; bottom: 0; box-shadow: 0 0 3px #000 inset; font: inherit; border: none; margin: 0; border:0; outline:none;">');
+        var edit = $('<input style="display: inline-block; opacity: 0.6; overflow: hidden; white-space: nowrap;  position: absolute; left: 32px; right: 0; top: 0; line-height: 32px; background-color: #ffffff; bottom: 0; box-shadow: 0 0 3px #000 inset; font: inherit; border: none; margin: 0; border:0; outline:none;">');
         var icond = $("<div class='iconfont' style='display: inline-block; cursor: pointer; position: absolute; width: 32px; text-align: center; top: 0; line-height: 32px; bottom: 0; left: 0; background-color: #005dff; color: #ffffff; font-size: 24px;'></div>").html(icontext);
         var texttitle = $("<div style='position: absolute; left: 36px; line-height: 32px; white-space: nowrap; overflow: hidden; right: 0; font-size: 80%; top: 0; bottom: 0; z-index: 3; opacity: 0.6; pointer-events: none;'></div>");
         ipt.append(texttitle);
@@ -24,6 +24,7 @@ XAPI.ui = {
                     texttitle.stop(true, true, true).animate({opacity: 0.6}, 150);
                     lasthas = false;
                 }
+                edit.css({width:(parseInt(ipt.css("width"))-32)+"px"});
             }, 1);
         }
 
@@ -39,9 +40,11 @@ XAPI.ui = {
             evtctitle();
         });
         ipt.bind("mousemove", evtctitle);
+        evtctitle();
         return {text: function (text) {
             if (text) {
                 edit.val(text);
+                evtctitle();
             } else {
                 return edit.val();
             }
@@ -119,6 +122,7 @@ XAPI.ui = {
         return {text: function (text) {
             if (text) {
                 edit.val(text);
+                evtctitle();
             } else {
                 return edit.val();
             }

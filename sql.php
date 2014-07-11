@@ -8,7 +8,7 @@ function diemyerror($str="")
     die(json_encode($echo));
 }
 
-$mys = new mysqli("localhost", "root", "", "devwebs");
+$mys = new mysqli("localhost", "root", "hH897h9h897897hgy8", "devwebs");
 if (mysqli_connect_errno()) {
     diemyerror();
 }

@@ -6,7 +6,12 @@
 
     xapilog("loaded!");
     window.XAPI = {
-        log: xapilog
+        log: xapilog,
+        timeZoneToDate: function(tz){
+            var date=new Date();
+            date.setTime(tz*1000);
+            return date;
+        }
     };
     XAPI.$cont=$('.content');
     XAPI.setdh = function (dh) {
@@ -14,10 +19,13 @@
         XAPI.dhp();
         return rt;
     };
-    $.getScript("UI/JS/ui.js",function(){
-        XAPI.log("WebsintUI loaded");
-        $.getScript("api/js/user.js", function () {
-            XAPI.log("User Api loaded");
+    $.getScript("UI/JS/lib/md5.js",function(){
+        XAPI.log("md5.js loaded");
+        $.getScript("UI/JS/ui.js",function(){
+            XAPI.log("WebsintUI loaded");
+            $.getScript("api/js/user.js", function () {
+                XAPI.log("User Api loaded");
+            });
         });
     });
     var lastswit=function(){};

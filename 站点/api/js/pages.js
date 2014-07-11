@@ -7,8 +7,13 @@ XAPI.pages={
         }
         if(pagehash.registerPage){
             return XAPI.showRegister();
-        }else{
-            return XAPI.showWorld();
         }
+        if(pagehash.picPage){
+            return XAPI.showImg(pagehash.picPage,pagehash.callback);
+        }
+        if(pagehash.uid){
+            return XAPI.showUser(pagehash.uid,pagehash.callback);
+        }
+        return XAPI.showWorld();
     }
 };

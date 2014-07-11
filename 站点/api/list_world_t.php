@@ -14,13 +14,14 @@ if($res==false){
     $tde=$res->fetch_all(MYSQLI_ASSOC);
     foreach ($tde as $abs){
         $uid=$abs["uid"];
-        $res=$mys->query("SELECT `username` FROM `user` WHERE `uid` = '".$uid."'");
+        $res=$mys->query("SELECT `username`, `email` FROM `user` WHERE `uid` = '".$uid."'");
         if($res==false){
             diemyerror();
         }else{
-            $name=$res->fetch_assoc()["username"];
+            $assoc=$res->fetch_assoc();
         }
-        $abs["author"]=$name;
+        $abs["author"]=$assoc["username"];
+        $abs["email"]=$assoc["email"];
         $arrout[]=$abs;
     }
     $echo = array();
