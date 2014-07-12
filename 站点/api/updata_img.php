@@ -4,7 +4,7 @@ if(!isset($_POST["src"])){
 }
 require "inc/sql.php";
 require "inc/session.php";
-$src=$_POST["src"];
+$src=special_filter($_POST["src"]);
 if(strlen($src)<1){
     $echo = array();
     $echo["errid"] = 40;
@@ -24,7 +24,7 @@ if(($usr=chksoretusr($_POST["sid"],$_POST["krr"],$mys))==false){
     die(json_encode($echo));
 }
 
-$sql="INSERT INTO `pics` (`authoruid`, `updip`, `time`, `src`) VALUES ('".$usr["uid"]."', '".$mys->real_escape_string(GetIP())."', '".time()."', '".$mys->real_escape_string($src)."')";
+$sql="INSERT INTO `pics` (`authoruid`, `updip`, `time`, `src`) VALUES ('".$mys->real_escape_string($usr["uid"])."', '".$mys->real_escape_string(GetIP())."', '".time()."', '".$mys->real_escape_string($src)."')";
 
 $successful=$mys->query($sql);
 if($successful){
