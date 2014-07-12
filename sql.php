@@ -1,5 +1,15 @@
 <?php
 error_reporting(0);
+function print_stack_trace()
+{
+    $array =debug_backtrace();
+   unset($array[0]);
+   foreach($array as $row)
+    {
+       $html .=$row['file'].':'.$row['line'].'行,调用方法:'.$row['function'];
+    }
+    return $html;
+}
 function diemyerror($str="")
 {
     $echo = array();
@@ -12,14 +22,18 @@ $mys = new mysqli("localhost", "root", "hH897h9h897897hgy8", "devwebs");
 if (mysqli_connect_errno()) {
     diemyerror();
 }
-function special_filter($string)
+function special_filter($string,$hn=false)
 {
     if (!$string) return '';
     $new_string = '';
     for ($i = 0; isset($string[$i]); $i++) {
         $asc_code = ord($string[$i]);
         if ($asc_code == 9 || $asc_code == 10 || $asc_code == 13) {
-            $new_string .= ' ';
+            if($hn){
+                $new_string .= $string[$i];
+            }else{
+                $new_string .= ' ';
+            }
         } else if ($asc_code > 31 && $asc_code != 127) {
             $new_string .= $string[$i];
         }
