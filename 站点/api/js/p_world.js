@@ -37,6 +37,7 @@ XAPI.showWorld = function () {
             minc=min;
         }
         XAPI.send("api/list_world_t.php", {mn: min, mx: max}, function (q) {
+            XAPI.ui.addState("");
             var pge=$('<div class="page" style="opacity: 0;"></div>');
             for (var i = 0; i < q.t.length; i++) {
                 (function (t) {
@@ -146,6 +147,7 @@ XAPI.showWorld = function () {
     }
     XAPI.ui.addState("获取最后一贴tid...");
     XAPI.send("api/get_last_tid.php",{},function(q){
+        XAPI.ui.addState("");
         loadpge(q.lasttid-15, q.lasttid, true,16);
     });
     XAPI.chgUrl({});

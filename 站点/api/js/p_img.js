@@ -1,4 +1,5 @@
 XAPI.showImg=function(imgid,cbc){
+    XAPI.ui.addState("加载图片："+imgid);
     XAPI.chgUrl({picPage:imgid,callback:cbc});
     var ict;
     var ct=XAPI.showCont("",function(){
@@ -15,7 +16,9 @@ XAPI.showImg=function(imgid,cbc){
     bcbt.click(function(){
         XAPI.pages.startPage(cbc);
     });
-    back.append(bcbt);
+    if(cbc){
+        back.append(bcbt);
+    }
     mbox.append(back);
     XAPI.send("api/pic_get_info.php",{picid:imgid},function(q){
         if(q.errid!=0){
@@ -26,6 +29,7 @@ XAPI.showImg=function(imgid,cbc){
             var mbinf=$('<div style="position: absolute; z-index: 2; left: 40px; top: 52px; font-size: 80%; opacity: 0.8; background-color: rgba(255, 255, 255, 0.61);"></div>');
             mbox.append(mbinf);
             XAPI.send("api/user_get_info.php",{uid: q.pic.authoruid},function(u){
+                XAPI.ui.addState("");
                 if(q.errid!=0){
                     mbinf.append($('<div class="error">获取用户信息失败</div>'));
                 }else{

@@ -93,12 +93,14 @@
         var ok=XAPI.ui.createDBotton("发推");
         var picinp=XAPI.ui.createDBotton("插入图片");
         ok.click(function(){
+            XAPI.ui.addState("正在发推");
             dbd.find(".log_and_error").remove();
             cancel.css({display:"none"});
             ok.css({display:"none"});
             picinp.css({display:"none"});
             dbd.append($('<span class="log_and_error" style="font-size: 80%; color: #5d5d5d;">请稍候</span>'));
             XAPI.send("api/send_tui.php",{content:edit.text()},function(q){
+                XAPI.ui.addState("");
                 if(q.errid!=0){
                     dbd.find(".log_and_error").remove();
                     dbd.append($('<span class="log_and_error error" style="font-size: 80%;"></span>').text(q.errmsg));
@@ -162,6 +164,7 @@
         return chunks;
     };
     XAPI.loggedShow=function(){
+        XAPI.ui.addState("");
         XAPI.log("logined sid: "+sid);
         XAPI.user.uid=uid;
         XAPI.send("api/user_get_info.php",{user:username},function(q){
@@ -235,9 +238,9 @@
                     delete localStorage.lastUid;
                     delete localStorage.userName;
                     delete localStorage.userPasswd;
-                    $('body').append($('<div style="background-color: #000000; opacity: 0; position: absolute; z-index: 99999; top: 0; left: 0; right: 0; bottom: 0;"></div>').animate({opacity:0.75},900));
+                    $('body').append($('<div style="background-color: #000000; opacity: 0; position: absolute; z-index: 99999; top: 0; left: 0; right: 0; bottom: 0;"></div>').animate({opacity:0.4},900));
                     setTimeout(function(){
-                        window.location.reload();
+                        X_RELOAD();
                     },1000);
                 })
             }));
@@ -291,6 +294,7 @@
             password=passwordIpt.text();
             XAPI.ui.addState("正在登录");
             XAPI.user.loginUsr(usernameIpt.text(),passwordIpt.text(),function(s,m,q){
+                XAPI.ui.addState("");
                 if(s){
                     window.localStorage.userName= q.uname;
                     username=q.uname;
@@ -360,6 +364,7 @@
             }
             password=passwordIpt.text();
             $.post("api/register_usr.php",{n:usernameIpt.text(),p:passwordIpt.text(),e:emailIpt.text()},function(q){
+                XAPI.ui.addState("");
                 if(q.errid!=0){
                     box.append($('<span class="error" style="position: relative; top: 30px;"></span>').text(q.errmsg));
                     password="";

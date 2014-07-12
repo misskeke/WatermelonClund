@@ -1,4 +1,5 @@
 XAPI.showUser=function(uid,cbc){
+    XAPI.ui.addState("加载用户："+uid);
     XAPI.chgUrl({uid:uid,callback:cbc});
     var cont=XAPI.showCont("<div style='text-align: center; margin-top: 30px;' class='errlod'>正在加载</div>",function(){
         cont.html("").css({textAlign:"left"});
@@ -130,6 +131,7 @@ XAPI.showUser=function(uid,cbc){
                         })(q.extras[i].ename,q.extras[i].evalue);
                     }
                 }
+                XAPI.ui.addState("");
             });
         }
     });
