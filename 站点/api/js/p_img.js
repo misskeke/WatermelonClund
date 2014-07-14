@@ -34,23 +34,7 @@ XAPI.showImg=function(imgid,cbc){
                     mbinf.append($('<div class="error">获取用户信息失败</div>'));
                 }else{
                     mbinf.text("发布者："+ u.user.username);
-                    var zaning=false;
                     mbinf.append($('<div></div>').text("发布时间："+ XAPI.timeZoneToDate(q.pic.time).toLocaleString()));
-                    var btnzan=$('<a style="margin-left: 4px; cursor: pointer; color: #5a86ff;" href="javascript:void(0);">(+1)</a>').click(function(){
-                        if(zaning){
-                            return;
-                        }
-                        zaning=true;
-                        XAPI.send("api/zan_pic.php",{picid: q.pic.picid},function(q){
-                            zaning=false;
-                            if(q.errid!=0){
-                                btnzan.text(q.errmsg+" (重试)");
-                            }else{
-                                XAPI.showImg(imgid,cbc);
-                            }
-                        });
-                    });
-                    mbinf.append($('<div></div>').text("赞："+ q.pic.zan).append(btnzan));
                 }
             });
             var imgef=$('<div style="position: absolute; left: 8px; top: 48px; bottom: 32px; right: 8px; text-align: center;"></div>');

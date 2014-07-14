@@ -74,13 +74,16 @@
         }
     }
     setTimeout(rtt, 400);
-    XAPI.sendTieShow=function(){
+    XAPI.sendTieShow=function(reply_tid,arr){
         var body=$('body');
         var maint=$('<div style="background-color: rgba(0, 0, 0, 0.60); position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 1504;"></div>');
         body.append(maint);
         var ttd=$('<div style="margin: 32px auto auto auto; position: relative; border-radius: 4px; background-color: rgba(255, 255, 255, 0.80); height: 300px; width: 750px; padding: 4px;"></div>');
         maint.append(ttd);
         var edit=XAPI.ui.createDTextArea("推文...");
+        if(arr){
+            edit.text(arr);
+        }
         edit.ipt.css({position:"absolute",left:"2px",right:"2px",top:"16px",bottom:"40px"});
         ttd.append(edit.ipt);
         var dbd=$('<div style="position: absolute; font-size: 16px; left: 2px; right: 2px; bottom: 2px; height: 36px; text-align: right;"></div>');
@@ -99,7 +102,7 @@
             ok.css({display:"none"});
             picinp.css({display:"none"});
             dbd.append($('<span class="log_and_error" style="font-size: 80%; color: #5d5d5d;">请稍候</span>'));
-            XAPI.send("api/send_tui.php",{content:edit.text()},function(q){
+            XAPI.send("api/send_tui.php",{content:edit.text(),reply:reply_tid},function(q){
                 XAPI.ui.addState("");
                 if(q.errid!=0){
                     dbd.find(".log_and_error").remove();
@@ -188,7 +191,7 @@
                 }
                 lock=true;
                 var lt=userbar.offset();
-                usermenu.stop(true,true,true);
+                usermenu.stop(true,false,false);
                 usermenu.css({right:"18px",top:userbar.height()+"px",opacity:(opened?1:0),display:"block"}).animate({opacity:(opened?0:1)},80,function(){
                     if(opened){
                         usermenu.css({display:"none"});

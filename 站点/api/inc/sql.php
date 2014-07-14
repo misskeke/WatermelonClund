@@ -10,6 +10,8 @@ function print_stack_trace()
     }
     return $html;
 }
+$mys = new mysqli("localhost", "root", "", "devwebs");
+
 function diemyerror($str="")
 {
     $echo = array();
@@ -18,7 +20,6 @@ function diemyerror($str="")
     die(json_encode($echo));
 }
 
-$mys = new mysqli("localhost", "root", "", "devwebs");
 if (mysqli_connect_errno()) {
     diemyerror();
 }

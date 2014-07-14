@@ -18,9 +18,16 @@ if(($usr=chksoretusr($_POST["sid"],$_POST["krr"],$mys))==false){
     $echo["errmsg"] = "会话不正确";
     die(json_encode($echo));
 }else{
-    $successful=$mys->query("INSERT INTO `thread` (`uid`, `ip`, `time`, `title`, `del_usr`, `del_rsn`, `ban_because_this`, `ban_because_this_banid`, `type`, `content`, `fid`, `reply_tid`, `zan_usr`) VALUES ('".$mys->real_escape_string($usr["uid"])
-        ."', '".$mys->real_escape_string(GetIP())."', '".time()."', '', '0', '0', '0', '0', '1', '".
-        $mys->real_escape_string($_POST["content"])."', '0', '0', '')");
+    if($usr["state"]==1 || $usr["state"]==3){
+        $echo = array();
+        $echo["errid"] = 1100110;
+        $echo["errmsg"] = "您的帐号已被封禁。";
+        $echo["uname"] = "";
+        die(json_encode($echo));
+    }
+    $successful=$mys->query("INSERT INTO `thread` (`uid`, `ip`, `time`, `title`, `type`, `content`, `fid`, `reply_tid`) VALUES ('".$mys->real_escape_string($usr["uid"])
+        ."', '".$mys->real_escape_string(GetIP())."', '".time()."', '', '1', '".
+        $mys->real_escape_string($_POST["content"])."', '0', '".(is_numeric($_POST["reply"])?$mys->real_escape_string($_POST["reply"]):0)."')");
     if($successful){
         $echo = array();
         $echo["errid"] = 0;
@@ -28,6 +35,6 @@ if(($usr=chksoretusr($_POST["sid"],$_POST["krr"],$mys))==false){
         $echo["tid"]=$mys->insert_id;
         die(json_encode($echo));
     }else{
-        diemyerror();
+        diemyerror($mys->error);
     }
 }

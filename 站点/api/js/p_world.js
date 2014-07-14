@@ -36,32 +36,44 @@ XAPI.showWorld = function () {
         }else if(minc>min){
             minc=min;
         }
-        XAPI.send("api/list_world_t.php", {mn: min, mx: max}, function (q) {
-            XAPI.ui.addState("");
-            var pge=$('<div class="page" style="opacity: 0;"></div>');
+        function clr(pge,q,issub,subft){
             for (var i = 0; i < q.t.length; i++) {
                 (function (t) {
                     var tiet = $('<div style="padding: 4px 16px 4px 16px; border-bottom: solid 1px rgba(50, 116, 174, 0.29);"></div>').mouseenter(function () {
-                        tiet.css({backgroundColor: "#E8E8E8"});
+                        if(issub){
+                            tiet.stop(true,false,false).animate({backgroundColor: "#F1FDFF"},250);
+                        }else{
+                            tiet.stop(true,false,false).animate({backgroundColor: "#EDEDED"},250);
+                        }
                     }).mouseleave(function () {
-                            tiet.css({backgroundColor: "#ffffff"});
+                            if(issub){
+                                tiet.stop(true,false,false).animate({backgroundColor: "transparent"},250);
+                            }else{
+                                tiet.stop(true,false,false).animate({backgroundColor: "#FFFFFF"},250);
+                            }
                         });
-                    tiet.append($("<div style='font-size: 65%; cursor: pointer; color: #0c1e3f;'></div>").text("@" + t.author).append(
-                        $('<span style="margin-left: 20px; color: #323232;"></span>').text((function (t) {
-                            var te = new Date();
-                            te.setTime(t * 1000);
-                            return te.toLocaleString()
-                        })(t.time))).prepend($('<img style="vertical-align: middle; margin: 5px;">')
+                    if(issub){
+                        tiet.css({backgroundColor: "transparent"});
+                    }else{
+                        tiet.css({backgroundColor: "#FFFFFF"});
+                    }
+                    var usrs=$("<div style='font-size: 65%; cursor: pointer; color: #0c1e3f;'></div>").text("@" + t.author).append(
+                            $('<span style="margin-left: 20px; color: #323232;"></span>').text((function (t) {
+                                var te = new Date();
+                                te.setTime(t * 1000);
+                                return te.toLocaleString()
+                            })(t.time))).prepend($('<img style="vertical-align: middle; margin: 5px;">')
                             .attr("src",XAPI.user_hadpic_get((t.email==null?"":t.email),32))).click(function(){
                             XAPI.showUser(t.uid,{});
-                        }));
+                        }).mouseenter(function(){
+                            usrs.stop(true,false,false).animate({backgroundColor:"#FCEFE9"},250);
+                        }).mouseleave(function(){
+                            usrs.stop(true,false,false).animate({backgroundColor:"transparent"},250);
+                        });
+                    tiet.append(usrs);
                     var pobj=XAPI.cpXXCode(t.content);
                     var cc=$("<div style='word-break: break-all;'></div>");
                     for(var i=0;i<pobj.length;i++){
-                        if(i>400){
-                            cc.append($('<span class="str" style="opacity: 0; color: #5a86ff;"></span>').text("……"));
-                            break;
-                        }
                         (function(o){
                             if(o.str!="\n" && o.str){
                                 cc.append($('<span class="str" style="opacity: 0;"></span>').text(o.str));
@@ -91,11 +103,75 @@ XAPI.showWorld = function () {
                         })(pobj[i])
                     }
                     tiet.append(cc);
+                    if(t.state>1){
+                        cc.css({opacity:0.03,backgroundColor:"#FC2802"});
+                        var $ci=$('<div style="color: #FC2802; cursor: pointer;">此用户已被屏蔽，若要查看此内容，请点击此处。</div>').click(function(){
+                            cc.animate({opacity:0.8,backgroundColor:"#FE887A"},250);
+                            $ci.remove();
+                        });
+                        tiet.append($ci);
+                    }
+                    var btbar=$('<div style="font-size: 60%; opacity: 0.8;"></div>');
+                    tiet.append(btbar);
+                    btbar.append($('<a href="javascript:void(0);">回复</a>').click(function(){
+                        if(issub){
+                            XAPI.sendTieShow(subft, "@"+t.author+" : ");
+                        }else{
+                            XAPI.sendTieShow(t.tid);
+                        }
+                    }));
+                    btbar.append($("<span style='cursor: default;'>&nbsp;</span>"));
+                    if(!issub){
+                        btbar.append($('<a href="javascript:void(0);">刷新回复</a>').click(function(){
+                            fr();
+                        }));
+                        var dd=$('<div></div>');
+                        function fr(){
+                            dd.html("");
+                            var pagebox=$('<div></div>');
+                            var dbox=$("<div style='background-color: transparent;'></div>");
+                            XAPI.send("api/list_post.php",{tid: t.tid,mn:1,mx:10},function(q){
+                                var acount= q.num_reply;
+                                function load(page){
+                                    dbox.html("");
+                                    XAPI.send("api/list_post.php",{tid: t.tid,mn:((page-1)*10)+1,mx:((page-1)*10)+10},function(q){
+                                        show(q);
+                                    });
+                                }
+                                function show(q){
+                                    dbox.html("");
+                                    clr(dbox, q, true, t.tid);
+                                }
+                                var pga=Math.ceil(acount/10);
+                                if(pga>1){
+                                    for(var i=1;i<=pga;i++){
+                                        (function(i){
+                                            pagebox.append($('<a href="javascript:void(0);" style="margin-left: 4px;"></a>').text(i).click(function(){
+                                                load(i);
+                                            }));
+                                        })(i);
+                                    }
+                                }
+                                show(q);
+                            });
+                            dd.append(dbox);
+                            dd.append(pagebox);
+                        }
+                        if(t.reply_has){
+                            fr();
+                        }
+                        tiet.append(dd);
+                    }
                     pge.append(tiet);
                     var cps=cc.find(".str");
                     cps.css({scale:1.5}).eachanimate({opacity:1,scale:1},true,120,1500/cps.length,true,"linear",function(){});
                 })(q.t[i]);
             }
+        }
+        XAPI.send("api/list_world_t.php", {mn: min, mx: max}, function (q) {
+            XAPI.ui.addState("");
+            var pge=$('<div class="page" style="opacity: 0;"></div>');
+            clr(pge,q);
             if(q.t.length>0){
                 if(dg){
                     tiecot.prepend(pge);

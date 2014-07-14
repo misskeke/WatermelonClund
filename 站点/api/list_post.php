@@ -1,11 +1,16 @@
 <?php
-error_reporting(0);
-require "inc/sql.php";
-$pge=1;
+if(!isset($_POST["tid"])){
+    die("参数错误，请重试。");
+}
 if(!is_numeric($_POST["mx"]) || !is_numeric($_POST["mn"])){
     diemyerror("检测到sql注入？");
 }
-$sql="SELECT thread.tid, thread.uid, thread.time, thread.content, thread.zan_num FROM `thread` WHERE thread.deleted = 0 AND thread.type = 1 AND thread.reply_tid = 0 AND thread.tid >= ".$_POST["mn"]." AND thread.tid <= ".$_POST["mx"]." ORDER BY thread.tid DESC";
+require "inc/sql.php";
+$tid=$mys->real_escape_string($_POST["tid"]);
+$mn=$_POST["mn"];
+$mx=$_POST["mx"];
+$sql="SELECT thread.tid, thread.uid, thread.time, thread.content, thread.zan_num, thread.state FROM `thread`".
+    " WHERE thread.reply_tid = '".$tid."' AND thread.deleted = 0 LIMIT ".($mn-1).", ".($mx-1);
 $res=$mys->query($sql);
 if($res==false){
     diemyerror();
@@ -26,12 +31,6 @@ if($res==false){
         if($assoc["state"]==3 || $assoc["state"]==5){
             $abs["content"]="此用户已被强屏蔽。";
         }
-        $resh=$mys->query("SELECT thread.tid FROM `thread` WHERE thread.reply_tid = '".$abs["tid"]."' AND thread.deleted = 0 LIMIT 0, 1");
-        if($resh->num_rows<1){
-            $abs["reply_has"]=0;
-        }else{
-            $abs["reply_has"]=1;
-        }
         $arrout[]=$abs;
     }
     $echo = array();
@@ -40,5 +39,6 @@ if($res==false){
     $echo["time"]=time();
     $echo["mysql"]=$sql;
     $echo["t"]=$arrout;
+    $echo["num_reply"]=$mys->query("SELECT count(thread.tid) AS c FROM thread WHERE thread.deleted = 0 AND thread.reply_tid = '".$tid."'")->num_rows;
     die(json_encode($echo));
 }

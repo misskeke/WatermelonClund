@@ -46,15 +46,15 @@ XAPI.user.updateImage=function(callback,multiple){
                 reader.onload = function(e){
                     var url=this.result;
                     fpre.text(fl.name+" 正在上传");
-                    fpre.stop(true,true,true).animate({backgroundColor:"#58B5FC"},5000);
+                    fpre.stop(true,false,false).animate({backgroundColor:"#58B5FC"},5000);
                     XAPI.send("api/updata_img.php",{src:url},function(q){
                         if(q.errid!=0){
-                            fpre.stop(true,true,true).animate({backgroundColor:"#FE6D57"},150);
+                            fpre.stop(true,false,false).animate({backgroundColor:"#FE6D57"},150);
                             fpre.text(fl.name+" 失败: "+ q.errmsg);
                             pids.push(0);
                             ck();
                         }else{
-                            fpre.stop(true,true,true).animate({backgroundColor:"#57FD5D"},150);
+                            fpre.stop(true,false,false).animate({backgroundColor:"#57FD5D"},150);
                             fpre.text(fl.name+" 成功");
                             pids.push(q.picid);
                             ck();

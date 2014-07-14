@@ -28,6 +28,13 @@ if ($res->num_rows > 0) {
         $echo["errmsg"] = "未定义的错误。重新试试看？";
         $echo["uid"] = $ft["uid"];
         $echo["uname"] = "";
+        die(json_encode($echo));
+    }
+    if($ft["state"]>3){
+        $echo = array();
+        $echo["errid"] = 1100106;
+        $echo["errmsg"] = "您的帐号已被禁止登录，或者被删除。";
+        $echo["uid"] = $ft["uid"];
         $echo["uname"] = "";
         die(json_encode($echo));
     }

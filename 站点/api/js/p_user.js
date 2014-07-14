@@ -1,11 +1,16 @@
 XAPI.showUser=function(uid,cbc){
     XAPI.ui.addState("加载用户："+uid);
     XAPI.chgUrl({uid:uid,callback:cbc});
+    var ended=false;
     var cont=XAPI.showCont("<div style='text-align: center; margin-top: 30px;' class='errlod'>正在加载</div>",function(){
         cont.html("").css({textAlign:"left"});
+        ended=true;
     });
     $("body").animate({backgroundColor: "#C1973D"}, 350);
     XAPI.send("api/user_get_info.php",{uid:uid},function(q){
+        if(ended){
+            return;
+        }
         if(q.errid!=0){
             cont.find(".errlod").text("错误："+ q.errmsg).append($('<br>'))
                 .append(XAPI.ui.createDBotton("返回").click(function(){
@@ -71,8 +76,8 @@ XAPI.showUser=function(uid,cbc){
                 }
             },500);
             var hadcard=$('<div style="background-color: #dadada; padding-left: 260px; min-height: 268px; position: relative;"></div>');
-            hadcard.append($('<img style="position: absolute; border-radius: 248px; box-shadow: 0 0 4px #000; cursor: pointer; left: 8px; width: 248px; top: 8px; height: 248px;">').attr("src",
-                XAPI.user_hadpic_get(userinfo.email,256)).click(function(){
+            var hp_img=$('<img style="position: absolute; border-radius: 248px; box-shadow: 0 0 4px #000; cursor: pointer; left: 8px; width: 248px; top: 8px; height: 248px;">').attr("src",
+                    XAPI.user_hadpic_get(userinfo.email,256)).click(function(){
                     var csc=$('<div style="background-color: rgba(0, 0, 0, 0.66); position: fixed; cursor: pointer; text-align: center; z-index: 1501; left: 0; right: 0; top: 0; bottom: 0;"></div>')
                         .append($('<div style="margin: 120px auto auto auto;" class="tohei"></div>').append($('<img style="border-radius: 8px;">').attr("src",XAPI.user_hadpic_get(userinfo.email,500))));
                     $('body').append(csc);
@@ -90,7 +95,13 @@ XAPI.showUser=function(uid,cbc){
                         habing=true;
                         csc.remove();
                     });
-                }));
+                });
+            hadcard.append(hp_img);
+            if(userinfo.state>0){
+                var fjxx=userinfo.state*20;
+                hp_img.css({"-webkit-filter":"grayscale("+fjxx/100+")","filter":"grayscale("+fjxx/100+")"});
+                hadcard.append($('<div style="color: #ff0000;">此用户已被封禁</div>'));
+            }
             box.append(hadcard);
             var hdc=$('<div style="padding-bottom: 8px; padding-left: 16px; padding-top: 8px;"></div>');
             hadcard.append($('<div></div>').append(
@@ -122,11 +133,20 @@ XAPI.showUser=function(uid,cbc){
             })(parseInt(userinfo.sex))));
             hdc.append($('<div>UID: </div>').append($('<span style="color: #5a100e;"></span>').text(userinfo.uid)));
             XAPI.send("api/user_list_extra.php",{uid:uid},function(q){
+                if(ended){
+                    return;
+                }
                 if(q.errid!=0){
                     hdc.append($('<div></div>').text(q.errmsg));
                 }else{
                     for(var i=0;i< q.extras.length;i++){
                         (function(ex,tr){
+                            if(ex=="_upage_bgcolor"){
+                                if(!ended){
+                                    $("body").animate({backgroundColor: tr}, 350);
+                                }
+                                return;
+                            }
                             hdc.append($('<div></div>').text(ex).append($('<span style="color: #5a2b36;">: </span>')).append($('<span style="color: #305a24;"></span>').text(tr)));
                         })(q.extras[i].ename,q.extras[i].evalue);
                     }

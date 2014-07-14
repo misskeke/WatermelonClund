@@ -15,7 +15,15 @@ function chksoretusr($sid,$krr,mysqli $mys){
         $uid=$res->fetch_assoc()["uid"];
         $res=$mys->query("SELECT * FROM `user` WHERE `uid` = '".$mys->real_escape_string($uid)."'");
         if($res){
-            return $res->fetch_assoc();
+            $usr=$res->fetch_assoc();
+            if($usr["state"]>3){
+                $echo = array();
+                $echo["errid"] = 1100106;
+                $echo["errmsg"] = "您的帐号已被禁止登录，或者被删除。";
+                $echo["uname"] = "";
+                die(json_encode($echo));
+            }
+            return $usr;
         }else{
             return false;
         }
