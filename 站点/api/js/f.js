@@ -39,4 +39,20 @@
         XAPI.$cont.html(html);
         return XAPI.$cont;
     }
+    XAPI.ult={
+        getPagesWillShow:function(currentPage,max){
+            var min=currentPage-5;
+            if(min<1){
+                min=1;
+            }
+            var pages=[];
+            for(var cu=min;cu<=min+10;cu++){
+                if(cu>max){
+                    break;
+                }
+                pages.push(cu);
+            }
+            return pages;
+        }
+    };
 })();

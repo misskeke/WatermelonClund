@@ -10,7 +10,7 @@ $tid=$mys->real_escape_string($_POST["tid"]);
 $mn=$_POST["mn"];
 $mx=$_POST["mx"];
 $sql="SELECT thread.tid, thread.uid, thread.time, thread.content, thread.zan_num, thread.state FROM `thread`".
-    " WHERE thread.reply_tid = '".$tid."' AND thread.deleted = 0 LIMIT ".($mn-1).", ".($mx-1);
+    " WHERE thread.reply_tid = '".$tid."' AND thread.deleted = 0 LIMIT ".($mn-1).", ".($mx-$mn+1);
 $res=$mys->query($sql);
 if($res==false){
     diemyerror();
@@ -39,6 +39,6 @@ if($res==false){
     $echo["time"]=time();
     $echo["mysql"]=$sql;
     $echo["t"]=$arrout;
-    $echo["num_reply"]=$mys->query("SELECT count(thread.tid) AS c FROM thread WHERE thread.deleted = 0 AND thread.reply_tid = '".$tid."'")->num_rows;
+    $echo["num_reply"]=$mys->query("SELECT count(thread.tid) AS c FROM thread WHERE thread.deleted = 0 AND thread.reply_tid = '".$tid."'")->fetch_assoc()["c"];
     die(json_encode($echo));
 }

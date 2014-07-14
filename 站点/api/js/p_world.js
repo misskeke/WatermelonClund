@@ -63,7 +63,7 @@ XAPI.showWorld = function () {
                                 te.setTime(t * 1000);
                                 return te.toLocaleString()
                             })(t.time))).prepend($('<img style="vertical-align: middle; margin: 5px;">')
-                            .attr("src",XAPI.user_hadpic_get((t.email==null?"":t.email),32))).click(function(){
+                            .attr("src",XAPI.user_hadpic_get((t.email==null?"":t.email),(issub?16:32)))).click(function(){
                             XAPI.showUser(t.uid,{});
                         }).mouseenter(function(){
                             usrs.stop(true,false,false).animate({backgroundColor:"#FCEFE9"},250);
@@ -122,7 +122,8 @@ XAPI.showWorld = function () {
                     }));
                     btbar.append($("<span style='cursor: default;'>&nbsp;</span>"));
                     if(!issub){
-                        btbar.append($('<a href="javascript:void(0);">刷新回复</a>').click(function(){
+                        var currpage=1;
+                        btbar.append($('<a href="javascript:void(0);">刷新页数</a>').click(function(){
                             fr();
                         }));
                         var dd=$('<div></div>');
@@ -130,10 +131,13 @@ XAPI.showWorld = function () {
                             dd.html("");
                             var pagebox=$('<div></div>');
                             var dbox=$("<div style='background-color: transparent;'></div>");
-                            XAPI.send("api/list_post.php",{tid: t.tid,mn:1,mx:10},function(q){
+                            XAPI.send("api/list_post.php",{tid: t.tid,mn:((currpage-1)*10)+1,mx:((currpage-1)*10)+10},function(q){
                                 var acount= q.num_reply;
+                                var pga=Math.ceil(acount/10);
                                 function load(page){
                                     dbox.html("");
+                                    currpage=page;
+                                    buildpage();
                                     XAPI.send("api/list_post.php",{tid: t.tid,mn:((page-1)*10)+1,mx:((page-1)*10)+10},function(q){
                                         show(q);
                                     });
@@ -142,15 +146,47 @@ XAPI.showWorld = function () {
                                     dbox.html("");
                                     clr(dbox, q, true, t.tid);
                                 }
-                                var pga=Math.ceil(acount/10);
-                                if(pga>1){
-                                    for(var i=1;i<=pga;i++){
+                                function buildpage(){
+                                    pagebox.html("");
+                                    var pagesh=XAPI.ult.getPagesWillShow(currpage,pga);
+                                    for(var i=0;i<pagesh.length;i++){
                                         (function(i){
-                                            pagebox.append($('<a href="javascript:void(0);" style="margin-left: 4px;"></a>').text(i).click(function(){
+                                            var pagebtn=$('<a href="javascript:void(0);" style="padding: 4px; display: inline-block; margin: 0;"></a>').text(i).click(function(){
+                                                if(currpage==i){
+                                                    return;
+                                                }
+                                                currpage=i;
                                                 load(i);
-                                            }));
-                                        })(i);
+                                            });
+                                            if(currpage==i){
+                                                pagebtn.attr("href",null);
+                                                pagebtn.css({color:"#000000",cursor:"default"});
+                                            }
+                                            pagebox.append(pagebtn);
+                                        })(pagesh[i]);
                                     }
+                                    var pageinp=XAPI.ui.createDInput("&#xe613;");
+                                    pageinp.texttitle("页数");
+                                    pageinp.ipt.css({width:"100px",verticalAlign:"middle"});
+                                    var jmp=XAPI.ui.createDBotton("跳");
+                                    jmp.css({verticalAlign:"middle"});
+                                    pagebox.append(pageinp.ipt);
+                                    pagebox.append(jmp);
+                                    jmp.click(function(){
+                                        var jumpto=parseInt(pageinp.text());
+                                        if(isNaN(jumpto)){
+                                            return;
+                                        }else if(jumpto<1){
+                                            return;
+                                        }else if(jumpto>pga){
+                                            jumpto=pga;
+                                            pageinp.text(jumpto);
+                                        }
+                                        load(jumpto);
+                                    });
+                                }
+                                if(pga>1){
+                                    buildpage();
                                 }
                                 show(q);
                             });
@@ -183,14 +219,17 @@ XAPI.showWorld = function () {
             pge.css({rotateX:"90deg",height:"0px"}).transit({opacity:1,rotateX:"0deg",height:pgehei+"px"},250,function(){
                 pge.css({height:"auto"});
             });
-            var tiet = $('<div class="contuineuload" style="padding: 4px; cursor: pointer;"></div>').mouseenter(function () {
-                tiet.css({backgroundColor: "#E8E8E8"});
-            }).mouseleave(function () {
-                    tiet.css({backgroundColor: "#ffffff"});
-                }).text("继续加载").click(function () {
-                    loadpge(minc-8,minc-1, false,7);
-                });
-            tiecot.append(tiet);
+            if(minc>1){
+                console.info("minc="+minc);
+                var tiet = $('<div class="contuineuload" style="padding: 4px; cursor: pointer;"></div>').mouseenter(function () {
+                    tiet.css({backgroundColor: "#E8E8E8"});
+                }).mouseleave(function () {
+                        tiet.css({backgroundColor: "#ffffff"});
+                    }).text("继续加载").click(function () {
+                        loadpge(minc-8,minc-1, false,7);
+                    });
+                tiecot.append(tiet);
+            }
             if(frist){
                 (function(){
                     var tiet = $('<div class="topjz" style="padding: 4px; cursor: pointer; border-bottom: solid 1px rgba(50, 116, 174, 0.29);"></div>').mouseenter(function () {
