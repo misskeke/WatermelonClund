@@ -12,6 +12,12 @@ if(strlen($tuic)<1 || strlen($tuic)>16777215){
     $echo["errmsg"] = "贴子长度过长或过短 (最大长度为16777215字节)";
     die(json_encode($echo));
 }
+if(mb_strlen($tuic)>5000){
+    $echo = array();
+    $echo["errid"] = 20;
+    $echo["errmsg"] = "贴子长度过长或过短 (最大长度为16777215字节)";
+    die(json_encode($echo));
+}
 if(($usr=chksoretusr($_POST["sid"],$_POST["krr"],$mys))==false){
     $echo = array();
     $echo["errid"] = 10;
