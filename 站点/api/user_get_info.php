@@ -1,9 +1,9 @@
 <?php
 require "inc/sql.php";
 if(isset($_POST["user"])){
-    $sql="SELECT `user`.uid, `user`.username, `user`.email, `user`.sex, `user`.registerTime, `user`.QQ, `user`.state FROM `user` WHERE `user`.username = '".$mys->real_escape_string($_POST["user"])."'";
+    $sql="SELECT `user`.uid, `user`.username, `user`.email, `user`.sex, `user`.registerTime, `user`.QQ, `user`.state, `user`.group FROM `user` WHERE `user`.username = '".$mys->real_escape_string($_POST["user"])."'";
 }else if(isset($_POST["uid"])){
-    $sql="SELECT `user`.uid, `user`.username, `user`.email, `user`.sex, `user`.registerTime, `user`.QQ, `user`.state FROM `user` WHERE `user`.uid = '".$mys->real_escape_string($_POST["uid"])."'";
+    $sql="SELECT `user`.uid, `user`.username, `user`.email, `user`.sex, `user`.registerTime, `user`.QQ, `user`.state, `user`.group FROM `user` WHERE `user`.uid = '".$mys->real_escape_string($_POST["uid"])."'";
 }else{
     die("参数错误，请重试。");
 }

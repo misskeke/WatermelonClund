@@ -12,10 +12,10 @@ if(strlen($tuic)<1 || strlen($tuic)>16777215){
     $echo["errmsg"] = "贴子长度过长或过短 (最大长度为16777215字节)";
     die(json_encode($echo));
 }
-if(mb_strlen($tuic)>5000){
+if(mb_strlen($tuic)>500){
     $echo = array();
-    $echo["errid"] = 20;
-    $echo["errmsg"] = "贴子长度过长或过短 (最大长度为16777215字节)";
+    $echo["errid"] = 21;
+    $echo["errmsg"] = "推文长度不能大于500个字";
     die(json_encode($echo));
 }
 if(($usr=chksoretusr($_POST["sid"],$_POST["krr"],$mys))==false){
@@ -39,6 +39,16 @@ if(($usr=chksoretusr($_POST["sid"],$_POST["krr"],$mys))==false){
         $echo["errid"] = 0;
         $echo["errmsg"] = "";
         $echo["tid"]=$mys->insert_id;
+        if(is_numeric($_POST["reply"])){
+            $res=$mys->query("SELECT thread.uid FROM `thread` WHERE thread.tid = '".$mys->real_escape_string($_POST["reply"])."' AND thread.deleted = 0");
+            if($res && $res->num_rows>0){
+                $uid=$res->fetch_assoc()["uid"];
+                $addmsgsql="INSERT INTO `ssr` (`type`, `time`, `maker`, `recer`, `target`, `makeby`) VALUES ('1', '"
+                    .time()."', '".$mys->real_escape_string($usr["uid"])."', '".$mys->real_escape_string($uid)."', '"
+                    .$mys->real_escape_string($_POST["reply"])."', '".$mys->real_escape_string($echo["tid"])."')";
+                $mys->query($addmsgsql);
+            }
+        }
         die(json_encode($echo));
     }else{
         diemyerror($mys->error);

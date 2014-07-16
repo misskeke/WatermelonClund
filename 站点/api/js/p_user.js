@@ -25,14 +25,9 @@ XAPI.showUser=function(uid,cbc){
                 if(parseInt(XAPI.user.uid)==parseInt(uid)){
                     box.prepend($('<a class="myusrpage" style="color: #5a2c13; opacity: 0;" href="javascript:void(0);"><span class="iconfont">&#xe604;</span>&nbsp;这是你自己的用户页！您可以点击此处编辑资料。</a>'))
                         .find(".myusrpage").animate({opacity:"1"},250).click(function(){
-                            var csc=$('<div style="background-color: rgba(0, 0, 0, 0.66); position: fixed; text-align: center; z-index: 1502; left: 0; right: 0; top: 0; bottom: 0;"></div>');
-                            $('body').append(csc);
-                            var box=$('<div style="margin: 40px auto auto auto; padding: 16px; position: relative; text-align: left; width: 600px; min-height: 300px; background-color: #ffffff; box-shadow: 0 2px 4px #fff;"></div>');
-                            csc.append(box);
-                            box.append($('<div style="position: absolute; right: 2px; top: 2px; font-size: 14px; opacity: 0.8; cursor: pointer;">×</div>').click(function(){
-                                csc.remove();
+                            var box=XAPI.ui.createDiagbox("资料设置",function(){
                                 XAPI.showUser(uid,cbc);
-                            }));
+                            },"650px","auto").c;
                             // 0=未设置 1=男 2=女 3=伪娘/萌正太 4=女汉 5=其他 6=bot
                             var xbxzk=$('<select><option value="0">未设置</option><option value="1">男</option><option value="2">女</option>' +
                                 '<option value="3">伪娘/萌正太</option><option value="4">女汉</option><option value="5">其他</option>' +
@@ -132,6 +127,10 @@ XAPI.showUser=function(uid,cbc){
                 }
             })(parseInt(userinfo.sex))));
             hdc.append($('<div>UID: </div>').append($('<span style="color: #5a100e;"></span>').text(userinfo.uid)));
+            if(userinfo.group==1){
+                hdc.append($('<div style="font-size: 110%; color: #a12a00"><span style="display: inline-block; vertical-align: middle; font-size: 150%;" class="iconfont">' +
+                    '&#xe614;</span>此用户是西瓜云管理组的一员。</div>'))
+            }
             XAPI.send("api/user_list_extra.php",{uid:uid},function(q){
                 if(ended){
                     return;

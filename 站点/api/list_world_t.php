@@ -10,6 +10,14 @@ $mx=($_POST["mx"]<1?1:$_POST["mx"])-1;
 $sql="SELECT * FROM (SELECT thread.tid, thread.uid, thread.time, thread.content, thread.zan_num FROM `thread` WHERE thread.deleted = 0 AND thread.type = 1 AND thread.reply_tid = 0 LIMIT ".$mn.",".($mx-$mn+1).")tmp ORDER BY tid DESC";
 $res=$mys->query($sql);
 if($res==false){
+    if($mn>$mx){
+        $echo = array();
+        $echo["errid"] = 0;
+        $echo["errmsg"] = "";
+        $echo["time"]=time();
+        $echo["t"]=array();
+        die(json_encode($echo));
+    }
     diemyerror();
 }else{
     $arrout=array();

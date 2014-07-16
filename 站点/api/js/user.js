@@ -25,10 +25,11 @@
             XAPI.log("You had never logined here!");
         }
     }
-    function rtt() {
+    function rtt(callback) {
         function nol(){
             var as=XAPI.setdh("<a class='dh_link' href='javascript:XAPI.showWorld();'>世界</a><span class='hidden'>   |   </span><a class='dh_link' href='javascript:XAPI.showLogin();'>登录</a><span class='hidden'>|</span><a class='dh_link' href='javascript:XAPI.showRegister();'>注册</a>").find("a");
             XAPI.ui.addState("您从未在这里登录过，请登录或注册。");
+            callback();
         }
         if(localStorage.lastSid){
             if(localStorage.lastKrr){
@@ -38,6 +39,7 @@
                 XAPI.send("api/checksession.php",{},function(q){
                     if(q.successful==1){
                         XAPI.loggedShow();
+                        callback();
                         XAPI.ui.addState("您曾经登录过但是并未注销！已为您登录");
                     }else{
                         XAPI.log("seassion sid="+sid+", krr="+krr+" is incorrect!");
@@ -70,13 +72,13 @@
                 }else{
                     localStorage.autolog=false;
                 }
+                callback();
             });
         }
     }
-    setTimeout(rtt, 400);
     XAPI.sendTieShow=function(reply_tid,arr){
         var body=$('body');
-        var maint=$('<div style="background-color: rgba(0, 0, 0, 0.60); position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 1504;"></div>');
+        var maint=$('<div style="background-color: rgba(0, 0, 0, 0.60); position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 1601;"></div>');
         body.append(maint);
         var ttd=$('<div style="margin: 32px auto auto auto; position: relative; border-radius: 4px; background-color: rgba(255, 255, 255, 0.80); height: 300px; width: 750px; padding: 4px;"></div>');
         maint.append(ttd);
@@ -173,6 +175,8 @@
         XAPI.send("api/user_get_info.php",{user:username},function(q){
             if(q.errid==0){
                 usrinfo= q.user;
+                XAPI.user.info=usrinfo;
+                XAPI.user.isAdmin=(usrinfo.group==1);
             }
             var dh=XAPI.setdh("<a class='dh_link' href='javascript:XAPI.showWorld();'>世界</a><span class='hidden'> </span><a class='dh_link' href='javascript:XAPI.sendTieShow();'>发推</a>");
             var userbar=$('<a class="dh_link" style="display: inline-block; position: relative; float: right; padding-left: 8px; padding-right: 8px; margin-right: 18px;" href="javascript:void(0)"></a>');
@@ -256,6 +260,7 @@
                 });
             $('body').append(usermenu).append(usermenubak);
             XAPI.dhp();
+            XAPI.user.onloginfinished_msg();
         });
     };
     XAPI.user.loginUsr=function(n,p,c){
@@ -372,6 +377,7 @@
                     box.append($('<span class="error" style="position: relative; top: 30px;"></span>').text(q.errmsg));
                     password="";
                     regbtn=XAPI.ui.createDBotton("注册").css({position:"absolute",right:"32px",bottom:"12px"}).click(registerFunc);
+                    regbtn=XAPI.ui.createDBotton("注册").css({position:"absolute",right:"32px",bottom:"12px"}).click(registerFunc);
                     box.append(regbtn);
                 }else{
                     uid= q.uid;
@@ -395,8 +401,8 @@
                                     localStorage.lastUid=uid;
                                     localStorage.userName=username;
                                     XAPI.ui.addState("注册成功！尽情享受吧~");
-                                    XAPI.loggedShow();
                                     setTimeout(function(){
+                                        XAPI.loggedShow();
                                         XAPI.showWorld();
                                     },2000);
                                 })
@@ -429,17 +435,56 @@
             XAPI.log("user page loaded");
             $.getScript("api/js/p_img.js",function(){
                 XAPI.log("p_img.js loaded");
-                $.getScript("api/js/pages.js",function(){
-                    XAPI.log("Pages loaded");
-                    var hash=window.location.hash.substr(1);
-                    var hastt;
-                    try{
-                        hastt=JSON.parse(hash);
-                    }catch (e){
-                        XAPI.log("Page hash error: "+e);
-                        hastt={};
-                    }
-                    XAPI.pages.startPage(hastt);
+                $.getScript("api/js/message.js",function(){
+                    XAPI.log("message.js loaded");
+                    $.getScript("api/js/pages.js",function(){
+                        XAPI.log("Pages loaded");
+                        function cst(){
+                            rtt(function(){
+                                XAPI.log("rrt callbacked");
+                                var hash=window.location.hash.substr(1);
+                                var hastt;
+                                try{
+                                    hastt=JSON.parse(hash);
+                                }catch (e){
+                                    XAPI.log("Page hash error: "+e);
+                                    hastt={};
+                                }
+                                XAPI.pages.startPage(hastt);
+                            });
+                        }
+                        if(location.protocol=="http:"){
+                            var digbox=XAPI.ui.createDiagbox("不安全的访问协议！",function(){
+                                cst();
+                                XAPI.ui.addState("使用不安全的连接……");
+                                var th=$('<div class="iconfont" style="position: fixed; font-size: 450px; opacity: 0.2; text-align: center; line-height: 600px; overflow: hidden; left: 0; right: 0; top: 0; pointer-events: none; cursor: default; bottom: 0; z-index: 4000;">' +
+                                    '&#xe615;</div>');
+                                $('body').append(th);
+                                th.css({scale:6.75}).transit({scale:1},400,'easeOutQuart',function(){
+                                    th.animate({color:"#FF4632"},500,function(){
+                                        setTimeout(function(){
+                                            th.animate({opacity:0.08},1000,function(){
+                                                th.css({zIndex:-1});
+                                            });
+                                        },2500);
+                                    });
+                                });
+                            },"650px","auto");
+                            digbox.c.append($('<div style="color: deepskyblue;">您当前正在使用<span style="color: deeppink;">不安全的</span>' +
+                                '连接访问站点，在这种情况下，如果您使用公开的网络，黑客可以通过截获您的网络数据包来查看并修改您发送的内容（包括密码）。</div>'))
+                                .append(XAPI.ui.createDBotton("切换到安全连接").click(function(){
+                                    window.location="https://"+location.hostname+"/";
+                                }).append($('<div style="font-size: 50%; opacity: 0.7;">（如果您在公共网络，请选择此项。）</div>')))
+                                .append(XAPI.ui.createDBotton("使用不安全的连接").click(function(){
+                                    digbox.close();
+                                }).append($('<div style="font-size: 50%; opacity: 0.7;">（如果您在公共网络，请不要选择此项。）</div>')))
+                                .append($('<div style="color: deeppink;">请注意！<br>以后当您在公共网络时，请直接访问' +
+                                    '<span style="font-weight: bold; color: #63c500; font-style: oblique;">https</span>://'+location.hostname
+                                    +'/，因为在不安全连接下黑客可以更改此网页使此警告不显示。</div>'));
+                        }else{
+                            cst();
+                        }
+                    });
                 });
             });
         })
