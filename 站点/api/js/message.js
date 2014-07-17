@@ -10,6 +10,11 @@ XAPI.user.onloginfinished_msg = function (red) {
         XAPI.log("message.ccstart");
         var bdp = $('<div style="position: fixed; right: 2px; top: 38px; padding: 4px; font: 12px \'新宋体\'; z-index: 1499; background-color: #fdf7cc; box-shadow: 1px 1px 2px #000; border-radius: 3px; width: 120px;"></div>');
         $('body').append(bdp);
+        if (bdp.html().length > 0) {
+            bdp.css({display: "block"});
+        } else {
+            bdp.css({display: "none"});
+        }
         bdp.css({display: "none"});
         var int = setInterval(function () {
             var ydy;

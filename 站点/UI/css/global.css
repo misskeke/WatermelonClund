@@ -6,16 +6,16 @@ body {
     word-break: break-all !important;
 }
 
-.dh {
+.dhstyle {
     font-family: '微软雅黑';
     position: fixed;
-    z-index: 1500;
     left: 0;
     right: 0;
+    overflow: hidden;
     top: -35px;
     height: 35px;
     opacity: 0.9;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.57);
     box-shadow: 0 1px 2px black;
     line-height: 35px;
     font-size: 18px;
@@ -35,6 +35,13 @@ body {
 
 .dh_content {
     margin-left: 35px;
+}
+
+.aero {
+    filter: blur(3px);
+    -webkit-filter: blur(3px);
+    opacity: 1;
+    padding: 0 0 0 0;
 }
 
 .dh_link {
