@@ -1,17 +1,19 @@
 <?php
+//die("403 Forbidden");
 mb_internal_encoding('utf-8');
 error_reporting(0);
 function print_stack_trace()
 {
     $array = debug_backtrace();
     unset($array[0]);
+    $html="";
     foreach ($array as $row) {
         $html .= $row['file'] . ':' . $row['line'] . '行,调用方法:' . $row['function'];
     }
     return $html;
 }
 
-$mys = new mysqli("localhost", "root", "", "devwebs");
+$mys = new mysqli("localhost", "root", "hH897h9h897897hgy8", "devwebs");
 
 function diemyerror($str = "")
 {

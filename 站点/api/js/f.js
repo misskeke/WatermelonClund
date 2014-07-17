@@ -1,6 +1,6 @@
 (function () {
     function xapilog(str) {
-        console.info("[" + new Date().toTimeString().substr(0, 8) + "|XAPI] - " + str);
+        console.log("%c[" + new Date().toTimeString().substr(0, 8) + "|XAPI] - %c" + str, "color: #035FAA;","color: #016A32;");
         $('.xapi_log_shower').text(str);
     }
 

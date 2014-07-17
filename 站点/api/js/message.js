@@ -224,7 +224,17 @@ XAPI.user.onloginfinished_msg = function (red) {
     }
 
     if (!red) {
-        ccstart();
+        if(Notification){
+            var img=document.createElement("img");
+            img.src="UI/img/notificationicons.png";
+            img.onload=function(){
+                XAPI.log("Icon loaded! ccstart running..");
+                ccstart();
+            };
+        }else{
+            XAPI.log("No Notification! ccstart running");
+            ccstart();
+        }
     }
     if (nf && nf.permission != "granted") {
         var digc = XAPI.ui.createDiagbox("请求桌面通知的权限……", function () {

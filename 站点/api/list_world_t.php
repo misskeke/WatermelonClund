@@ -1,5 +1,4 @@
 <?php
-error_reporting(0);
 require "inc/sql.php";
 $pge = 1;
 if (!is_numeric($_POST["mx"]) || !is_numeric($_POST["mn"])) {

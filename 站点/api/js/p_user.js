@@ -152,7 +152,24 @@ XAPI.showUser = function (uid, cbc) {
                         })(q.extras[i].ename, q.extras[i].evalue);
                     }
                 }
-                XAPI.ui.addState("");
+                XAPI.ui.addState("正在获得该用户的贴");
+                var ctt=$('<div style="padding: 4px; background-color: #e8e8e8; text-align: center;">正在加载</div>');
+                box.append(ctt);
+                function trycct(){
+                    XAPI.send("api/user_post.php",{uid:userinfo.uid},function(q){
+                        if(q.errid!=0){
+                            cont.text("错误："+ q.errmsg);
+                            cont.append($('<a href="javascript:void(0);">重试</a>').click(function(){
+                                ctt.html("正在加载");
+                                trycct();
+                            }));
+                        }else{
+                            ctt.html("");
+                            XAPI.clr(ctt,q);
+                        }
+                    });
+                }
+                trycct();
             });
         }
     });
