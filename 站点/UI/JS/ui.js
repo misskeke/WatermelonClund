@@ -68,7 +68,7 @@ XAPI.ui = {
             $edit: edit, $icon: icond, ipt: ipt, $texttitle: texttitle};
     },
     createDBotton: function (text) {
-        var btn = $("<div style='display: inline-block; vertical-align: middle; text-align: center; box-shadow: 0 0 10px rgba(0, 0, 0, 0.51),0 -2px 0 rgba(0, 0, 0, 0.51) inset; color: #ffffff; cursor: pointer; background-color: #0059cd; margin: 4px; padding: 4px 8px 4px 8px;'></div>")
+        var btn = $("<a style='display: inline-block; vertical-align: middle; text-align: center; box-shadow: 0 0 10px rgba(0, 0, 0, 0.51),0 -2px 0 rgba(0, 0, 0, 0.51) inset; color: #ffffff; cursor: pointer; background-color: #0059cd; margin: 4px; padding: 4px 8px 4px 8px;' href='javascript:void(0);'></a>")
             .text(text);
         if(location.protocol=="http:"){
             btn.css({backgroundColor:"#4F5D73"});
@@ -146,12 +146,17 @@ XAPI.ui = {
             $edit: edit, ipt: are, $texttitle: texttitle};
     },
     createDiagbox:function(dititle,onclose,width,height){
-        var hbox=$('<div style="position: fixed; z-index: 1600; text-align: center; background-color: rgba(0, 0, 0, 0.65); left: 0; right: 0; top: 0; bottom: 0;"></div>');
+        var hbox=$('<div class="no_mirror" style="position: fixed; z-index: 1600; text-align: center; background-color: rgba(0, 0, 0, 0.65); left: 0; right: 0; top: 0; bottom: 0;"></div>');
         var boxt=$('<div style="margin: 80px auto auto auto; text-align: left; background-color: #ffffff; padding: 32px 8px 8px 8px; box-shadow: 0 0 10px #fff; overflow: auto; position: relative;"></div>');
         var close=$('<div style="position: absolute; right: 4px; top: 4px; font-size: 14px; z-index: 50; cursor: pointer;">×</div>');
         var title=$('<div style="position: absolute; left: 0; padding-left: 4px; cursor: default; -webkit-user-select: none; user-select: none; top: 0; right: 0; height: 24px; line-height: 24px; font-size: 16px; border-bottom: solid 1px skyblue;"></div>');
         title.text(dititle);
         boxt.append(title);
+        var body=$('body');
+        $('.content').css("-webkit-filter","blur(2px)");
+        var bdyoverflow=body.css("overflow");
+        body.css("overflow","hidden");
+        $('.dhstyle').css("-webkit-filter","blur(2px)");
         boxt.append(close);
         var closed=false;
         function loop(){
@@ -169,6 +174,9 @@ XAPI.ui = {
             boxt.stop(true,false,false).transit({scale:(boxt.width()+30)/boxt.width(),opacity:0.8},180,'easeInOutCubic',function(){
                 boxt.transit({opacity:0,scale:0.6},200,'easeOutSine',function(){
                     hbox.remove();
+                    $('.content').css("-webkit-filter","");
+                    $('.dhstyle').css("-webkit-filter","");
+                    body.css("overflow",bdyoverflow);
                 });
             });
             if(onclose){
@@ -177,10 +185,12 @@ XAPI.ui = {
         });
         hbox.css({opacity:0}).animate({opacity:1},300);
         hbox.append(boxt);
-        $('body').append(hbox);
+        body.append(hbox);
         boxt.css({width:width,height:height,opacity:0,scale:(boxt.width()+80)/boxt.width()});
         boxt.transit({scale:1,opacity:1},380,'easeInOutCubic');
-        return {c:boxt,close:function(){close.click();}};
+        return {c:boxt,close:function(){
+            close.click();
+        }};
     }
 };
 (function () {

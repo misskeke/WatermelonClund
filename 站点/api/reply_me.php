@@ -18,7 +18,7 @@ if (($usr = chksoretusr($_POST["sid"], $_POST["krr"], $mys)) == false) {
     foreach ($arrc as $p) {
         $u = array();
         $u["userid"] = $p["maker"];
-        $mkerinfo = $mys->query("SELECT `user`.uid, `user`.username, `user`.email FROM `user` WHERE `user`.uid = '" . $p["maker"] . "'");
+        $mkerinfo = $mys->query("SELECT `user`.uid, `user`.username, `user`.mailmd5 AS email FROM `user` WHERE `user`.uid = '" . $p["maker"] . "'");
         if ($mkerinfo == false || $mkerinfo->num_rows < 1) {
             $u["user"] = "null";
             $u["email"] = "null";

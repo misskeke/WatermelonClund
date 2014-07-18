@@ -16,7 +16,7 @@ XAPI.user.onloginfinished_msg = function (red) {
             bdp.css({display: "none"});
         }
         bdp.css({display: "none"});
-        var int = setInterval(function () {
+        setInterval(function () {
             var ydy;
             if ((ydy = $('#ydNoteExtensionClipper')).length > 0) {
                 ydy.animate({opacity: 0}, 400, function () {
@@ -229,7 +229,7 @@ XAPI.user.onloginfinished_msg = function (red) {
     }
 
     if (!red) {
-        if(Notification){
+        if(nf){
             var img=document.createElement("img");
             img.src="UI/img/notificationicons.png";
             img.onload=function(){
@@ -237,9 +237,12 @@ XAPI.user.onloginfinished_msg = function (red) {
                 ccstart();
             };
         }else{
-            XAPI.log("No Notification! ccstart running");
+            XAPI.log("No nf! ccstart running");
             ccstart();
         }
+    }
+    if(!nf){
+        return;
     }
     if (nf && nf.permission != "granted") {
         var digc = XAPI.ui.createDiagbox("请求桌面通知的权限……", function () {
@@ -256,8 +259,8 @@ XAPI.user.onloginfinished_msg = function (red) {
         dig.append(XAPI.ui.createDBotton("点击此处允许此网页显示桌面通知").click(function () {
             nf.requestPermission(function (status) {
                 digc.close();
-                if (Notification.permission !== status) {
-                    Notification.permission = status;
+                if (nf.permission !== status) {
+                    nf.permission = status;
                 }
                 setTimeout(function () {
                     XAPI.user.onloginfinished_msg(true);

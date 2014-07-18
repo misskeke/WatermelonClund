@@ -14,7 +14,7 @@ if ($res == false) {
     $tde = $res->fetch_all(MYSQLI_ASSOC);
     foreach ($tde as $abs) {
         $uid = $abs["uid"];
-        $res = $mys->query("SELECT `username`, `email`, `state` FROM `user` WHERE `uid` = '" . $uid . "'");
+        $res = $mys->query("SELECT `username`, `mailmd5` AS email, `state` FROM `user` WHERE `uid` = '" . $uid . "'");
         if ($res == false) {
             diemyerror();
         } else {

@@ -73,7 +73,7 @@ XAPI.showUser = function (uid, cbc) {
             var hadcard = $('<div style="background-color: #dadada; padding-left: 260px; min-height: 268px; position: relative;"></div>');
             var hp_img = $('<img style="position: absolute; border-radius: 248px; box-shadow: 0 0 4px #000; cursor: pointer; left: 8px; width: 248px; top: 8px; height: 248px;">').attr("src",
                     XAPI.user_hadpic_get(userinfo.email, 256)).click(function () {
-                    var csc = $('<div style="background-color: rgba(0, 0, 0, 0.66); position: fixed; cursor: pointer; text-align: center; z-index: 1501; left: 0; right: 0; top: 0; bottom: 0;"></div>')
+                    var csc = $('<div class="no_mirror" style="background-color: rgba(0, 0, 0, 0.66); position: fixed; cursor: pointer; text-align: center; z-index: 1501; left: 0; right: 0; top: 0; bottom: 0;"></div>')
                         .append($('<div style="margin: 120px auto auto auto;" class="tohei"></div>').append($('<img style="border-radius: 8px;">').attr("src", XAPI.user_hadpic_get(userinfo.email, 500))));
                     $('body').append(csc);
                     var habing = false;

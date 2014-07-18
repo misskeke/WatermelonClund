@@ -14,20 +14,22 @@ body {
     overflow: hidden;
     top: -35px;
     height: 35px;
+}
+.dh {
     opacity: 0.9;
-    background-color: rgba(0, 0, 0, 0.57);
-    box-shadow: 0 1px 2px black;
+    background-color: rgba(71, 165, 164, 0.32);
+    box-shadow: 0 1px 2px rgba(34, 80, 79, 0.32);
     line-height: 35px;
     font-size: 18px;
     padding-left: 24px;
-    color: white;
+    color: rgba(0, 0, 0, 0.82);
 }
 
 .waterbate {
-    font-size: 15%;
-    color: black;
-    box-shadow: 0 0 2px silver;
-    background-color: silver;
+    font-size: 80%;
+    color: rgba(255, 255, 255, 0.70);
+    box-shadow: 0 0 2px rgba(54, 122, 121, 0.32);
+    background-color: rgba(54, 122, 121, 0.32);
     margin-left: 4px;
     vertical-align: top;
     opacity: 0;
@@ -42,6 +44,7 @@ body {
     -webkit-filter: blur(3px);
     opacity: 1;
     padding: 0 0 0 0;
+    font-size: 16px;
 }
 
 .dh_link {
@@ -56,7 +59,7 @@ body {
     height: 35px;
     display: inline-block;
     text-decoration: none;
-    color: white;
+    color: rgba(0, 0, 0, 0.82);
 }
 .hidden {
     opacity: 0;

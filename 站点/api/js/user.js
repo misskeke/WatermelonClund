@@ -31,6 +31,16 @@
             XAPI.ui.addState("您从未在这里登录过，请登录或注册。");
             callback();
         }
+        var isie=!!window.ActiveXObject || "ActiveXObject" in window;
+        if(isie){
+            XAPI.log("ie?");
+            var dibox=XAPI.ui.createDiagbox("不支持IE",undefined,"650px","auto");
+            var ccr=$('<div style="color: deepskyblue;">推吧网页版暂不完全支持IE。请使用chrome(推荐)或者firefox。</div>');
+            dibox.c.append(ccr);
+            dibox.c.append(XAPI.ui.createDBotton("继续使用IE").click(function(){
+                dibox.close();
+            }));
+        }
 
         if (localStorage.lastSid) {
             if (localStorage.lastKrr) {
@@ -80,7 +90,7 @@
 
     XAPI.sendTieShow = function (reply_tid, arr) {
         var body = $('body');
-        var maint = $('<div style="background-color: rgba(0, 0, 0, 0.60); position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 1601;"></div>');
+        var maint = $('<div class="no_mirror" style="background-color: rgba(0, 0, 0, 0.60); position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 1601;"></div>');
         body.append(maint);
         var ttd = $('<div style="margin: 32px auto auto auto; position: relative; border-radius: 4px; background-color: rgba(255, 255, 255, 0.80); height: 300px; width: 750px; padding: 4px;"></div>');
         maint.append(ttd);
@@ -191,8 +201,8 @@
             userbar.append($('<span class="iconfont" style="margin-left: 4px; font-size: 75%;">&#xe607;</span>'));
             userbar.css({opacity: 0, left: "100px", cursor: "pointer"}).animate({opacity: 1, left: "0px"}, 300);
             $('.dh').append(userbar);
-            var usermenubak = $('<div style="display: none; position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 1503; background-color: rgba(0,0,0,0)"></div>');
-            var usermenu = $('<div style="position: fixed; z-index: 1505; background-color: #ffffff; box-shadow: 1px 1px 3px #000; min-height: 12px; min-width: 100px; padding-top: 4px; padding-bottom: 4px;"></div>');
+            var usermenubak = $('<div class="no_mirror" style="display: none; position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 1503; background-color: rgba(0,0,0,0)"></div>');
+            var usermenu = $('<div class="no_mirror" style="position: fixed; z-index: 1505; background-color: #ffffff; box-shadow: 1px 1px 3px #000; min-height: 12px; min-width: 100px; padding-top: 4px; padding-bottom: 4px;"></div>');
             usermenu.css({display: "none", opacity: 0});
             var lock = false;
             var opened = false;
@@ -201,9 +211,8 @@
                     return;
                 }
                 lock = true;
-                var lt = userbar.offset();
                 usermenu.stop(true, false, false);
-                usermenu.css({right: "18px", top: userbar.height() + "px", opacity: (opened ? 1 : 0), display: "block"}).animate({opacity: (opened ? 0 : 1)}, 80, function () {
+                usermenu.css({right: "18px", top: userbar.height() + "px", opacity: (opened ? 1 : 0), backgroundColor:"rgba(71, 165, 164, 0)", display: "block"}).animate({opacity: (opened ? 0 : 1), backgroundColor:(opened?"transparent":"rgba(182,209,209,0.7)")}, 200, function () {
                     if (opened) {
                         usermenu.css({display: "none"});
                         usermenubak.css({display: "none"});
@@ -226,8 +235,8 @@
             usermenu.append($('<a href="javascript:void(0);" class="usermenu_item"></a>').append($('<img style="display: inline-block; vertical-align: middle; margin: 3px;">')
                     .attr("src", XAPI.user_hadpic_get(usrinfo.email, 42))).append(
                     $('<div style="vertical-align: middle; margin: 3px; display: inline-block;"></div>')
-                        .append($('<div style="font-size: 110%; line-height: 25px;"></div>').text(username)).append(
-                            $('<div style="opacity: 0.75; font-size: 80%; line-height: 18px;"></div>').text(usrinfo.email))).click(function () {
+                        .append($('<div style="font-size: 110%; line-height: 25px; padding-right: 4px;"></div>').text(username)).append(
+                            $('<div style="opacity: 0.75; font-size: 80%; line-height: 18px;"></div>').text("点击此处打开你的用户页"))).click(function () {
                     var hash = window.location.hash.substr(1);
                     var hastt;
                     try {
@@ -255,9 +264,9 @@
                     delete localStorage.lastUid;
                     delete localStorage.userName;
                     delete localStorage.userPasswd;
-                    $('body').append($('<div style="background-color: #000000; opacity: 0; position: absolute; z-index: 99999; top: 0; left: 0; right: 0; bottom: 0;"></div>').animate({opacity: 0.4}, 900));
+                    $('body').append($('<div class="no_mirror" style="background-color: #000000; opacity: 0; position: absolute; z-index: 99999; top: 0; left: 0; right: 0; bottom: 0;"></div>').animate({opacity: 0.4}, 900));
                     setTimeout(function () {
-                        X_RELOAD();
+                        window.location.reload();
                     }, 1000);
                 })
             }));
@@ -270,7 +279,6 @@
             });
             $('body').append(usermenu).append(usermenubak);
             XAPI.dhp();
-            XAPI.user.onloginfinished_msg();
             setTimeout(function(){
                 // 233の字符画~
                 console.log("%c             %c^%c                ","color: #000000;","color: red","color: #000000;");
@@ -304,6 +312,7 @@
                 console.log("%c加入西瓜云，加入社交开发，你，可以影响世界。","color: "+rdClor());
                 console.log("%c     %cWebs `节操开发组 %c招人中%c ！ ","color: #000000;","color: #0241A0;","color: #709E04;","color: #0241A0;");
             },500);
+            XAPI.log("show logined finished!");
         });
     };
     XAPI.user.loginUsr = function (n, p, c) {
@@ -482,7 +491,7 @@
         XAPI.chgUrl({registerPage: true});
     };
     XAPI.user_hadpic_get = function (email, size) {
-        return "https://www.gravatar.com/avatar/" + $.md5(email) + "?d=mm&r=pg&s=" + size;
+        return "https://www.gravatar.com/avatar/" + email + "?d=mm&r=pg&s=" + size;
     };
     XAPI.chgUrl = function (url) {
         window.location = "#" + JSON.stringify(url);
@@ -503,6 +512,7 @@
                         function cst() {
                             rtt(function () {
                                 XAPI.log("rrt callbacked");
+                                XAPI.user.onloginfinished_msg();
                                 XAPI.getPage = function () {
                                     var hash = window.location.hash.substr(1);
                                     var hastt;
@@ -522,7 +532,7 @@
                             var digbox = XAPI.ui.createDiagbox("不安全的访问协议！", function () {
                                 cst();
                                 XAPI.ui.addState("使用不安全的连接……");
-                                var th = $('<div class="iconfont" style="position: fixed; font-size: 450px; opacity: 0.2; text-align: center; line-height: 600px; overflow: hidden; left: 0; right: 0; top: 0; pointer-events: none; cursor: default; bottom: 0; z-index: 4000;">' +
+                                var th = $('<div class="iconfont no_mirror" style="position: fixed; font-size: 450px; opacity: 0.2; text-align: center; line-height: 600px; overflow: hidden; left: 0; right: 0; top: 0; pointer-events: none; cursor: default; bottom: 0; z-index: 4000;">' +
                                     '&#xe615;</div>');
                                 $('body').append(th);
                                 th.css({scale: 6.75}).transit({scale: 1}, 400, 'easeOutQuart', function () {
