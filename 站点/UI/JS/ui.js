@@ -1,8 +1,9 @@
 XAPI.ui = {
     createDInput: function (icontext) {
         var ipt = $("<div style='display: inline-block; margin: 4px; padding: 0; min-height: 32px; height: 32px; width: 250px; position: relative; font-size: 18px;'></div>");
-        var edit = $('<input style="display: inline-block; opacity: 0.6; overflow: hidden; white-space: nowrap;  position: absolute; left: 32px; right: 0; top: 0; line-height: 32px; background-color: #ffffff; bottom: 0; box-shadow: 0 0 3px #000 inset; font: inherit; border: none; margin: 0; border:0; outline:none;">');
+        var edit = $('<input maxlength="256" style="display: inline-block; opacity: 0.6; overflow: hidden; white-space: nowrap;  position: absolute; left: 32px; right: 0; top: 0; line-height: 32px; background-color: #ffffff; bottom: 0; box-shadow: 0 0 3px #000 inset; font: inherit; border: none; margin: 0; border:0; outline:none;">');
         var icond = $("<div class='iconfont' style='display: inline-block; cursor: pointer; position: absolute; width: 32px; text-align: center; top: 0; line-height: 32px; bottom: 0; left: 0; background-color: #005dff; color: #ffffff; font-size: 24px;'></div>").html(icontext);
+        var evahandler=null;
         if(location.protocol=="http:"){
             icond.css({backgroundColor:"#4F5D73"});
         }
@@ -28,6 +29,9 @@ XAPI.ui = {
                     lasthas = false;
                 }
                 edit.css({width:(parseInt(ipt.css("width"))-32)+"px"});
+                if(evahandler){
+                    evahandler();
+                }
             }, 1);
         }
 
@@ -65,7 +69,12 @@ XAPI.ui = {
                     return texttitle.text();
                 }
             },
-            $edit: edit, $icon: icond, ipt: ipt, $texttitle: texttitle};
+            $edit: edit, $icon: icond, ipt: ipt, $texttitle: texttitle,
+        set_eva:function(ev){
+            evahandler=ev;
+        }, maxLength:function (mx){
+                return edit.attr("maxlength",mx);
+            }};
     },
     createDBotton: function (text) {
         var btn = $("<a style='display: inline-block; vertical-align: middle; text-align: center; box-shadow: 0 0 10px rgba(0, 0, 0, 0.51),0 -2px 0 rgba(0, 0, 0, 0.51) inset; color: #ffffff; cursor: pointer; background-color: #0059cd; margin: 4px; padding: 4px 8px 4px 8px;' href='javascript:void(0);'></a>")
@@ -176,7 +185,7 @@ XAPI.ui = {
                     hbox.remove();
                     $('.content').css("-webkit-filter","");
                     $('.dhstyle').css("-webkit-filter","");
-                    body.css("overflow",bdyoverflow);
+                    body.css("overflow","auto");
                 });
             });
             if(onclose){
@@ -214,3 +223,6 @@ XAPI.ui.addState = function (s) {
         XAPI.ui.dhst.text("");
     }, 3000);
 };
+$.getScript("api/js/user.js", function () {
+    XAPI.log("User Api loaded");
+});

@@ -1,4 +1,6 @@
 <?php
+header("Cache-Control: public");
+header("Pragma: cache");
 if (!isset($_POST["picid"])) {
     die("参数错误，请重试。");
 }

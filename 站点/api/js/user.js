@@ -59,7 +59,9 @@
                         uid = 0;
                         delete localStorage.lastSid;
                         delete localStorage.lastKrr;
-                        setTimeout(rtt, 1);
+                        setTimeout(function(){
+                            rtt(callback);
+                        }, 1);
                     }
                 });
                 return;
@@ -196,7 +198,7 @@
                 XAPI.user.isAdmin = (usrinfo.group == 1);
             }
             var dh = XAPI.setdh("<a class='dh_link' href='javascript:XAPI.showWorld();'>世界</a><span class='hidden'> </span><a class='dh_link' href='javascript:XAPI.sendTieShow();'>发推</a>");
-            var userbar = $('<a class="dh_link" style="display: inline-block; position: relative; float: right; padding-left: 8px; padding-right: 8px; margin-right: 18px;" href="javascript:void(0)"></a>');
+            var userbar = $('<a class="userbar dh_link" style="display: inline-block; position: relative; float: right; padding-left: 8px; padding-right: 8px; margin-right: 18px;" href="javascript:void(0)"></a>');
             userbar.text(username);
             userbar.append($('<span class="iconfont" style="margin-left: 4px; font-size: 75%;">&#xe607;</span>'));
             userbar.css({opacity: 0, left: "100px", cursor: "pointer"}).animate({opacity: 1, left: "0px"}, 300);
@@ -329,20 +331,25 @@
             JSON.stringify(p), "color: #035FAA;", "color: #016A32;", "color: #035FAA;", "color: #2B02AF;");
         p.sid = sid;
         p.krr = krr;
+        if(u.match(/^\//)){
+            u= u.substr(1);
+        }
         $.post(u, p, function (e) {
+            window.lastget=new Date().getTime();
             if (typeof e == "string") {
                 try {
                     q(JSON.parse(e));
                 } catch (r) {
                     console.error(r);
                     setTimeout(function () {
-                        XAPI.send(u, p, q)
+                        XAPI.send(u, p, q);
                     }, 750);
                 }
             } else if (typeof e == "object") {
                 q(e);
             }
         });
+        window.lastsend=new Date().getTime();
     };
     XAPI.showLogin = function () {
         var dlcont = XAPI.showCont("<h1 style='color: #ffffff;'>登录</h1>");
@@ -498,69 +505,85 @@
     };
     $.getScript("UI/JS/imageupd.js", function () {
         XAPI.log("imageupd.js Loaded");
-    });
-    $.getScript("api/js/p_world.js", function () {
-        XAPI.log("World Page loaded");
-        $.getScript("api/js/p_user.js", function () {
-            XAPI.log("user page loaded");
-            $.getScript("api/js/p_img.js", function () {
-                XAPI.log("p_img.js loaded");
-                $.getScript("api/js/message.js", function () {
-                    XAPI.log("message.js loaded");
-                    $.getScript("api/js/pages.js", function () {
-                        XAPI.log("Pages loaded");
-                        function cst() {
-                            rtt(function () {
-                                XAPI.log("rrt callbacked");
-                                XAPI.user.onloginfinished_msg();
-                                XAPI.getPage = function () {
-                                    var hash = window.location.hash.substr(1);
-                                    var hastt;
-                                    try {
-                                        hastt = JSON.parse(hash);
-                                    } catch (e) {
-                                        XAPI.log("Page hash error: " + e);
-                                        hastt = {};
+        $.getScript("api/js/piccache.js",function(){
+            XAPI.log("piccache loaded!");
+            $.getScript("api/js/p_world.js", function () {
+                XAPI.log("World Page loaded");
+                $.getScript("api/js/p_user.js", function () {
+                    XAPI.log("user page loaded");
+                    $.getScript("api/js/p_img.js", function () {
+                        XAPI.log("p_img.js loaded");
+                        $.getScript("api/js/message.js", function () {
+                            XAPI.log("message.js loaded");
+                            $.getScript("api/js/pages.js", function () {
+                                XAPI.log("Pages loaded");
+                                $.getScript("api/js/kw.js",function(){
+                                    XAPI.log("KW loaded");
+                                    function cst() {
+                                        rtt(function () {
+                                            XAPI.log("rrt callbacked");
+                                            XAPI.user.onloginfinished_msg();
+                                            XAPI.getPage = function () {
+                                                var hash = window.location.hash.substr(1);
+                                                var hastt;
+                                                try {
+                                                    hastt = JSON.parse(hash);
+                                                } catch (e) {
+                                                    XAPI.log("Page hash error: " + e);
+                                                    hastt = {};
+                                                }
+                                                return hastt;
+                                            };
+                                            XAPI.kw();
+                                            setInterval(ru,1500);
+                                            setTimeout(function(){
+                                                setTimeout(function(){
+                                                    console.clear();
+                                                    clearInterval(ci);
+                                                    ru();
+                                                },4000);
+                                                ru();
+                                            },250);
+                                            XAPI.pages.startPage(XAPI.getPage());
+                                        });
                                     }
-                                    return hastt;
-                                };
-                                XAPI.pages.startPage(XAPI.getPage());
-                            });
-                        }
 
-                        if (location.protocol == "http:") {
-                            var digbox = XAPI.ui.createDiagbox("不安全的访问协议！", function () {
-                                cst();
-                                XAPI.ui.addState("使用不安全的连接……");
-                                var th = $('<div class="iconfont no_mirror" style="position: fixed; font-size: 450px; opacity: 0.2; text-align: center; line-height: 600px; overflow: hidden; left: 0; right: 0; top: 0; pointer-events: none; cursor: default; bottom: 0; z-index: 4000;">' +
-                                    '&#xe615;</div>');
-                                $('body').append(th);
-                                th.css({scale: 6.75}).transit({scale: 1}, 400, 'easeOutQuart', function () {
-                                    th.animate({color: "#FF4632"}, 500, function () {
-                                        setTimeout(function () {
-                                            th.animate({opacity: 0.08}, 1000, function () {
-                                                th.css({zIndex: -1});
+                                    if (location.protocol == "http:") {
+                                        var digbox = XAPI.ui.createDiagbox("不安全的访问协议！", function () {
+                                            cst();
+                                            XAPI.ui.addState("使用不安全的连接……");
+                                            var th = $('<div class="iconfont no_mirror" style="position: fixed; font-size: 450px; opacity: 0.2; text-align: center; line-height: 600px; overflow: hidden; left: 0; right: 0; top: 0; pointer-events: none; cursor: default; bottom: 0; z-index: 4000;">' +
+                                                '&#xe615;</div>');
+                                            $('body').append(th);
+                                            th.css({scale: 6.75}).transit({scale: 1}, 400, 'easeOutQuart', function () {
+                                                th.animate({color: "#FF4632"}, 500, function () {
+                                                    setTimeout(function () {
+                                                        th.animate({opacity: 0.08}, 1000, function () {
+                                                            th.css({zIndex: -1});
+                                                        });
+                                                    }, 2500);
+                                                });
                                             });
-                                        }, 2500);
-                                    });
+                                        }, "650px", "auto");
+                                        digbox.c.append($('<div style="color: deepskyblue;">您当前正在使用<span style="color: deeppink;">不安全的</span>' +
+                                                '连接访问站点，在这种情况下，如果您使用公开的网络，黑客可以通过截获您的网络数据包来查看并修改您发送的内容（包括密码）。</div>'))
+                                            .append(XAPI.ui.createDBotton("切换到安全连接").click(function () {
+                                                window.location = "https://" + location.hostname + "/";
+                                            }).append($('<div style="font-size: 50%; opacity: 0.7;">（如果您在公共网络，请选择此项。）</div>')))
+                                            .append(XAPI.ui.createDBotton("使用不安全的连接").click(function () {
+                                                digbox.close();
+                                            }).append($('<div style="font-size: 50%; opacity: 0.7;">（如果您在公共网络，请不要选择此项。）</div>')))
+                                            .append($('<div style="color: deeppink;">请注意！<br>以后当您在公共网络时，请直接访问' +
+                                                '<span style="font-weight: bold; color: #63c500; font-style: oblique;">https</span>://' + location.hostname
+                                                + '/，因为在不安全连接下黑客可以更改此网页使此警告不显示。</div>'));
+                                    } else {
+                                        cst();
+                                    }
                                 });
-                            }, "650px", "auto");
-                            digbox.c.append($('<div style="color: deepskyblue;">您当前正在使用<span style="color: deeppink;">不安全的</span>' +
-                                    '连接访问站点，在这种情况下，如果您使用公开的网络，黑客可以通过截获您的网络数据包来查看并修改您发送的内容（包括密码）。</div>'))
-                                .append(XAPI.ui.createDBotton("切换到安全连接").click(function () {
-                                    window.location = "https://" + location.hostname + "/";
-                                }).append($('<div style="font-size: 50%; opacity: 0.7;">（如果您在公共网络，请选择此项。）</div>')))
-                                .append(XAPI.ui.createDBotton("使用不安全的连接").click(function () {
-                                    digbox.close();
-                                }).append($('<div style="font-size: 50%; opacity: 0.7;">（如果您在公共网络，请不要选择此项。）</div>')))
-                                .append($('<div style="color: deeppink;">请注意！<br>以后当您在公共网络时，请直接访问' +
-                                    '<span style="font-weight: bold; color: #63c500; font-style: oblique;">https</span>://' + location.hostname
-                                    + '/，因为在不安全连接下黑客可以更改此网页使此警告不显示。</div>'));
-                        } else {
-                            cst();
-                        }
+                            });
+                        });
                     });
-                });
+                })
             });
         })
     });

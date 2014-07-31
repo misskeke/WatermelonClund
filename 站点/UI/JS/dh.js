@@ -26,18 +26,26 @@
     XAPI.dhp();
     var isie=!!window.ActiveXObject || "ActiveXObject" in window;
     if(!isie){
-        XAPI.log("A E R O getted!");
-        function caa() {
-            var scr = (!window.scrollY ? window.document.documentElement.scrollTop : window.scrollY);
-            var scy = (!window.scrollX ? window.document.documentElement.scrollLeft : window.scrollX);
-            $('.aero').html("").append($(screenshotPage()).css({y: -scr + 1, x: -scy}));
-            setTimeout(function(){
-                requestAnimationFrame(caa);
-            },20);
-        }
+        /*
+         XAPI.log("A E R O getted!");
+         function caa() {
+         var scr = (!window.scrollY ? window.document.documentElement.scrollTop : window.scrollY);
+         var scy = (!window.scrollX ? window.document.documentElement.scrollLeft : window.scrollX);
+         $('.aero').html("").append($(screenshotPage()).css({y: -scr + 1, x: -scy}));
+         setTimeout(function(){
+         requestAnimationFrame(caa);
+         },20);
+         }
+         requestAnimationFrame(caa);
+         */
     }else{
         XAPI.log("A E R O Didn't support ie!");
         $('.aero').remove();
     }
-    requestAnimationFrame(caa);
+    $.getScript("UI/JS/lib/md5.js", function () {
+        XAPI.log("md5.js loaded");
+        $.getScript("UI/JS/ui.js", function () {
+            XAPI.log("WebsintUI loaded");
+        });
+    });
 })();

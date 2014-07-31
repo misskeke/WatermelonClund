@@ -34,7 +34,7 @@ CREATE TABLE `bar` (
   `ct` varchar(400) NOT NULL DEFAULT '' COMMENT '简介',
   `swlinks` varchar(800) NOT NULL DEFAULT '' COMMENT '相关链接（帖子）',
   PRIMARY KEY (`fid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of bar
@@ -99,11 +99,6 @@ CREATE TABLE `session` (
 -- ----------------------------
 -- Records of session
 -- ----------------------------
-INSERT INTO `session` VALUES ('1', '1', 'neOy7Sb0o5B0MC2Wh4WBXlw4utBY2FiE', '1', '192.168.0.2', '1405577339');
-INSERT INTO `session` VALUES ('2', '1', '51gy66E7I8Lc29Qb88YS7UDpffgTkZI2', '1', '192.168.0.2', '1405587490');
-INSERT INTO `session` VALUES ('3', '1', 'S83M9T79dVgx65CN5kwbos0wgqtUr68M', '0', '172.17.28.2', '1405607371');
-INSERT INTO `session` VALUES ('4', '1', 'tRspKSwP3fc962hY3TeoYw5j771u7U07', '1', '192.168.0.2', '1405649077');
-INSERT INTO `session` VALUES ('5', '2', 'FYVPh4RwQZu5M9tzKNYeOwkNhkyB0VjR', '0', '192.168.0.2', '1405660894');
 
 -- ----------------------------
 -- Table structure for ssr
@@ -124,9 +119,6 @@ CREATE TABLE `ssr` (
 -- ----------------------------
 -- Records of ssr
 -- ----------------------------
-INSERT INTO `ssr` VALUES ('1', '1', '1405577360', '1', '1', '1', '2', '1');
-INSERT INTO `ssr` VALUES ('2', '1', '1405608427', '1', '1', '3', '6', '1');
-INSERT INTO `ssr` VALUES ('3', '1', '1405656619', '1', '1', '3', '10', '1');
 
 -- ----------------------------
 -- Table structure for thread
@@ -152,20 +144,6 @@ CREATE TABLE `thread` (
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of thread
--- ----------------------------
-INSERT INTO `thread` VALUES ('1', '1', '192.168.0.2', '1405577351', '', '0', '0', '0', '0', '1', '= =', '0', '0', '0', '0');
-INSERT INTO `thread` VALUES ('2', '1', '192.168.0.2', '1405577360', '', '0', '0', '0', '0', '1', 'å›žå¤ çŽ‹åº­èŒ‚ : = =', '0', '1', '0', '0');
-INSERT INTO `thread` VALUES ('3', '1', '192.168.0.2', '1405592841', '', '0', '0', '0', '0', '1', 'å‘€', '0', '0', '0', '0');
-INSERT INTO `thread` VALUES ('4', '1', '192.168.0.2', '1405592856', '', '0', '0', '0', '0', '1', 'å‘€- -', '0', '3', '0', '0');
-INSERT INTO `thread` VALUES ('5', '1', '192.168.0.2', '1405592915', '', '0', '0', '0', '0', '1', '- -', '0', '3', '0', '0');
-INSERT INTO `thread` VALUES ('6', '1', '172.17.28.2', '1405608427', '', '0', '0', '0', '0', '1', 'å›žå¤ çŽ‹åº­èŒ‚ : - -', '0', '3', '0', '0');
-INSERT INTO `thread` VALUES ('7', '1', '192.168.0.2', '1405649089', '', '0', '0', '0', '0', '1', '- -', '0', '0', '0', '0');
-INSERT INTO `thread` VALUES ('8', '1', '192.168.0.2', '1405649110', '', '0', '0', '0', '0', '1', '0 0', '0', '0', '0', '0');
-INSERT INTO `thread` VALUES ('9', '1', '192.168.0.2', '1405649153', '', '1', '0', '0', '0', '1', '0 0', '0', '0', '0', '0');
-INSERT INTO `thread` VALUES ('10', '1', '192.168.0.2', '1405656619', '', '0', '0', '0', '0', '1', 'å›žå¤ çŽ‹åº­èŒ‚ : - -', '0', '3', '0', '0');
-
--- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -184,12 +162,6 @@ CREATE TABLE `user` (
   `mailmd5` varchar(64) NOT NULL,
   PRIMARY KEY (`uid`,`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of user
--- ----------------------------
-INSERT INTO `user` VALUES ('1', 'çŽ‹åº­èŒ‚', 'ICAgICAg', 'wtmtim@126.com', '0', '192.168.0.2', '1405577335', '0', '0', '0', '0', '56876e747c1df2ec78bac869ccf64fea');
-INSERT INTO `user` VALUES ('2', 'æµ‹è¯•', 'ICAgICAg', 'wtmtim@126.com', '0', '192.168.0.2', '1405660891', '0', '0', '0', '0', '56876e747c1df2ec78bac869ccf64fea');
 
 -- ----------------------------
 -- Table structure for user_extra

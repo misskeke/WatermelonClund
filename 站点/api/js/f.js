@@ -19,14 +19,8 @@
         XAPI.dhp();
         return rt;
     };
-    $.getScript("UI/JS/lib/md5.js", function () {
-        XAPI.log("md5.js loaded");
-        $.getScript("UI/JS/ui.js", function () {
-            XAPI.log("WebsintUI loaded");
-            $.getScript("api/js/user.js", function () {
-                XAPI.log("User Api loaded");
-            });
-        });
+    $.getScript("UI/JS/dh.js",function(){
+        XAPI.log("dh getted!");
     });
     var lastswit = function () {
     };
@@ -40,7 +34,7 @@
         }
         XAPI.$cont.html(html);
         return XAPI.$cont;
-    }
+    };
     XAPI.ult = {
         getPagesWillShow: function (currentPage, max) {
             var min = currentPage - 5;

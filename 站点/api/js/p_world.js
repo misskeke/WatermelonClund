@@ -1,5 +1,5 @@
 (function () {
-    function clr(pge, q, issub, subft) {
+    function clr(pge, q, issub, subft, ended) {
         for (var i = 0; i < q.t.length; i++) {
             (function (t) {
                 var tiet = $('<div style="padding: 4px 16px 4px 16px; border-bottom: solid 1px rgba(50, 116, 174, 0.29);"></div>').mouseenter(function () {
@@ -36,30 +36,54 @@
                 tiet.append(usrs);
                 var pobj = XAPI.cpXXCode(t.content);
                 var cc = $("<div style='word-break: break-all;'></div>");
+                var picnum=0;
+                function mkt(o,icr){
+                    var img = $('<div class="pic" style="color: #990000;">正在加载图片</div>');
+                    if(icr){
+                        icr.after(img).remove();
+                    }else{
+                        cc.append(img);
+                    }
+                    setTimeout(function () {
+                        if ((ended?ended.reflushinterval:1) != 0) {
+                            XAPI.send("api/pic_get_url.php", {picid: o.picid}, function (q) {
+                                if (q.errid != 0) {
+                                    img.text(q.errmsg);
+                                } else {
+                                    img.html("").append($("<img style='max-width: 60%;'>").css("cursor", "pointer").attr("src", q.picurl).click(function () {
+                                        XAPI.pages.startPage({picPage: o.picid, callback: (ended?ended.callback:{})});
+                                    }));
+                                    var thei = img.height();
+                                    img.css({height: "0px"}).animate({height: thei + "px"}, 200, function () {
+                                        img.css({height: "auto"});
+                                    });
+                                }
+                            });
+                        }
+                    }, i * 2);
+                }
                 for (var i = 0; i < pobj.length; i++) {
                     (function (o) {
                         if (o.str != "\n" && o.str) {
                             cc.append($('<span class="str" style="opacity: 0;"></span>').text(o.str));
                         } else if (o.picid) {
-                            var img = $('<div class="pic" style="color: #990000;">正在加载图片</div>');
-                            cc.append(img);
-                            setTimeout(function () {
-                                if (reflushinterval != 0) {
-                                    XAPI.send("api/pic_get_url.php", {picid: o.picid}, function (q) {
-                                        if (q.errid != 0) {
-                                            img.text(q.errmsg);
-                                        } else {
-                                            img.html("").append($("<img style='max-width: 60%;'>").css("cursor", "pointer").attr("src", q.picurl).click(function () {
-                                                XAPI.pages.startPage({picPage: o.picid, callback: {}});
-                                            }));
-                                            var thei = img.height();
-                                            img.css({height: "0px"}).animate({height: thei + "px"}, 200, function () {
-                                                img.css({height: "auto"});
-                                            });
-                                        }
-                                    });
+                            picnum++;
+                            if(picnum>5){
+                                var icr = $('<div class="pic loadpic" style="color: #659926; cursor: pointer;">点击此处加载图片</div>').click(function(){
+                                    mkt(o,icr);
+                                });
+                                cc.append(icr);
+                                if(picnum==6){
+                                    var ccrt=$('<div class="pic loadall" style="color: #217299; cursor: pointer; text-align: center;">加载本帖全部图片</div>');
+                                    cc.prepend(ccrt);
+                                    ccrt.click(function(){
+                                        ccrt.remove();
+                                        cc.find('.loadpic').click();
+                                    })
                                 }
-                            }, i * 300);
+                                return;
+                            }
+                            mkt(o);
                         } else if (o.str == "\n") {
                             cc.append($('<br>'));
                         }
@@ -205,7 +229,7 @@
 
                             function show(q) {
                                 dbox.html("");
-                                clr(dbox, q, true, t.tid);
+                                clr(dbox, q, true, t.tid, ended);
                             }
 
                             function buildpage() {
@@ -275,6 +299,7 @@
         var reflushinterval = 0;
         var exited = false;
         var dlcont = XAPI.showCont("<h1><div style='max-width: 600px; margin: auto; text-align: left;'>世界动态</div></h1>", function () {
+            $("body").css({backgroundImage:""}, 350);
             dlcont.css({textAlign: "left"});
             clearInterval(reflushinterval);
             reflushinterval = 0;
@@ -287,7 +312,7 @@
         dlcont.append(tiecot);
         dlcont.find('*').css({opacity: 0, x: "150px"}).eachanimate({opacity: 1, x: "0px"}, true, 390, 75, false, "easeOutExpo", function () {
         });
-        $("body").animate({backgroundColor: "#87CEFA"}, 350);
+        $("body").css({backgroundImage:"url(UI/img/worldbak.jpg)"}).animate({backgroundColor: "#87CEFA"}, 350);
         var minc = 0;
 
         function loadpge(min, max, frist, ct, dg) {
@@ -313,7 +338,7 @@
             XAPI.send("api/list_world_t.php", {mn: min, mx: max}, function (q) {
                 XAPI.ui.addState("");
                 var pge = $('<div class="page" style="opacity: 0;"></div>');
-                clr(pge, q);
+                clr(pge, q, false, undefined, {reflushinterval:reflushinterval,callback:{}});
                 if (q.t.length > 0) {
                     if (dg) {
                         tiecot.prepend(pge);
