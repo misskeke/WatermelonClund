@@ -14,6 +14,9 @@ XAPI.pages = {
         if (pagehash.uid) {
             return XAPI.showUser(pagehash.uid, pagehash.callback);
         }
+        if (pagehash.fid){
+            return XAPI.showBar(pagehash.fid);
+        }
         return XAPI.showWorld();
     }
 };

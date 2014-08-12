@@ -6,7 +6,7 @@ if (!is_numeric($_POST["mx"]) || !is_numeric($_POST["mn"])) {
 }
 $mn = ($_POST["mn"] < 1 ? 1 : $_POST["mn"]) - 1;
 $mx = ($_POST["mx"] < 1 ? 1 : $_POST["mx"]) - 1;
-$sql = "SELECT * FROM (SELECT thread.tid, thread.uid, thread.time, thread.content, thread.zan_num FROM `thread` WHERE thread.deleted = 0 AND thread.type = 1 AND thread.reply_tid = 0 LIMIT " . $mn . "," . ($mx - $mn + 1) . ")tmp ORDER BY tid DESC";
+$sql = "SELECT * FROM (SELECT thread.tid, thread.uid, thread.time, thread.content, thread.zan_num, thread.fid FROM `thread` WHERE thread.deleted = 0 AND thread.type = 1 AND thread.reply_tid = 0 LIMIT " . $mn . "," . ($mx - $mn + 1) . ")tmp ORDER BY tid DESC";
 $res = $mys->query($sql);
 if ($res == false) {
     if ($mn > $mx) {
@@ -34,6 +34,18 @@ if ($res == false) {
         $abs["state"] = $assoc["state"];
         if ($assoc["state"] == 3 || $assoc["state"] == 5) {
             $abs["content"] = "此用户已被强屏蔽。";
+        }
+        $f=$mys->real_escape_string($abs["fid"]);
+        $sqlf="SELECT bar.fid, bar.fname, bar.gms FROM `bar` WHERE bar.fid = ".$f;
+        $q=$mys->query($sqlf);
+        if($q->num_rows>0){
+            $bi=$q->fetch_assoc();
+            $abs["bar"]=array();
+            $abs["bar"]["fid"]=$bi["fid"];
+            $abs["bar"]["fname"]=$bi["fname"];
+            $abs["bar"]["gms"]=$bi["gms"];
+        }else{
+            $abs["bar"]=array();
         }
         $resh = $mys->query("SELECT thread.tid FROM `thread` WHERE thread.reply_tid = '" . $abs["tid"] . "' AND thread.deleted = 0 LIMIT 0, 1");
         if ($resh->num_rows < 1) {

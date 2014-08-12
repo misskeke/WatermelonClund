@@ -5,6 +5,7 @@ body {
     background-color: white;
     word-break: break-all !important;
     background-size: cover;
+    overflow-x: hidden;
 }
 
 .dhstyle {

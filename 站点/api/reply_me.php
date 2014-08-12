@@ -34,7 +34,7 @@ if (($usr = chksoretusr($_POST["sid"], $_POST["krr"], $mys)) == false) {
         $u["reply_tid"] = $p["makeby"];
         $tres = $mys->query("SELECT thread.content FROM `thread` WHERE thread.tid = '" . $mys->real_escape_string($p["makeby"]) . "'");
         if ($tres == false || $tres->num_rows < 1) {
-            $u["reply_content"] = "";
+            $u["reply_content"] = "-- 帖子不存在 --";
         } else {
             $u["reply_content"] = $tres->fetch_assoc()["content"];
         }

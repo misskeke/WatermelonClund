@@ -10,10 +10,12 @@ XAPI.ui = {
         var texttitle = $("<div style='position: absolute; left: 36px; line-height: 32px; white-space: nowrap; overflow: hidden; right: 0; font-size: 80%; top: 0; bottom: 0; z-index: 3; opacity: 0.6; pointer-events: none;'></div>");
         ipt.append(texttitle);
         ipt.append(icond);
-        texttitle.click(function () {
+        texttitle.mousedown(function (e) {
+            e.preventDefault();
             edit[0].select();
         });
-        icond.click(function () {
+        icond.mousedown(function (e) {
+            e.preventDefault();
             edit[0].select();
         });
         ipt.append(edit);
@@ -91,6 +93,9 @@ XAPI.ui = {
             }else{
                 btn.stop(true, false, false).animate({backgroundColor: "#0059CD"}, 150);
             }
+        });
+        btn.mousedown(function(e){
+            e.preventDefault();
         });
         return btn;
     },

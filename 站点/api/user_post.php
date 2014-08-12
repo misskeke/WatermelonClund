@@ -4,7 +4,7 @@ $pge = 1;
 if (!is_numeric($_POST["uid"])) {
     diemyerror("检测到sql注入？或者你没有写uid参数？");
 }
-$sql = "SELECT * FROM `thread` WHERE thread.uid = '".$mys->real_escape_string($_POST["uid"])."' AND thread.type = 1 AND thread.deleted = 0 AND thread.reply_tid = 0 ORDER BY `tid` DESC";
+$sql = "SELECT thread.tid, thread.uid, thread.time, thread.content, thread.zan_num, thread.fid FROM `thread` WHERE thread.uid = '".$mys->real_escape_string($_POST["uid"])."' AND thread.type = 1 AND thread.deleted = 0 AND thread.reply_tid = 0 ORDER BY `tid` DESC";
 $res = $mys->query($sql);
 if ($res == false) {
     diemyerror();
@@ -24,6 +24,18 @@ if ($res == false) {
         $abs["state"] = $assoc["state"];
         if ($assoc["state"] == 3 || $assoc["state"] == 5) {
             $abs["content"] = "此用户已被强屏蔽。";
+        }
+        $f=$mys->real_escape_string($abs["fid"]);
+        $sqlf="SELECT bar.fid, bar.fname, bar.gms FROM `bar` WHERE bar.fid = ".$f;
+        $q=$mys->query($sqlf);
+        if($q->num_rows>0){
+            $bi=$q->fetch_assoc();
+            $abs["bar"]=array();
+            $abs["bar"]["fid"]=$bi["fid"];
+            $abs["bar"]["fname"]=$bi["fname"];
+            $abs["bar"]["gms"]=$bi["gms"];
+        }else{
+            $abs["bar"]=array();
         }
         $resh = $mys->query("SELECT thread.tid FROM `thread` WHERE thread.reply_tid = '" . $abs["tid"] . "' AND thread.deleted = 0 LIMIT 0, 1");
         if ($resh->num_rows < 1) {

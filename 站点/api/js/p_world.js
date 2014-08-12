@@ -286,6 +286,11 @@
                     }
                     tiet.append(dd);
                 }
+                if(!issub){
+                    btbar.append($('<span style="color: #416676; margin-left: 8px; cursor: pointer;"></span>').text(t.bar.fname+"吧").click(function(){
+                        XAPI.showBar(t.bar.fid);
+                    }));
+                }
                 pge.append(tiet);
                 var cps = cc.find(".str");
                 cps.css({scale: 1.5}).eachanimate({opacity: 1, scale: 1}, true, 120, 1500 / cps.length, true, "linear", function () {
@@ -298,8 +303,7 @@
     XAPI.showWorld = function () {
         var reflushinterval = 0;
         var exited = false;
-        var dlcont = XAPI.showCont("<h1><div style='max-width: 600px; margin: auto; text-align: left;'>世界动态</div></h1>", function () {
-            $("body").css({backgroundImage:""}, 350);
+        var dlcont = XAPI.showCont("<h1><div style='margin: auto; padding-left: 50px; text-align: left;'>世界动态</div></h1>", function () {
             dlcont.css({textAlign: "left"});
             clearInterval(reflushinterval);
             reflushinterval = 0;
@@ -308,11 +312,11 @@
         });
         dlcont.css({textAlign: "center"});
         // api/list_world_t.php
-        var tiecot = $('<div style="min-height: 100px; text-align: left; margin: 16px auto auto auto; box-shadow: 0 0 8px #000; background-color: #ffffff; max-width: 600px;"><div class="topjz">请稍候…………………………………………</div></div>');
+        var tiecot = $('<div style="min-height: 100px; text-align: left; margin: 16px auto auto auto; box-shadow: 0 0 8px #000; background-color: #ffffff; width: 75%; width: calc(100% - 100px); width: -moz-calc(100% - 100px); width: -webkit-calc(100% - 100px);"><div class="topjz">请稍候…………………………………………</div></div>');
         dlcont.append(tiecot);
         dlcont.find('*').css({opacity: 0, x: "150px"}).eachanimate({opacity: 1, x: "0px"}, true, 390, 75, false, "easeOutExpo", function () {
         });
-        $("body").css({backgroundImage:"url(UI/img/worldbak.jpg)"}).animate({backgroundColor: "#87CEFA"}, 350);
+        $("body").animate({backgroundColor: "#e1e1e1"}, 350);
         var minc = 0;
 
         function loadpge(min, max, frist, ct, dg) {

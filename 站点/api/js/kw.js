@@ -65,6 +65,9 @@ XAPI.kw=function(){
                                 .append($('<span class="iconfont">&#xe616;</span>')).append($('<span style="margin-left: 4px;"></span>').text(b.fallow_num))
                                 .append($('<span class="iconfont" style="margin-left: 10px; vertical-align: middle; font-size: 150%;">&#xe617;</span>'))
                                 .append($('<span style="margin-left: 4px;"></span>').text(b.thread_num))));
+                        barys.click(function(){
+                            XAPI.showBar(b.fid);
+                        });
                         XAPI.send("api/pic_get_url.php",{picid: b.headpic},function(q){
                             if(q.errid==0){
                                 dx.attr("src", q.picurl).animate({opacity:1},150);
@@ -87,6 +90,10 @@ XAPI.kw=function(){
                         barys.append($('<div style="display: inline-block; vertical-align: middle;"></div>').append(
                                 $('<div style="font-size: 120%;"></div>').text(b.username.substr(0,8)+(b.username>6?"...":""))));
                         dx.attr("src", XAPI.user_hadpic_get(b.email,32));
+                        barys.click(function(){
+                            serchBox.text("");
+                            XAPI.showUser(b.uid);
+                        });
                     })(usrs[ia]);
                 }
             }else{
@@ -102,4 +109,21 @@ XAPI.kw=function(){
         bw=innerWidth-(dh.find('.userbar').offset()?dh.find('.userbar').offset().left:innerWidth);
         serchBox.ipt.css({right:(bw+5)+"px"});
     },20);
+};
+XAPI.showBar=function(fid){
+    XAPI.chgUrl({fid:fid});
+    var rfi;
+    var ct = XAPI.showCont("", function () {
+        clearInterval(rfi);
+        rfi=0;
+        XAPI.log("IMG page unloaded");
+    });
+    $("body").animate({backgroundColor: "#e3ecf3"}, 350);
+    var dbox=$('<div style="min-height: 1000px; text-align: left; margin: 16px auto auto auto; box-shadow: 0 0 8px #000; background-color: #ffffff; width: 75%; width: calc(100% - 100px); width: -moz-calc(100% - 100px); width: -webkit-calc(100% - 100px);"></div>');
+    ct.append(dbox);
+    var titlebox=$('<div style="background-color: #d9d9d9; font-size: 24px; color: #7a7a7a; line-height: 40px; text-align: center; cursor: default; user-select: none; -webkit-user-select: none;"></div>');
+    titlebox.text("正在加载");
+    dbox.append(titlebox);
+    ct.find('*').css({opacity: 0, x: "150px"}).eachanimate({opacity: 1, x: "0px"}, true, 390, 75, false, "easeOutExpo", function () {
+    });
 };

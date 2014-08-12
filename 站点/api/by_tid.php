@@ -26,6 +26,18 @@ if ($res == false) {
         if ($assoc["state"] == 3 || $assoc["state"] == 5) {
             $abs["content"] = "此用户已被强屏蔽。";
         }
+        $f=$mys->real_escape_string($abs["fid"]);
+        $sqlf="SELECT bar.fid, bar.fname, bar.gms FROM `bar` WHERE bar.fid = ".$f;
+        $q=$mys->query($sqlf);
+        if($q->num_rows>0){
+            $bi=$q->fetch_assoc();
+            $abs["bar"]=array();
+            $abs["bar"]["fid"]=$bi["fid"];
+            $abs["bar"]["fname"]=$bi["fname"];
+            $abs["bar"]["gms"]=$bi["gms"];
+        }else{
+            $abs["bar"]=array();
+        }
         $resh = $mys->query("SELECT thread.tid FROM `thread` WHERE thread.reply_tid = '" . $abs["tid"] . "' AND thread.deleted = 0 LIMIT 0, 1");
         if ($resh->num_rows < 1) {
             $abs["reply_has"] = 0;
