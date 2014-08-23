@@ -12,7 +12,7 @@ if (($usr = chksoretusr($_POST["sid"], $_POST["krr"], $mys)) == false) {
 } else {
     if ($usr["group"] == 1 && isset($_POST["desc"])) {
         $mys->begin_transaction();
-        $mansql = "INSERT INTO `managing` (`target`, `type`, `doer`, `dsc`, `time`, `ip`) VALUES ('"
+        $mansql = "INSERT INTO `managing` (`target`, `type`, `doer`, `desc`, `time`, `ip`) VALUES ('"
             . $mys->real_escape_string($_POST["tid"]) . "', '1', '" . $usr["uid"] . "', '" . $mys->real_escape_string($_POST["desc"]) . "', '"
             . time() . "', '" . $mys->real_escape_string(GetIP()) . "')";
         $succ = $mys->query($mansql);

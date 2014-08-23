@@ -2,11 +2,11 @@ XAPI.showUser = function (uid, cbc) {
     XAPI.ui.addState("加载用户：" + uid);
     XAPI.chgUrl({uid: uid, callback: cbc});
     var ended = false;
-    var int=1;
+    var int = 1;
     var cont = XAPI.showCont("<div style='text-align: center; margin-top: 30px;' class='errlod'>正在加载</div>", function () {
         cont.html("").css({textAlign: "left"});
         ended = true;
-        int=0;
+        int = 0;
     });
     $("body").animate({backgroundColor: "#C1973D"}, 350);
     XAPI.send("api/user_get_info.php", {uid: uid}, function (q) {
@@ -155,22 +155,23 @@ XAPI.showUser = function (uid, cbc) {
                     }
                 }
                 XAPI.ui.addState("正在获得该用户的贴");
-                var ctt=$('<div style="padding: 4px; background-color: #e8e8e8; text-align: center;">正在加载</div>');
+                var ctt = $('<div style="padding: 4px; background-color: #e8e8e8; text-align: center;">正在加载</div>');
                 box.append(ctt);
-                function trycct(){
-                    XAPI.send("api/user_post.php",{uid:userinfo.uid},function(q){
-                        if(q.errid!=0){
-                            cont.text("错误："+ q.errmsg);
-                            cont.append($('<a href="javascript:void(0);">重试</a>').click(function(){
+                function trycct() {
+                    XAPI.send("api/user_post.php", {uid: userinfo.uid}, function (q) {
+                        if (q.errid != 0) {
+                            cont.text("错误：" + q.errmsg);
+                            cont.append($('<a href="javascript:void(0);">重试</a>').click(function () {
                                 ctt.html("正在加载");
                                 trycct();
                             }));
-                        }else{
+                        } else {
                             ctt.html("");
-                            XAPI.clr(ctt,q,false,undefined,{reflushinterval:int,callback:XAPI.getPage()});
+                            XAPI.clr(ctt, q, false, undefined, {reflushinterval: int, callback: XAPI.getPage()});
                         }
                     });
                 }
+
                 trycct();
             });
         }

@@ -25,9 +25,6 @@ if ($res == false) {
         if ($assoc["state"] == 3 || $assoc["state"] == 5) {
             $abs["content"] = "此用户已被强屏蔽。";
         }
-        $f=$mys->real_escape_string($abs["fid"]);
-        $sqlf="SELECT bar.fid, bar.fname, bar.gms FROM `bar` WHERE bar.fid = ".$f;
-        $q=$mys->query($sqlf);
         if($q->num_rows>0){
             $bi=$q->fetch_assoc();
             $abs["bar"]=array();

@@ -18,6 +18,8 @@ var ps=setInterval(function(){
     clearInterval(ps);
     $(function () {
         window.X_RELOAD=function(){
+            var cts=$('<div class="s" style="font-size: 12px; opacity: 0.5; cursor: default; background-color: #e9e9e9; overflow: auto; border: solid 1px #686868;"></div>');
+            $('.content').append(cts);
             setInterval(function(){
                 var gsend=(new Date().getTime()<lastsend+200);
                 var gget=(new Date().getTime()<lastget+200);
@@ -88,12 +90,14 @@ var ps=setInterval(function(){
                         if(cbc){
                             cbc();
                         }
+                        $('.content .s').append($('<div>'+(completeStateAcount*2+2)+'/'+allStateAcount*2+' - JPP -in '+scr+' -out eval</div>'));
                         completeStateAcount++;
                         changeGd();
                         window.lastget=new Date().getTime();
                     }
                 };
-            },50);
+                $('.content .s').append($('<div>'+(completeStateAcount*2+1)+'/'+allStateAcount*2+' - GET -cache '+scr+'</div>'));
+            },1);
             // DEBUG end
             $.getScript("UI/JS/lib/jqui.js",function(){
                 $.getScript("UI/JS/lib/jquery.Transit.js",function(){

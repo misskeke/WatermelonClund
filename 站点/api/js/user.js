@@ -31,13 +31,14 @@
             XAPI.ui.addState("您从未在这里登录过，请登录或注册。");
             callback();
         }
-        var isie=!!window.ActiveXObject || "ActiveXObject" in window;
-        if(isie){
+
+        var isie = !!window.ActiveXObject || "ActiveXObject" in window;
+        if (isie) {
             XAPI.log("ie?");
-            var dibox=XAPI.ui.createDiagbox("不支持IE",undefined,"650px","auto");
-            var ccr=$('<div style="color: deepskyblue;">推吧网页版暂不完全支持IE。请使用chrome(推荐)或者firefox。</div>');
+            var dibox = XAPI.ui.createDiagbox("不支持IE", undefined, "650px", "auto");
+            var ccr = $('<div style="color: deepskyblue;">推吧网页版暂不完全支持IE。请使用chrome(推荐)或者firefox。</div>');
             dibox.c.append(ccr);
-            dibox.c.append(XAPI.ui.createDBotton("继续使用IE").click(function(){
+            dibox.c.append(XAPI.ui.createDBotton("继续使用IE").click(function () {
                 dibox.close();
             }));
         }
@@ -59,7 +60,7 @@
                         uid = 0;
                         delete localStorage.lastSid;
                         delete localStorage.lastKrr;
-                        setTimeout(function(){
+                        setTimeout(function () {
                             rtt(callback);
                         }, 1);
                     }
@@ -214,7 +215,7 @@
                 }
                 lock = true;
                 usermenu.stop(true, false, false);
-                usermenu.css({right: "18px", top: userbar.height() + "px", opacity: (opened ? 1 : 0), backgroundColor:"rgba(71, 165, 164, 0)", display: "block"}).animate({opacity: (opened ? 0 : 1), backgroundColor:(opened?"transparent":"rgba(182,209,209,0.7)")}, 200, function () {
+                usermenu.css({right: "18px", top: userbar.height() + "px", opacity: (opened ? 1 : 0), backgroundColor: "rgba(71, 165, 164, 0)", display: "block"}).animate({opacity: (opened ? 0 : 1), backgroundColor: (opened ? "transparent" : "rgba(182,209,209,0.7)")}, 200, function () {
                     if (opened) {
                         usermenu.css({display: "none"});
                         usermenubak.css({display: "none"});
@@ -293,30 +294,53 @@
             }
         }, 'json');
     };
-    XAPI.send = function (u, p, q) {
+    XAPI.send = function (u, p, q, t) {
         console.log("%c[" + new Date().toTimeString().substr(0, 8) + "|XAPI AJAX LOADING] - %c" + u + "%c WITH POST STRING %c" +
             JSON.stringify(p), "color: #035FAA;", "color: #016A32;", "color: #035FAA;", "color: #2B02AF;");
         p.sid = sid;
         p.krr = krr;
-        if(u.match(/^\//)){
-            u= u.substr(1);
+        if (u.match(/^\//)) {
+            u = u.substr(1);
         }
         $.post(u, p, function (e) {
-            window.lastget=new Date().getTime();
+            window.lastget = new Date().getTime();
             if (typeof e == "string") {
                 try {
                     q(JSON.parse(e));
                 } catch (r) {
                     console.error(r);
-                    setTimeout(function () {
-                        XAPI.send(u, p, q);
-                    }, 750);
+                    if (t) {
+                        var an=$('<div style="z-index: 99999999; opacity: 0; background-color: #2a5799; padding-left: 34px; font-size: 20px; position: fixed; color: #ffffff; left: 0; right: 0; top: 0; bottom: 0;">' +
+                                '<div style="font-size: 80px; margin-left: 18px; margin-top: 30px;">-_-。</div>' +
+                                '<div style="font-size: 80%;">阿诺- -看起来我们的服务器 或者我们的JS 有点问题- -<br>' +
+                                '此网页由于以下原因已崩溃：<br>' +
+                                '服务器抽了<br>' +
+                                'JS有未调试的漏洞<br>' +
+                                '你刷太快了<br>' +
+                                '你的浏览器版本过老</div>' +
+                                '<div style="font-size: 60%; opacity: 0.8;">详细错误信息：'+$('<span></span>').text(r.toString()).html()+' Server Return: '+$('<span></span>').text(e).html()+
+                                ' Sended: '+$('<span></span>').text((function(){
+                            p.krr= p.krr.substr(0,6)+"......";
+                            return JSON.stringify(p);
+                        })()).html()+' to '+$('<span></span>').text(u).html()+'</div> </div>');
+                        $('body').append(an);
+                        an.animate({opacity:1},3000);
+                        username = "";
+                        password = "";
+                        sid = 0;
+                        krr = "";
+                        uid = 0;
+                    } else {
+                        setTimeout(function () {
+                            XAPI.send(u, p, q, true);
+                        }, 750);
+                    }
                 }
             } else if (typeof e == "object") {
                 q(e);
             }
         });
-        window.lastsend=new Date().getTime();
+        window.lastsend = new Date().getTime();
     };
     XAPI.showLogin = function () {
         var dlcont = XAPI.showCont("<h1 style='color: #ffffff;'>登录</h1>");
@@ -368,7 +392,7 @@
         };
         var regbtn = XAPI.ui.createDBotton("登录").css({position: "absolute", right: "32px", bottom: "12px"}).click(cck);
         box.append(regbtn);
-        box.append($('<span style="font-size: 75%; position: relative; top: 10px; opacity: 0.75;">Copyleft: Maomao XiGuaYun Psn. Ltd.</span>'));
+        box.append($('<span style="font-size: 75%; position: relative; top: 10px; opacity: 0.75;">忘记密码？</span>'));
         $("body").animate({backgroundColor: "#023868"}, 350);
         box.css({fontFamily: "'微软雅黑'", padding: "32px"});
         XAPI.chgUrl({loginPage: true});
@@ -459,7 +483,7 @@
         };
         var regbtn = XAPI.ui.createDBotton("注册").css({position: "absolute", right: "32px", bottom: "12px"}).click(registerFunc);
         box.append(regbtn);
-        box.append($('<span style="font-size: 75%; position: relative; top: 10px; opacity: 0.75;">Copyleft: Maomao XiGuaYun Psn. Ltd.</span>'));
+        box.append($('<span style="font-size: 75%; position: relative; top: 10px; opacity: 0.75;">注册即代表您同意我们的使用协议。</span>'));
         $("body").animate({backgroundColor: "#4A6E01"}, 350);
         box.css({fontFamily: "'微软雅黑'", padding: "32px"});
         XAPI.chgUrl({registerPage: true});
@@ -468,11 +492,11 @@
         return "https://www.gravatar.com/avatar/" + email + "?d=mm&r=pg&s=" + size;
     };
     XAPI.chgUrl = function (url) {
-        window.history.pushState(JSON.stringify(url),JSON.stringify(url),"/?"+JSON.stringify(url));
+        window.history.pushState(JSON.stringify(url), JSON.stringify(url), "/?" + JSON.stringify(url));
     };
     $.getScript("UI/JS/imageupd.js", function () {
         XAPI.log("imageupd.js Loaded");
-        $.getScript("api/js/piccache.js",function(){
+        $.getScript("api/js/piccache.js", function () {
             XAPI.log("piccache loaded!");
             $.getScript("api/js/p_world.js", function () {
                 XAPI.log("World Page loaded");
@@ -484,7 +508,7 @@
                             XAPI.log("message.js loaded");
                             $.getScript("api/js/pages.js", function () {
                                 XAPI.log("Pages loaded");
-                                $.getScript("api/js/kw.js",function(){
+                                $.getScript("api/js/kw.js", function () {
                                     XAPI.log("KW loaded");
                                     function cst() {
                                         rtt(function () {
@@ -503,61 +527,63 @@
                                             };
                                             XAPI.kw();
                                             XAPI.pages.startPage(XAPI.getPage());
-                                            setTimeout(function(){
+                                            setTimeout(function () {
                                                 // 233の字符画~
-                                                console.log("%c             %c^%c                ","color: #000000;","color: red","color: #000000;");
-                                                console.log("%c           %c/  \\%c              ","color: #000000;","color: red","color: #000000;");
-                                                console.log("%c          %c/  %c# %c\\%c         ","color: #000000;","color: red","color: #000000;","color: red","color: #000000;");
-                                                console.log("%c         %c/      \\%c            ","color: #000000;","color: red","color: #000000;");
-                                                console.log("%c        %c/ %c#      %c\\%c       ","color: #000000;","color: red","color: #000000;","color: red","color: #000000;");
-                                                console.log("%c       %c/        %c# %c\\%c      ","color: #000000;","color: red","color: #000000;","color: red","color: #000000;");
-                                                console.log("%c      %c\\%c---%c\\    %c/%c---%c/","color: #000000;","color: #02B002;","color: #C9F74A;","color: #02B002;","color: #02B002;","color: #C9F74A;","color: #02B002;");
-                                                console.log("%c       %c\\%c   %c\\%c--%c/   /   ","color: #000000;","color: #02B002;","color: #000000;","color: #02B002;","color: #C9F74A;","color: #02B002;");
-                                                console.log("%c        %c\\%c--------%c/         ","color: #000000;","color: #02B002;","color: #C9F74A;","color: #02B002;");
-                                                console.log("%c     %c西%c瓜%c云 %c| %c推吧       ","color: #000000;","color: #02B002; font-size: 32px; font-family: '微软雅黑';","color: #04855C; font-size: 32px; font-family: '微软雅黑';",
-                                                    "color: #03289F; font-size: 32px; font-family: '微软雅黑';","color: #000000; font-size: 24px; font-family: '微软雅黑';","color: #9F1303; font-size: 24px; font-family: '微软雅黑';");
-                                                console.log("%c         %cwebsint.org            ","color: #000000;","color: deepskyblue;");
-                                                console.log("%c         %c即将呈现                ","color: #000000;","color: deeppink;");
-                                                function rdClor(){
-                                                    var r=parseInt(Math.random()*200);
-                                                    var g=parseInt(Math.random()*200);
-                                                    var b=parseInt(Math.random()*200);
-                                                    return "#"+ r.toString(16)+ g.toString(16)+ b.toString(16);
+                                                console.log("%c             %c^%c                ", "color: #000000;", "color: red", "color: #000000;");
+                                                console.log("%c           %c/  \\%c              ", "color: #000000;", "color: red", "color: #000000;");
+                                                console.log("%c          %c/  %c# %c\\%c         ", "color: #000000;", "color: red", "color: #000000;", "color: red", "color: #000000;");
+                                                console.log("%c         %c/      \\%c            ", "color: #000000;", "color: red", "color: #000000;");
+                                                console.log("%c        %c/ %c#      %c\\%c       ", "color: #000000;", "color: red", "color: #000000;", "color: red", "color: #000000;");
+                                                console.log("%c       %c/        %c# %c\\%c      ", "color: #000000;", "color: red", "color: #000000;", "color: red", "color: #000000;");
+                                                console.log("%c      %c\\%c---%c\\    %c/%c---%c/", "color: #000000;", "color: #02B002;", "color: #C9F74A;", "color: #02B002;", "color: #02B002;", "color: #C9F74A;", "color: #02B002;");
+                                                console.log("%c       %c\\%c   %c\\%c--%c/   /   ", "color: #000000;", "color: #02B002;", "color: #000000;", "color: #02B002;", "color: #C9F74A;", "color: #02B002;");
+                                                console.log("%c        %c\\%c--------%c/         ", "color: #000000;", "color: #02B002;", "color: #C9F74A;", "color: #02B002;");
+                                                console.log("%c     %c西%c瓜%c云 %c| %c推吧       ", "color: #000000;", "color: #02B002; font-size: 32px; font-family: '微软雅黑';", "color: #04855C; font-size: 32px; font-family: '微软雅黑';",
+                                                    "color: #03289F; font-size: 32px; font-family: '微软雅黑';", "color: #000000; font-size: 24px; font-family: '微软雅黑';", "color: #9F1303; font-size: 24px; font-family: '微软雅黑';");
+                                                console.log("%c         %cwebsint.org            ", "color: #000000;", "color: deepskyblue;");
+                                                console.log("%c         %c即将呈现                ", "color: #000000;", "color: deeppink;");
+                                                function rdClor() {
+                                                    var r = parseInt(Math.random() * 200);
+                                                    var g = parseInt(Math.random() * 200);
+                                                    var b = parseInt(Math.random() * 200);
+                                                    return "#" + r.toString(16) + g.toString(16) + b.toString(16);
                                                 }
+
                                                 /*
                                                  【感谢百度的console输出- -】
                                                  */
-                                                console.log("%c一张网页，要经历怎样的过程，才能抵达用户面前？","color: "+rdClor());
-                                                console.log("%c一位新人，要经历怎样的成长，才能站在技术之巅？","color: "+rdClor());
-                                                console.log("%c探寻这里的秘密；","color: "+rdClor());
-                                                console.log("%c体验这里的挑战；","color: "+rdClor());
-                                                console.log("%c成为这里的主人；","color: "+rdClor());
+                                                console.log("%c一张网页，要经历怎样的过程，才能抵达用户面前？", "color: " + rdClor());
+                                                console.log("%c一位新人，要经历怎样的成长，才能站在技术之巅？", "color: " + rdClor());
+                                                console.log("%c探寻这里的秘密；", "color: " + rdClor());
+                                                console.log("%c体验这里的挑战；", "color: " + rdClor());
+                                                console.log("%c成为这里的主人；", "color: " + rdClor());
                                                 // 加入百度，加入网页搜索，你，可以影响世界。
-                                                console.log("%c加入西瓜云，加入社交开发，你，可以影响世界。","color: "+rdClor());
-                                                console.log("%c     %cWebs `节操开发组 %c招人中%c ！ ","color: #000000;","color: #0241A0;","color: #709E04;","color: #0241A0;");
-                                                window.onkeydown=function(e){
-                                                    if(e.keyIdentifier=="F12"){
-                                                        var dig=XAPI.ui.createDiagbox("欢迎尽情脑补本网页~",function(){},"600px","250px");
-                                                        var c=dig.c;
+                                                console.log("%c加入西瓜云，加入社交开发，你，可以影响世界。", "color: " + rdClor());
+                                                console.log("%c     %cWebs `节操开发组 %c招人中%c ！ ", "color: #000000;", "color: #0241A0;", "color: #709E04;", "color: #0241A0;");
+                                                window.onkeydown = function (e) {
+                                                    if (e.keyIdentifier == "F12") {
+                                                        var dig = XAPI.ui.createDiagbox("欢迎尽情脑补本网页~", function () {
+                                                        }, "600px", "250px");
+                                                        var c = dig.c;
                                                         c.append($('<div style="color: #008bbb; font-size: 24px;">欢迎使用您的浏览器调试工具尽情改造本网页！</div>'));
-                                                        c.append($('<div style="color: deepskyblue;">（如果你什么都没有做（不小心按了F12），请</div>').append(XAPI.ui.createDBotton("关闭").click(function(){
+                                                        c.append($('<div style="color: deepskyblue;">（如果你什么都没有做（不小心按了F12），请</div>').append(XAPI.ui.createDBotton("关闭").click(function () {
                                                             dig.close();
                                                         })).append($('<span>此对话框。）</span>')));
-                                                        c.append($('<div>如果你不小心花样作死，请</div>').append(XAPI.ui.createDBotton("点此刷新").click(function(){
+                                                        c.append($('<div>如果你不小心花样作死，请</div>').append(XAPI.ui.createDBotton("点此刷新").click(function () {
                                                             $('body').append($('<div class="no_mirror" style="background-color: #000000; opacity: 0; position: absolute; z-index: 99999; top: 0; left: 0; right: 0; bottom: 0;"></div>').animate({opacity: 0.4}, 900));
                                                             setTimeout(function () {
                                                                 window.location.reload();
                                                             }, 1000);
                                                         })));
-                                                        if(sid){
-                                                            c.append($('<div style="color: deepskyblue;">如果你把本网页改造的更漂亮，欢迎将您的改造写成js并附上您的验证凭据“'+ $.md5($.md5($.md5($.md5(sid+" "+krr))))+"/"+sid+'”' +
+                                                        if (sid) {
+                                                            c.append($('<div style="color: deepskyblue;">如果你把本网页改造的更漂亮，欢迎将您的改造写成js并附上您的验证凭据“' + $.md5($.md5($.md5($.md5(sid + " " + krr)))) + "/" + sid + '”' +
                                                                 '发送至<a href="mailto:wtmtim@126.com">wtmtim@126.com</a>' +
                                                                 '，将有可能被采用，如果被采用，您的帐号将获得不定数量的奖励或特权。</div>'));
                                                         }
-                                                        window.onkeydown=null;
+                                                        window.onkeydown = null;
                                                     }
                                                 }
-                                            },500);
+                                            }, 500);
                                         });
                                     }
 

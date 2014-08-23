@@ -1,6 +1,6 @@
 (function () {
     function xapilog(str) {
-        console.log("%c[" + new Date().toTimeString().substr(0, 8) + "|XAPI] - %c" + str, "color: #035FAA;","color: #016A32;");
+        console.log("%c[" + new Date().toTimeString().substr(0, 8) + "|XAPI] - %c" + str, "color: #035FAA;", "color: #016A32;");
         $('.xapi_log_shower').text(str);
     }
 
@@ -19,7 +19,7 @@
         XAPI.dhp();
         return rt;
     };
-    $.getScript("UI/JS/dh.js",function(){
+    $.getScript("UI/JS/dh.js", function () {
         XAPI.log("dh getted!");
     });
     var lastswit = function () {

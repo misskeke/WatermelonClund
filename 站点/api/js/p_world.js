@@ -36,22 +36,23 @@
                 tiet.append(usrs);
                 var pobj = XAPI.cpXXCode(t.content);
                 var cc = $("<div style='word-break: break-all;'></div>");
-                var picnum=0;
-                function mkt(o,icr){
+                var picnum = 0;
+
+                function mkt(o, icr) {
                     var img = $('<div class="pic" style="color: #990000;">正在加载图片</div>');
-                    if(icr){
+                    if (icr) {
                         icr.after(img).remove();
-                    }else{
+                    } else {
                         cc.append(img);
                     }
                     setTimeout(function () {
-                        if ((ended?ended.reflushinterval:1) != 0) {
+                        if ((ended ? ended.reflushinterval : 1) != 0) {
                             XAPI.send("api/pic_get_url.php", {picid: o.picid}, function (q) {
                                 if (q.errid != 0) {
                                     img.text(q.errmsg);
                                 } else {
                                     img.html("").append($("<img style='max-width: 60%;'>").css("cursor", "pointer").attr("src", q.picurl).click(function () {
-                                        XAPI.pages.startPage({picPage: o.picid, callback: (ended?ended.callback:{})});
+                                        XAPI.pages.startPage({picPage: o.picid, callback: (ended ? ended.callback : {})});
                                     }));
                                     var thei = img.height();
                                     img.css({height: "0px"}).animate({height: thei + "px"}, 200, function () {
@@ -62,21 +63,22 @@
                         }
                     }, i * 2);
                 }
+
                 for (var i = 0; i < pobj.length; i++) {
                     (function (o) {
                         if (o.str != "\n" && o.str) {
                             cc.append($('<span class="str" style="opacity: 0;"></span>').text(o.str));
                         } else if (o.picid) {
                             picnum++;
-                            if(picnum>5){
-                                var icr = $('<div class="pic loadpic" style="color: #659926; cursor: pointer;">点击此处加载图片</div>').click(function(){
-                                    mkt(o,icr);
+                            if (picnum > 5) {
+                                var icr = $('<div class="pic loadpic" style="color: #659926; cursor: pointer;">点击此处加载图片</div>').click(function () {
+                                    mkt(o, icr);
                                 });
                                 cc.append(icr);
-                                if(picnum==6){
-                                    var ccrt=$('<div class="pic loadall" style="color: #217299; cursor: pointer; text-align: center;">加载本帖全部图片</div>');
+                                if (picnum == 6) {
+                                    var ccrt = $('<div class="pic loadall" style="color: #217299; cursor: pointer; text-align: center;">加载本帖全部图片</div>');
                                     cc.prepend(ccrt);
-                                    ccrt.click(function(){
+                                    ccrt.click(function () {
                                         ccrt.remove();
                                         cc.find('.loadpic').click();
                                     })
@@ -286,8 +288,8 @@
                     }
                     tiet.append(dd);
                 }
-                if(!issub){
-                    btbar.append($('<span style="color: #416676; margin-left: 8px; cursor: pointer;"></span>').text(t.bar.fname+"吧").click(function(){
+                if (!issub) {
+                    btbar.append($('<span style="color: #416676; margin-left: 8px; cursor: pointer;"></span>').text(t.bar.fname + "吧").click(function () {
                         XAPI.showBar(t.bar.fid);
                     }));
                 }
@@ -342,7 +344,7 @@
             XAPI.send("api/list_world_t.php", {mn: min, mx: max}, function (q) {
                 XAPI.ui.addState("");
                 var pge = $('<div class="page" style="opacity: 0;"></div>');
-                clr(pge, q, false, undefined, {reflushinterval:reflushinterval,callback:{}});
+                clr(pge, q, false, undefined, {reflushinterval: reflushinterval, callback: {}});
                 if (q.t.length > 0) {
                     if (dg) {
                         tiecot.prepend(pge);

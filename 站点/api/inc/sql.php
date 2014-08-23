@@ -1,7 +1,7 @@
 <?php
 //die("403 Forbidden");
 mb_internal_encoding('utf-8');
-error_reporting(0);
+error_reporting(E_ALL);
 function print_stack_trace()
 {
     $array = debug_backtrace();

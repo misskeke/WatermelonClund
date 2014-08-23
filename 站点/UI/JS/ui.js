@@ -99,6 +99,26 @@ XAPI.ui = {
         });
         return btn;
     },
+    createDWiteBotton: function (text) {
+        var btn = $("<a style='display: inline-block; vertical-align: middle; text-align: center; box-shadow: 0 0 10px rgba(134, 134, 134, 0.51),0 -2px 0 rgba(101, 101, 101, 0.51) inset; color: #000000; border-radius: 5px; cursor: pointer; background-color: #eeeeee; border: solid 1px rgba(0, 0, 0, 0.58); margin: 4px; padding: 4px 8px 4px 8px;' href='javascript:void(0);'></a>")
+            .text(text);
+        btn.mouseenter(function () {
+            btn.stop(true, false, false).animate({backgroundColor: "#E6E6E6"}, 150);
+        });
+        btn.mouseleave(function () {
+            btn.stop(true, false, false).animate({backgroundColor: "#EEEEEE"}, 150);
+        });
+        btn.mousedown(function(){
+            btn.stop(true, false, false).animate({backgroundColor: "#B9B9B9"}, 150);
+        });
+        btn.mouseup(function(){
+            btn.stop(true, false, false).animate({backgroundColor: "#EEEEEE"}, 150);
+        });
+        btn.mousedown(function(e){
+            e.preventDefault();
+        });
+        return btn;
+    },
     createDTextArea: function (texttitletext) {
         var are=$('<div style="position: relative; background-color: #ffffff; margin: 4px;"></div>');
         var edit=$('<textarea style="font: inherit; border: none; margin: 0; border:0; resize: none; outline:none; position: absolute; left: 2px; right: 2px; top: 2px; bottom: 2px;"></textarea>');
@@ -229,5 +249,6 @@ XAPI.ui.addState = function (s) {
     }, 3000);
 };
 $.getScript("api/js/user.js", function () {
+    $('body').append($('<div class="no_mirror bgrc" style="position: fixed; opacity: 0.3; background transparent; left: 0; right: 0; top: 0; bottom: 0; z-index: 0; pointer-events: none;"></div>'));
     XAPI.log("User Api loaded");
 });

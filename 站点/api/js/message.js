@@ -229,19 +229,19 @@ XAPI.user.onloginfinished_msg = function (red) {
     }
 
     if (!red) {
-        if(nf){
-            var img=document.createElement("img");
-            img.src="UI/img/notificationicons.png";
-            img.onload=function(){
+        if (nf) {
+            var img = document.createElement("img");
+            img.src = "UI/img/notificationicons.png";
+            img.onload = function () {
                 XAPI.log("Icon loaded! ccstart running..");
                 ccstart();
             };
-        }else{
+        } else {
             XAPI.log("No nf! ccstart running");
             ccstart();
         }
     }
-    if(!nf){
+    if (!nf) {
         return;
     }
     if (nf && nf.permission != "granted") {
