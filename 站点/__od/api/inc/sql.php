@@ -72,5 +72,3 @@ function GetIP()
     }
     return $cip;
 }
-$mem=new Memcache();
-$mem->addServer("localhost");

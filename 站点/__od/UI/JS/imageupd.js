@@ -70,7 +70,7 @@
             ci();
         }
     });
-    XAPI.user.updateImage=function(callback,multiple){
+    XAPI.user.updateImage=function(callback,multiple,f){
         var bpdbox=$('<div style="position: fixed; z-index: 99998; text-align: center; left: 8px; right: 8px; top: 8px; bottom: 8px; background-color: #ffffff; box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);">' +
             '</div>');
         $('body').append(bpdbox);
@@ -138,6 +138,20 @@
                     ck();
                     return;
                 }
+                if(fl.size<1){
+                    fpre.stop(true,false,false).animate({backgroundColor:"#FE6D57"},150);
+                    fpre.text(fl.name+" 失败: 空文件或不是文件");
+                    pids.push(0);
+                    ck();
+                    return;
+                }
+                if(fl.type.length<1){
+                    fpre.stop(true,false,false).animate({backgroundColor:"#FE6D57"},150);
+                    fpre.text(fl.name+" 失败: 不是文件");
+                    pids.push(0);
+                    ck();
+                    return;
+                }
                 reader.onload = function(e){
                     var url=this.result;
                     fpre.text(fl.name+" 正在上传");
@@ -171,5 +185,11 @@
             ccst();
         });
         bpdbox.append(iptf);
+        if(f){
+            ccst(f);
+        }
+    };
+    XAPI.updsetD=function(d){
+        dcer=d;
     };
 })();

@@ -11,6 +11,11 @@ if(!window.requestAnimationFrame){
         }
     }
 }
+window.onmousewheel=function(e){
+    if(e.ctrlKey){
+        e.preventDefault();
+    }
+};
 var ps=setInterval(function(){
     if(!window.$){
         return;

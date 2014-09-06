@@ -19,7 +19,7 @@ if (!isset($_POST["u"]) || !isset($_POST["p"])) {
 }
 $name = special_filter($_POST["u"]);
 $pass = $_POST["p"];
-$res = $mys->query("SELECT * FROM `user` WHERE `user`.username = '" . $mys->real_escape_string($name) . "' AND `user`.`password` = '" . $mys->real_escape_string(base64_encode($pass)) . "'");
+$res = $mys->query("SELECT * FROM `user` WHERE `user`.username = '" . $mys->real_escape_string($name) . "' AND `user`.`password` = '" . $mys->real_escape_string(md5($pass)) . "'");
 if ($res->num_rows > 0) {
     $ft = $res->fetch_assoc();
     if ($ft["uid"] == 0) {

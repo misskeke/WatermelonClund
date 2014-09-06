@@ -110,6 +110,15 @@
                 maint.remove();
             });
         });
+        function imcb(imgs) {
+            var itext = "";
+            for (var i = 0; i < imgs.length; i++) {
+                (function (img) {
+                    itext += "\\p=" + img + "/";
+                })(imgs[i]);
+            }
+            edit.text(edit.text() + itext);
+        }
         var ok = XAPI.ui.createDBotton("发推");
         var picinp = XAPI.ui.createDBotton("插入图片");
         ok.click(function () {
@@ -136,15 +145,7 @@
         dbd.append(cancel).append(ok);
         ttd.append(dbd);
         picinp.click(function () {
-            XAPI.user.updateImage(function (imgs) {
-                var itext = "";
-                for (var i = 0; i < imgs.length; i++) {
-                    (function (img) {
-                        itext += "\\p=" + img + "/";
-                    })(imgs[i]);
-                }
-                edit.text(edit.text() + itext);
-            }, true);
+            XAPI.user.updateImage(imcb, true);
         });
         maint.css({opacity: 0, bottom: (window.innerHeight) + "px"}).animate({opacity: 1, bottom: "0px"}, 150);
     };
@@ -560,6 +561,10 @@
                                                 // 加入百度，加入网页搜索，你，可以影响世界。
                                                 console.log("%c加入西瓜云，加入社交开发，你，可以影响世界。", "color: " + rdClor());
                                                 console.log("%c     %cWebs `节操开发组 %c招人中%c ！ ", "color: #000000;", "color: #0241A0;", "color: #709E04;", "color: #0241A0;");
+                                                var az=0;
+                                                setInterval(function(){
+                                                    az=0;
+                                                },500);
                                                 window.onkeydown = function (e) {
                                                     if (e.keyIdentifier == "F12") {
                                                         var dig = XAPI.ui.createDiagbox("欢迎尽情脑补本网页~", function () {
@@ -581,6 +586,20 @@
                                                                 '，将有可能被采用，如果被采用，您的帐号将获得不定数量的奖励或特权。</div>'));
                                                         }
                                                         window.onkeydown = null;
+                                                    }else if(e.keyIdentifier == "F5"){
+                                                        e.preventDefault();
+                                                        XAPI.pages.startPage(XAPI.getPage());
+                                                        az++;
+                                                        if(az>1){
+                                                            window.onkeydown = function (e) {
+                                                                e.preventDefault();
+                                                            };
+                                                            window.location.reload();
+                                                        }
+                                                    }else if(e.ctrlKey && (e.keyIdentifier=="U+00BB" || e.keyIdentifier == "U+00BD")){
+                                                        e.preventDefault();
+                                                    }else if(e.ctrlKey && (e.keyIdentifier=="U+0053" || e.keyIdentifier.toUpperCase() == "S")){
+                                                        e.preventDefault();
                                                     }
                                                 }
                                             }, 500);

@@ -40,7 +40,7 @@ if ($res->num_rows > 0) {
     $echo["errmsg"] = "邮箱存在";
     die(json_encode($echo));
 }
-$sql = "INSERT INTO `user` (`username`, `password`, `email`, `sex`, `registerip`, `registerTime`, `QQ`, `emailCorrented`, `state`, `mailmd5`) VALUES ('" . $mys->real_escape_string($name) . "', '" . $mys->real_escape_string(base64_encode($_POST["p"])) . "', '" . $mys->real_escape_string($email) . "', '0', '" . $mys->real_escape_string(GetIP()) . "', '" . time() . "', '0', '0', '0', '".$mys->real_escape_string(md5($email))."')";
+$sql = "INSERT INTO `user` (`username`, `password`, `email`, `sex`, `registerip`, `registerTime`, `QQ`, `emailCorrented`, `state`, `mailmd5`) VALUES ('" . $mys->real_escape_string($name) . "', '" . $mys->real_escape_string(md5($_POST["p"])) . "', '" . $mys->real_escape_string($email) . "', '0', '" . $mys->real_escape_string(GetIP()) . "', '" . time() . "', '0', '0', '0', '".$mys->real_escape_string(md5($email))."')";
 $succe = $mys->query($sql);
 if ($succe) {
     $echo = array();

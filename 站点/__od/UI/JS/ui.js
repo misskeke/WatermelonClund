@@ -252,3 +252,10 @@ $.getScript("api/js/user.js", function () {
     $('body').append($('<div class="no_mirror bgrc" style="position: fixed; opacity: 0.3; background transparent; left: 0; right: 0; top: 0; bottom: 0; z-index: 0; pointer-events: none;"></div>'));
     XAPI.log("User Api loaded");
 });
+function alert(s){
+    var dg=XAPI.ui.createDiagbox("提示",function(){},"450px","auto");
+    dg.c.append($('<div style="color: deepskyblue;"></div>').text(s));
+    dg.c.append(XAPI.ui.createDBotton("确定").click(function(){
+        dg.close();
+    }));
+}
