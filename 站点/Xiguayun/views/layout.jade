@@ -1,0 +1,21 @@
+doctype html
+html
+    head
+        link(rel="stylesheet",href="/s/g.css")
+        link(rel="stylesheet",href="/s/mwui.css")
+        -if (dTitle)
+            title #{title}
+        -else
+            title #{title} · 推吧，推微博 聚贴吧
+        block head
+    body
+        .dbd
+            a(href="/") 西瓜云
+            a(href="/login") 登录
+            a(href="/register") 注册
+        -if (typeof SpecH1 == "string")
+            -if (SpecH1.length > 0)
+                h1= SpecH1
+        -else
+            h1= title
+        block content

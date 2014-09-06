@@ -1,0 +1,39 @@
+body {
+    padding: 24px;
+    font: 16px "微软雅黑", "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-family: f;
+}
+
+@font-face {
+    font-family: f;
+    src: local("微软雅黑");
+    unicode-range: U+41-5A, U+61-7A, U+C0-FF, 4 E00-9FBF;
+}
+
+@font-face {
+    font-family: f;
+    src: local("Lucida Grande"), local(Helvetica), local(Arial), local(sans-serif);
+}
+
+a {
+    color: #099eff;
+    text-decoration: none;
+    -webkit-transition: color 500ms;
+    transition: color 500ms;
+}
+a:hover {
+    color: #4564ff;
+}
+
+.dbd {
+    padding: 0;
+    font-size: 14px;
+    opacity: 0.9;
+    line-height: 32px;
+}
+
+.dbd a {
+    padding-left: 5px;
+    padding-right: 5px;
+    text-shadow: 0 0 4px rgba(9, 158, 255, 0.20);
+}

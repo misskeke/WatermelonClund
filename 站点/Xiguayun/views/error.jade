@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    h1 啊咧……
+    <!-- #{error.status} -->
+    h2= message
+    div(style="white-space: pre;")= error.stack
+        div(style="color: #5f97cf") 我们只知道这些……
