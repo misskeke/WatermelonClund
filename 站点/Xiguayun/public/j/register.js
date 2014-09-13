@@ -27,9 +27,12 @@ $(function () {
             return false;
         }
 
-        $.post('/register?ajax', {emill: emi.val(), username: usn.val(), password: pwd.val()}, function (q) {
+        $.post('/register', {emill: emi.val(), username: usn.val(), password: pwd.val()}, function (q) {
             console.info(q);
-        });
+            if(q.errName){
+                XLIB.wcAddErrtest(usn, q.errName);
+            }
+        },'json');
 
         return false;
     });

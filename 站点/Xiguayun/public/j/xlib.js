@@ -50,31 +50,6 @@ XLIB.wcAddErrtest = function (ipt, txt, rt, ontc) {
 };
 XLIB.strSpaceOh = function (s) {
     return s.replace(/^\s+|\s+$/gm, '');
-    var buff = "";
-    var stStart = false;
-    for (var i = 0; i < s.length; i++) {
-        if (stStart) {
-            buff += s.charAt(i);
-        } else {
-            if (!s.charAt(i).match(/^\s$/)) {
-                stStart = true;
-                buff += s.charAt(i);
-            }
-        }
-    }
-    var etStart = false;
-    var bff = "";
-    for (var j = buff.length - 1; j > -1; j--) {
-        if (etStart) {
-            bff = buff.charAt(j) + bff;
-        } else {
-            if (!buff.charAt(j).match(/^\s$/)) {
-                etStart = true;
-                bff = buff.charAt(j) + bff;
-            }
-        }
-    }
-    return bff;
 };
 XLIB.rds = function (l) {
     var text = "";
