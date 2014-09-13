@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var errpc=require('./bin/errrsp.js');
+var errpc = require('./bin/errrsp.js');
 
 var routes = require('./routes/index');
 
@@ -37,7 +37,7 @@ app.use(function (req, res, next) {
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
-    errpc(res,err,404);
+    errpc(res, err, 404);
 });
 
 

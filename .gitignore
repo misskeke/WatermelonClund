@@ -1,0 +1,8 @@
+站点/Xiguayun/.idea
+站点/Xiguayun/.idea/*
+站点/Xiguayun/node_modules
+站点/Xiguayun/node_modules/*
+站点/Xiguayun/proj.sublime-project
+站点/Xiguayun/proj.sublime-workspace
+站点/.project
+php_errors.log

@@ -1,8 +1,9 @@
 extends layout
 block head
     link(rel="stylesheet",href="/s/l.css")
+    script(src="/j/login.js",type="text/javascript")
 block content
-    .lgrs-box
-        input.mw-ui-input.lginusn(type="text",placeholder="用户名",name="username",value=usr)
-        input.mw-ui-input.lginpwd(type="password",placeholder="密码",name="password")
-        input.mw-ui-button.mw-ui-big.mw-ui-block.mw-ui-constructive.lginsbmit(type="submit",value="登录")
+    form.lgrs-box(method="post",action="/login")
+        input.lginusn.xui-input-text(type="text",placeholder="用户名",name="username",value=usr)
+        input.lginpwd.xui-input-text(type="password",placeholder="密码",name="password")
+        input.lginsbmit.xui-buttom(type="submit",value="登录")

@@ -6,14 +6,17 @@ body .indextpb {
     padding-left: 40px;
     position: relative;
 }
+
 body .indextpb .htit {
     font-size: 28px;
     color: #393939;
     text-shadow: 0 0 6px rgba(0, 0, 0, 0.33);
 }
+
 body .indextpb .czz {
     font-size: 14px;
 }
+
 body .indextpb .rit {
     position: absolute;
     right: 28px;

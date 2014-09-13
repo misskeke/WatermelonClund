@@ -1,6 +1,6 @@
 body {
     padding: 24px;
-    font: 16px "微软雅黑", "Lucida Grande", Helvetica, Arial, sans-serif;
+    font: 16px Helvetica, Arial, sans-serif, "Lucida Grande", "微软雅黑", "黑体";
     font-family: f;
 }
 
@@ -13,16 +13,6 @@ body {
 @font-face {
     font-family: f;
     src: local("Lucida Grande"), local(Helvetica), local(Arial), local(sans-serif);
-}
-
-a {
-    color: #099eff;
-    text-decoration: none;
-    -webkit-transition: color 500ms;
-    transition: color 500ms;
-}
-a:hover {
-    color: #4564ff;
 }
 
 .dbd {
