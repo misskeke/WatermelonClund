@@ -10,6 +10,9 @@ html
         -else
             title #{title} · 推吧，推微博 聚贴吧
         block head
+        - if(wisChk)
+            script.
+                var pdWisChk="#{wisChk}";
     body
         .dbd
             a(href="/") 西瓜云

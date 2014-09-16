@@ -2,24 +2,60 @@ var express = require('express');
 var dderr = require('../bin/errcache.js');
 var cache = require('memory-cache');
 var strlib = require('../bin/str.js');
+var cacVsid = {};
+var cy=require('crypto');
 strlib.init(cache);
 var router = express.Router();
 
+function wisGen(req,res){
+    var wisZd=req.cookies.wis;
+    function gencWiszd(){
+        var wiRdn=cy.randomBytes(255).toString("hex");
+        if(cacVsid[wiRdn]){
+            gencWiszd();
+            return;
+        }
+        cacVsid[wiRdn]=cy.randomBytes(255).toString("hex");
+        res.cookie("wis",wiRdn,{
+            httpOnly: true, secure: true
+        });
+        wisZd=wiRdn;
+    }
+    if(wisZd){
+        if(!cacVsid[wisZd]){
+            gencWiszd();
+        }
+    }else{
+        gencWiszd();
+    }
+    res.locals.wisChk=cacVsid[wisZd];
+    return cacVsid[wisZd];
+}
+function wisChk(req,res){
+    var wisZd=req.cookies.wis;
+    return !((!wisZd) || (cacVsid[wisZd]!=req.body.wisChk) || (!cacVsid[wisZd]) || (!req.body.wisChk));
+}
+router.use(function(req, res, next){
+    wisGen(req,res);
+    next();
+});
+
 router.get('/', function (req, res) {
-    res.render('index', { res: res, title: "推吧", dTitle: true, SpecH1: "",
+    res.render('index', { title: "推吧", dTitle: true, SpecH1: "",
         tieAmount: 0 });
 });
 
+
 router.get('/login/:usr?', function (req, res) {
     dderr(function () {
-        res.render('login', { res: res, title: "登录", usr: req.params.usr });
+        res.render('login', { title: "登录", usr: req.params.usr });
     }, res);
 });
 
 
 router.get('/register', function (req, res) {
     dderr(function () {
-        res.render('register', { res: res, title: "注册" });
+        res.render('register', { title: "注册" });
     }, res);
 });
 router.post('/register', function (req, res) {
