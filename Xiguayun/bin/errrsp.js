@@ -11,7 +11,6 @@ module.exports = function (res, err, s) {
                         "错误码是" + err.status + "。"
             }
         })()},
-        res: res,
         title: err.message,
         SpecH1: ""
     });

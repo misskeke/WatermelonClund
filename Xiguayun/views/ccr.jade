@@ -1,0 +1,9 @@
+extends layout
+block content
+    h1(style="color: #d51b09;") 您刚刚访问了一个危险网站……
+    h2 是的。。那个网站正在想办法盗取您的西瓜云帐号……
+    p 不用担心，您的帐号目前没有危险，但是请不要再访问那个网站。
+    script.
+        if(window.top!=window){
+            window.top.location="/ccr";
+        }

@@ -33,7 +33,12 @@ function wisGen(req,res){
 }
 function wisChk(req,res){
     var wisZd=req.cookies.wis;
-    return !((!wisZd) || (cacVsid[wisZd]!=req.body.wisChk) || (!cacVsid[wisZd]) || (!req.body.wisChk));
+    var wisChk=req.body.wisChk;
+    var correct=cacVsid[wisZd];
+    return (wisZd && wisChk && (correct==wisChk) && correct);
+}
+function wisNorq(req,res){
+    res.render('ccr',{title: "Oh", SpecH1: ""});
 }
 router.use(function(req, res, next){
     wisGen(req,res);
@@ -44,7 +49,15 @@ router.get('/', function (req, res) {
     res.render('index', { title: "推吧", dTitle: true, SpecH1: "",
         tieAmount: 0 });
 });
-
+router.get('/ccr', function (req, res) {
+    wisNorq(req,res);
+});
+router.get('/ccr/test', function (req, res) {
+    res.render('ccrtest');
+});
+router.get('/ccr/:usr', function(req,res){
+    res.redirect('/ccr');
+});
 
 router.get('/login/:usr?', function (req, res) {
     dderr(function () {
@@ -58,8 +71,12 @@ router.get('/register', function (req, res) {
         res.render('register', { title: "注册" });
     }, res);
 });
+router.get('/register/:usr', function(req,res){
+    res.redirect('/register');
+});
 router.post('/register', function (req, res) {
     dderr(function () {
+        if(!wisChk(req,res)){return wisNorq(req,res)}
         var mbname=strlib.strsftrim(req.body.username);
         var mbemill=strlib.strsftrim(req.body.emill);
         var mbpasswd=strlib;
@@ -87,3 +104,4 @@ router.post('/register', function (req, res) {
 });
 
 module.exports = router;
+

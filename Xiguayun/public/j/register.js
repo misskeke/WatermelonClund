@@ -27,7 +27,7 @@ $(function () {
             return false;
         }
 
-        $.post('/register', {emill: emi.val(), username: usn.val(), password: pwd.val()}, function (q) {
+        $.post('/register', {emill: emi.val(), username: usn.val(), password: pwd.val(), wisChk:pdWisChk}, function (q) {
             console.info(q);
             if(q.errName){
                 XLIB.wcAddErrtest(usn, q.errName);
