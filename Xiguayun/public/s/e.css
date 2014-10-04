@@ -1,0 +1,12 @@
+.errstu {
+    opacity: 0.3;
+    font-weight: lighter;
+    text-shadow: 0 0 20px rgb(255, 255, 255), 0 0 50px #000, 0 0 50px rgba(255, 0, 0, 0.29);
+    cursor: default;
+    color: rgba(255, 255, 255, 0);
+    font-size: 300px;
+    position: fixed;
+    right: 40px;
+    top: 30px;
+    pointer-events: none;
+}
