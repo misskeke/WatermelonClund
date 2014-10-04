@@ -1,5 +1,4 @@
 var express = require('express');
-var dderr = require('../bin/errcache.js');
 var cache = require('memory-cache');
 var strlib = require('../bin/str.js');
 var cacVsid = {};
@@ -48,73 +47,53 @@ router.use(function (req, res, next) {
 });
 
 router.get('/', function (req, res) {
-    dderr(function () {
-        res.render('index', { title: "推吧，让人们总能聚到一起", dTitle: true, SpecH1: "",
-            tieAmount: 0 });
-    }, res);
+    res.render('index', { title: "推吧，让人们总能聚到一起", dTitle: true, SpecH1: "",
+        tieAmount: 0 });
 });
 router.get('/ccr', function (req, res) {
-    dderr(function () {
-        wisNorq(req, res);
-    }, res);
+    wisNorq(req, res);
 });
 router.get('/ccr/test', function (req, res) {
-    dderr(function () {
-        res.render('ccrtest');
-    }, res);
+    res.render('ccrtest');
 });
 router.get('/ccr/:usr', function (req, res) {
-    dderr(function () {
-        res.redirect('/ccr');
-    }, res);
+    res.redirect('/ccr');
 });
 
 router.get('/login/:usr?', function (req, res) {
-    dderr(function () {
-        res.render('login', { title: "登录", usr: req.params.usr });
-    }, res);
+    res.render('login', { title: "登录", usr: req.params.usr });
 });
 
 
 router.get('/register', function (req, res) {
-    dderr(function () {
-        res.render('register', { title: "注册" });
-    }, res);
+    res.render('register', { title: "注册" });
 });
 router.get('/register/:usr', function (req, res) {
-    dderr(function () {
-        res.redirect('/register');
-    }, res);
+    res.redirect('/register');
 });
 router.post('/register', function (req, res) {
-    dderr(function () {
-        if (!wisChk(req, res)) {
-            return wisNorq(req, res)
-        }
-        var mbname = strlib.strsftrim(req.body.username);
-        var mbemill = strlib.strsftrim(req.body.emill);
-        var mbpasswd = strlib;
-        if (mbname.length < 6 || mbname.length > 15) {
-            res.send({successed: false, errName: "用户名不符合格式要求。请勿包括ASCII控制字符等。"});
-            return;
-        }
-        if (!mbemill.match(/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/)) {
-            res.send({successed: false, errName: "邮箱不正确"});
-            return;
-        }
-        res.send({successed: false, errName: "用户名已存在"});
-    }, res);
+    if (!wisChk(req, res)) {
+        return wisNorq(req, res)
+    }
+    var mbname = strlib.strsftrim(req.body.username);
+    var mbemill = strlib.strsftrim(req.body.emill);
+    var mbpasswd = strlib;
+    if (mbname.length < 6 || mbname.length > 15) {
+        res.send({successed: false, errName: "用户名不符合格式要求。请勿包括ASCII控制字符等。"});
+        return;
+    }
+    if (!mbemill.match(/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/)) {
+        res.send({successed: false, errName: "邮箱不正确"});
+        return;
+    }
+    res.send({successed: false, errName: "用户名已存在"});
 });
 
 router.post('/login', function (req, res) {
-    dderr(function () {
-        res.end();
-    }, res);
+    res.end();
 });
 router.post('/register', function (req, res) {
-    dderr(function () {
-        res.end();
-    }, res);
+    res.end();
 });
 
 module.exports = router;
