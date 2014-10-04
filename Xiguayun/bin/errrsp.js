@@ -12,7 +12,7 @@ module.exports = function (res, err, s) {
                     return "嗯。。是发生错误了\n但是我们不知道这是什么错误，也不知道哪里错误了……\n" +
                         "错误码是" + err.status + "。"
             }
-        })()},
+        })(), httpste: err.httpste},
         title: err.message,
         SpecH1: ""
     });

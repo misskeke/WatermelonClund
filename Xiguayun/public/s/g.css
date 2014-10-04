@@ -30,6 +30,7 @@ body {
     -webkit-transition: border-left 150ms, padding 150ms;
     transition: border-left 150ms, padding 150ms;
 }
+
 .dbd:hover {
     border-left: solid seagreen 4px;
     padding: 0 24px 0 20px;
@@ -38,7 +39,7 @@ body {
 .dbd a {
     padding-left: 5px;
     padding-right: 5px;
-    text-shadow: 0 0 4px rgba(9, 158, 255, 0.20), 0 0 10px rgba(255,255,255,1),
-    1px -1px 10px rgba(255,255,255,0.9), -1px 1px 10px rgba(255,255,255,0.9),
-    1px 1px 10px rgba(255,255,255,0.9), -1px -1px 10px rgba(255,255,255,0.9);
+    text-shadow: 0 0 4px rgba(9, 158, 255, 0.20), 0 0 10px rgba(255, 255, 255, 1),
+    1px -1px 10px rgba(255, 255, 255, 0.9), -1px 1px 10px rgba(255, 255, 255, 0.9),
+    1px 1px 10px rgba(255, 255, 255, 0.9), -1px -1px 10px rgba(255, 255, 255, 0.9);
 }

@@ -33,6 +33,7 @@ app.use('/', routes);
 app.use(function (req, res, next) {
     var err = new Error('内容不存在');
     err.status = "E_CONTENT_NOT_FIND";
+    err.httpste = 404;
     next(err);
 });
 
@@ -42,7 +43,12 @@ app.use(function (req, res, next) {
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
-    errpc(res, err, 404);
+    if(!err.httpste){
+        err = new Error("系统错误");
+        err.status = "E_SERVER_ERROR";
+        err.httpste = 500;
+    }
+    errpc(res, err, err.httpste);
 });
 
 
