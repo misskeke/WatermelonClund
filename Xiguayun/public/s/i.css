@@ -24,13 +24,57 @@
     top: 28px;
     display: inline-block;
 }
+.boxclc{
+    text-align: center;
+}
 
 .gbox {
+    text-align: left;
     background-color: rgba(197, 197, 197, 0.45);
     display: inline-block;
-    min-width: 2px;
-    min-height: 2px;
+    vertical-align: top;
+    width: 300px;
+    height: 400px;
+    overflow: auto;
     margin: 4px;
     padding: 12px;
     border: solid #aaaaaa 1px;
+    position: relative;
+}
+
+.gbYouknow {
+    display: block;
+    vertical-align: middle;
+    line-height: 32px;
+    margin-top: 5px;
+    padding-bottom: 5px;
+    border-top: solid seagreen 1px;
+}
+.gbYkncen {
+    color: rgba(0, 0, 0, 0.80);
+    font-size: 80%;
+}
+.gbYkntm {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    font-size: 90%;
+}
+
+.gbYkntmC {
+    display: inline;
+    color: rgba(0, 0, 0, 0.84);
+    margin: 4px;
+    cursor: default;
+    pointer-events: none;
+}
+
+.gboxKnow {
+    background-color: #d2d4dc;
+}
+.gboxTop {
+    background-color: #d8dae8;
+}
+.gboxEvent {
+    background-color: #e5e6eb;
 }

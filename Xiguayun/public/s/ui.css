@@ -1,3 +1,7 @@
+* {
+    word-break: break-all;
+}
+
 .xui-input-text {
     border: hidden;
     border-bottom: solid seagreen 1px;
@@ -138,4 +142,11 @@ a:hover {
     background-color: rgba(255, 93, 64, 0.47);
     color: #000000;
     font-size: 16px;
+}
+
+.redlink {
+    color: crimson;
+}
+.redlink:hover {
+    color: #800c23;
 }
