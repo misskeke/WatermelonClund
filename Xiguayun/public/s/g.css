@@ -1,5 +1,5 @@
 body {
-    padding: 24px;
+    padding: 30px 24px 24px 24px;
     font: 16px Helvetica, Arial, sans-serif, "Lucida Grande", "微软雅黑", "黑体";
     font-family: f;
 }
@@ -16,14 +16,29 @@ body {
 }
 
 .dbd {
-    padding: 0;
+    padding: 0 24px 0 24px;
     font-size: 14px;
     opacity: 0.9;
-    line-height: 32px;
+    line-height: 50px;
+    background-color: rgba(255, 255, 255, 0.4);
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 98;
+    border-left: solid seagreen 0px;
+    -webkit-transition: border-left 150ms, padding 150ms;
+    transition: border-left 150ms, padding 150ms;
+}
+.dbd:hover {
+    border-left: solid seagreen 4px;
+    padding: 0 24px 0 20px;
 }
 
 .dbd a {
     padding-left: 5px;
     padding-right: 5px;
-    text-shadow: 0 0 4px rgba(9, 158, 255, 0.20);
+    text-shadow: 0 0 4px rgba(9, 158, 255, 0.20), 0 0 10px rgba(255,255,255,1),
+    1px -1px 10px rgba(255,255,255,0.9), -1px 1px 10px rgba(255,255,255,0.9),
+    1px 1px 10px rgba(255,255,255,0.9), -1px -1px 10px rgba(255,255,255,0.9);
 }

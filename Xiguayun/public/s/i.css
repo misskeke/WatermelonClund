@@ -1,25 +1,36 @@
-body .indextpb {
+.indextpb {
     border: 1px solid #aaaaaa;
     padding: 28px;
     background-color: #ECF8FF;
     font-size: 16px;
     padding-left: 40px;
     position: relative;
+    margin-top: 25px;
 }
 
-body .indextpb .htit {
+.indextpb .htit {
     font-size: 28px;
     color: #393939;
     text-shadow: 0 0 6px rgba(0, 0, 0, 0.33);
 }
 
-body .indextpb .czz {
+.indextpb .czz {
     font-size: 14px;
 }
 
-body .indextpb .rit {
+.indextpb .rit {
     position: absolute;
     right: 28px;
     top: 28px;
     display: inline-block;
+}
+
+.gbox {
+    background-color: rgba(197, 197, 197, 0.45);
+    display: inline-block;
+    min-width: 2px;
+    min-height: 2px;
+    margin: 4px;
+    padding: 12px;
+    border: solid #aaaaaa 1px;
 }

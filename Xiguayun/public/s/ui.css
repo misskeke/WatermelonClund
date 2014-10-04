@@ -22,6 +22,28 @@
     rgba(208, 202, 42, 0.21);
 }
 
+h2 {
+    -webkit-margin-before: 15px;
+    -webkit-margin-after: 15px;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+    line-height: 120%;
+}
+h2 {
+    -webkit-margin-before: 10px;
+    -webkit-margin-after: 10px;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+    line-height: 110%;
+}
+h3 {
+    -webkit-margin-before: 5px;
+    -webkit-margin-after: 5px;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+    line-height: 100%;
+}
+
 a {
     color: #099eff;
     text-decoration: none;
