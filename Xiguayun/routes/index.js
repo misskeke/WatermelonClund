@@ -24,55 +24,25 @@ marked.setOptions({
     }
 });
 
-//function wisGen(req, res) {
-//    var wisZd = req.cookies.wis;
-//    var xgWisModel = dbc.model('xgWis');
-//
-//    function gencWiszd(cbc) {
-//        var wiRdn = cy.randomBytes(255).toString("hex");
-//        var wisz = new xgWisModel({wis: wisZd, wisRq: wiRdn, session: {}});
-//        xgWisModel.find({wis: wisZd},'wis',function(e,s){
-//            if(e){s=[];}
-//            if(s.length > 0){
-//                gencWiszd(cbc);
-//            }else{
-//                res.cookie("wis", wiRdn, {
-//                    httpOnly: true, secure: true
-//                });
-//                wisZd = wiRdn;
-//            }
-//        });
-//    }
-//
-//    if (wisZd) {
-//        if (!cacVsid[wisZd]) {
-//            gencWiszd();
-//        }
-//    } else {
-//        gencWiszd();
-//    }
-//    res.locals.wisChk = cacVsid[wisZd];
-//    return cacVsid[wisZd];
-//}
 function wisGen(req, res, cbc){
     var wisZd = req.cookies.wis;
     var xgWisModel = dbc.model('xgWis');
 
     function genc(cbc){
-        var wi = new xgWisModel({wis: cy.randomBytes(255).toString("hex"), wisRq: cy.randomBytes(255).toString("hex")});
+        var wi = new xgWisModel({wis: cy.randomBytes(255).toString("hex"), wisRq: cy.randomBytes(255).toString("hex"), session:{}});
         res.cookie("wis", wi.wis, {
             httpOnly: true, secure: true
         });
         wi.save(function(){
-            cbc(wi.wis,wi.wisRq);
+            cbc(wi.wis,wi.wisRq,wi);
         });
     }
 
     if(wisZd){
-        xgWisModel.find({wis: wisZd},'wis wisRq',function(e,s){
+        xgWisModel.find({wis: wisZd},function(e,s){
             if(e){s=[];}
             if(s.length > 0){
-                cbc(wisZd,s[0].wisRq);
+                cbc(wisZd,s[0].wisRq,s[0]);
             }else{
                 genc(cbc);
             }
@@ -81,17 +51,12 @@ function wisGen(req, res, cbc){
         genc(cbc);
     }
 }
-//function wisChk(req, res) {
-//    var wisZd = req.cookies.wis;
-//    var wisChk = req.body.wisChk;
-//    var correct = cacVsid[wisZd];
-//    return (wisZd && wisChk && (correct == wisChk) && correct);
-//}
+
 function wisChk(req, res, cbc) {
     var wisZd = req.cookies.wis;
     var wisChk = req.body.wisChk;
     var xgWisModel = dbc.model('xgWis');
-    xgWisModel.find({wis: wisZd, wisRq: wisChk},"wis wisRq",function(e,s){
+    xgWisModel.find({wis: wisZd, wisRq: wisChk},function(e,s){
         if(e){s=[];}
         if(s.length > 0){
             cbc();
@@ -102,8 +67,9 @@ function wisChk(req, res, cbc) {
 }
 
 router.use(function (req, res, next) {
-    wisGen(req, res, function(wis,chk){
+    wisGen(req, res, function(wis,chk,wi){
         res.locals.wisChk=chk;
+        res.sessWi=wi;
         next();
     });
 });
@@ -130,15 +96,20 @@ router.get('/register', function (req, res) {
     res.render('register', { title: "注册" });
 });
 router.get('/register/clr', function (req, res) {
-    var xgRegTaskModel = dbc.model('xgRegTask');
-    xgRegTaskModel.find({_id: req.cookies.regTask},function(e,s){
-        if(e){s=[]}
-        if(s.length>0){
-            res.render('reging', { title: "欢迎！"+s[0].name, regTask:s[0] });
-        }else{
-            res.redirect('/register');
-        }
-    });
+    var wi=res.sessWi;
+    if(res.sessWi.session.reg){
+        var xgRegTaskModel = dbc.model('xgRegTask');
+        xgRegTaskModel.find({_id: wi.session.reg},function(e,s){
+            if(e){s=[]}
+            if(s.length>0){
+                res.render('reging', { title: "欢迎！"+s[0].name, regTask:s[0] });
+            }else{
+                res.redirect('/register');
+            }
+        });
+    }else{
+        res.redirect('/register');
+    }
 });
 
 router.get('/register/:usr', function (req, res) {
@@ -147,6 +118,7 @@ router.get('/register/:usr', function (req, res) {
 
 router.post('/register', function (req, res) {
     wisChk(req, res, function(){
+        var wi=res.sessWi;
         var mbname = strlib.strsftrim(req.body.username);
         var mbemill = strlib.strsftrim(req.body.emill);
         var mbpasswd = req.body.password;
@@ -169,15 +141,17 @@ router.post('/register', function (req, res) {
                     email: mbemill });
                 ddcTask.save(function(err){
                     if(err){
-                        res.send({errName: err.message+"，请稍候重试。"})
+                        res.send({errName: err.message+"，请稍候重试。"});
                     }else{
-                        res.cookie("regTask", ddcTask.id, {
-                            httpOnly: true, secure: true
+                        wi.session.reg=ddcTask.id;
+                        wi.markModified('session');
+                        wi.save(function(e){
+                            if(e){
+                                res.send({errName: err.message+"，请稍候重试。"});
+                            }else{
+                                res.send({successful:true});
+                            }
                         });
-                        res.cookie("passwd", ddcTask.password, {
-                            httpOnly: true, secure: true
-                        });
-                        res.send({successful:true});
                     }
                 });
             }
@@ -259,7 +233,7 @@ module.exports = function(d){
     var xgWis = new mon.Schema({
         wis: String,
         wisRq: String,
-        session: {}
+        session: {type: {}, default: {}}
     });
     var xgUserModel = dbc.model('xgUser',xgUser);
     var xgRegTaskModel = dbc.model('xgRegTask',xgRegTask);

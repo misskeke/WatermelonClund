@@ -39,7 +39,7 @@ db.once('open',function(){
     });
     app.use(function (err, req, res, next) {
         if(!err.httpste){
-            console.info(err);
+            console.error(err,err.stack);
             err = new Error("系统错误");
             err.status = "E_SERVER_ERROR";
             err.httpste = 500;
