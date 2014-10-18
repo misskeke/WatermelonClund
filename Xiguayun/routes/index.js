@@ -93,7 +93,20 @@ router.get('/login/:usr?', function (req, res) {
 });
 
 router.get('/register', function (req, res) {
-    res.render('register', { title: "注册" });
+    var wi=res.sessWi;
+    if(res.sessWi.session.reg){
+        var xgRegTaskModel = dbc.model('xgRegTask');
+        xgRegTaskModel.find({_id: wi.session.reg},function(e,s){
+            if(e){s=[]}
+            if(s.length>0){
+                res.redirect('/register/clr');
+            }else{
+                res.render('register', { title: "注册" });
+            }
+        });
+    }else{
+        res.render('register', { title: "注册" });
+    }
 });
 router.get('/register/clr', function (req, res) {
     var wi=res.sessWi;
