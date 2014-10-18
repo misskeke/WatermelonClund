@@ -27,8 +27,8 @@ XLIB.wcAddErrtest = function (ipt, txt, rt, ontc) {
             st.remove();
         });
     $('body').append(st);
-    if(st.offset().left + 300 > $(window).width()){
-        st.css({left: ($(window).width()-300)+"px"});
+    if (st.offset().left + 300 > $(window).width()) {
+        st.css({left: ($(window).width() - 300) + "px"});
     }
     if (rt) {
         ipt.attr("placeholder", rt);
@@ -65,41 +65,43 @@ XLIB.rds = function (l) {
 };
 XLIB.onTxtChangSpd = "focus blur keydown keyup paste cut mousedown mouseup click mousewheel";
 
-XLIB.reflashLight = function(){
-    var hls=$('.highlight').find('span');
-    function randomRgb(max,min){
-        min=min || 0;
-        var r=(parseInt(Math.random()*max)+min).toString(16);
-        var g=(parseInt(Math.random()*max)+min).toString(16);
-        var b=(parseInt(Math.random()*max)+min).toString(16);
-        return "#"+r+g+b;
+XLIB.reflashLight = function () {
+    var hls = $('.highlight').find('span');
+
+    function randomRgb(max, min) {
+        min = min || 0;
+        var r = (parseInt(Math.random() * max) + min).toString(16);
+        var g = (parseInt(Math.random() * max) + min).toString(16);
+        var b = (parseInt(Math.random() * max) + min).toString(16);
+        return "#" + r + g + b;
     }
-    var classToRgb={};
-    for(var i=0;i<hls.length;i++){
-        if(classToRgb[hls[i].className]){
+
+    var classToRgb = {};
+    for (var i = 0; i < hls.length; i++) {
+        if (classToRgb[hls[i].className]) {
             $(hls[i]).css({color: classToRgb[hls[i].className]});
-        }else{
-            var clr=randomRgb(128);
-            classToRgb[hls[i].className]=clr;
+        } else {
+            var clr = randomRgb(128);
+            classToRgb[hls[i].className] = clr;
             $(hls[i]).css({color: clr});
         }
-        (function(c){
-            c.mouseenter(function(){
-                c.stop(true,false,false);
-                var cRs= c.css("color");
-                var dbNvc=randomRgb(128);
+        (function (c) {
+            c.mouseenter(function () {
+                c.stop(true, false, false);
+                var cRs = c.css("color");
+                var dbNvc = randomRgb(128);
                 c.unbind('mousedown mouseleave');
-                c.mousedown(function(){
-                    $('.highlight .'+c[0].className).stop(true,false,false)
-                        .animate({color: dbNvc},250);
-                    classToRgb[c[0].className]=dbNvc;
+                c.mousedown(function () {
+                    $('.highlight .' + c[0].className).stop(true, false, false)
+                        .animate({color: dbNvc}, 250);
+                    classToRgb[c[0].className] = dbNvc;
                     c.unbind('mousedown mouseleave');
                 });
-                c.stop(true,false,false);
-                c.animate({color: dbNvc},250);
-                c.mouseleave(function(){
-                    c.stop(true,false,false);
-                    c.animate({color: cRs},250);
+                c.stop(true, false, false);
+                c.animate({color: dbNvc}, 250);
+                c.mouseleave(function () {
+                    c.stop(true, false, false);
+                    c.animate({color: cRs}, 250);
                 });
             });
         })($(hls[i]));

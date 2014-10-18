@@ -24,7 +24,8 @@
     top: 28px;
     display: inline-block;
 }
-.boxclc{
+
+.boxclc {
     text-align: center;
 }
 
@@ -50,10 +51,12 @@
     padding-bottom: 5px;
     border-top: solid seagreen 1px;
 }
+
 .gbYkncen {
     color: rgba(0, 0, 0, 0.80);
     font-size: 80%;
 }
+
 .gbYkntm {
     position: absolute;
     right: 10px;
@@ -72,15 +75,19 @@
 .gboxKnow {
     background-color: #d2d4dc;
 }
+
 .gboxTop {
     background-color: #d8dae8;
 }
+
 .gboxEvent {
     background-color: #e5e6eb;
 }
+
 .gboxSmailTool {
     background-color: #ddc7d0;
 }
+
 .gbStt {
     display: block;
 }

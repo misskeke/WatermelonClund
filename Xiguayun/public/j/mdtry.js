@@ -1,8 +1,8 @@
-$(function(){
+$(function () {
     var useript = $('.mdTestarea');
     var rig = $('.dRight');
     var lastcent = useript.val();
-    if(localStorage.mdTestBl){
+    if (localStorage.mdTestBl) {
         useript.val(localStorage.mdTestBl);
     }
     var lasttimeout = -1;
@@ -11,16 +11,16 @@ $(function(){
             clearTimeout(lasttimeout);
             lastcent = useript.val();
             lasttimeout = setTimeout(function () {
-                $.post('/markdown/preview',{md:lastcent,wisChk:pdWisChk},function(q){
+                $.post('/markdown/preview', {md: lastcent, wisChk: pdWisChk}, function (q) {
                     rig.html(q.preview);
-                    if(q.error){
+                    if (q.error) {
                         rig.append($('<div class="wigWitherror"></div>').text(q.error));
                     }
                     XLIB.reflashLight();
-                },'json');
-                localStorage.mdTestBl=lastcent;
+                }, 'json');
+                localStorage.mdTestBl = lastcent;
             }, 500);
         }
-        useript.css({minHeight: rig.height()+"px"});
+        useript.css({minHeight: rig.height() + "px"});
     }, 50);
 });

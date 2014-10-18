@@ -27,14 +27,14 @@ $(function () {
             return false;
         }
 
-        $.post('/register', {emill: emi.val(), username: usn.val(), password: pwd.val(), wisChk:pdWisChk }, function (q) {
+        $.post('/register', {emill: emi.val(), username: usn.val(), password: pwd.val(), wisChk: pdWisChk }, function (q) {
             console.info(q);
-            if(q.errName){
+            if (q.errName) {
                 XLIB.wcAddErrtest(usn, q.errName);
-            }else if(q.successful){
+            } else if (q.successful) {
                 window.location = "/register/clr";
             }
-        },'json');
+        }, 'json');
 
         return false;
     });

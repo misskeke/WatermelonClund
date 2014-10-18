@@ -44,7 +44,6 @@ body {
     1px 1px 10px rgba(255, 255, 255, 0.9), -1px -1px 10px rgba(255, 255, 255, 0.9);
 }
 
-
 .sucrf {
     /* top right bottom left */
     margin: 15px auto 15px auto;
@@ -61,10 +60,12 @@ body {
     text-decoration: underline;
     text-shadow: 0 0 2px rgba(0, 0, 0, 0.20);
 }
+
 .sucrf_undo:hover {
     color: #efefef;
     text-shadow: 0 0 2px rgba(0, 0, 0, 0.30);
 }
+
 .sucrf_close {
     float: right;
     text-align: right;

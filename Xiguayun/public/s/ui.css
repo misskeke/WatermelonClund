@@ -148,6 +148,7 @@ a:hover {
 .redlink {
     color: crimson;
 }
+
 .redlink:hover {
     color: #800c23;
 }
@@ -155,11 +156,13 @@ a:hover {
 code {
     color: #222222;
 }
+
 .zs {
     font-size: 80%;
     opacity: 0.8;
     font-style: oblique;
 }
+
 .inlblock {
     display: inline-block;
 }
