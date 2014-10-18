@@ -4,8 +4,8 @@ $(function () {
     var pwdgent = $('.lginpwdgenb');
     var lastGentn = "";
     f.bind("submit", function () {
-        if (XLIB.strSpaceOh(usn.val()).length < 6 || XLIB.strSpaceOh(usn.val()).length > 15) {
-            XLIB.wcAddErrtest(usn, "用户名长度必须≥6，≤15");
+        if (XLIB.strSpaceOh(usn.val()).length < 3 || XLIB.strSpaceOh(usn.val()).length > 15) {
+            XLIB.wcAddErrtest(usn, "用户名长度必须≥3，≤15");
             return false;
         }
         if (pwd.val().length < 6 || pwd.val().length > 255) {
@@ -27,10 +27,12 @@ $(function () {
             return false;
         }
 
-        $.post('/register', {emill: emi.val(), username: usn.val(), password: pwd.val(), wisChk:pdWisChk}, function (q) {
+        $.post('/register', {emill: emi.val(), username: usn.val(), password: pwd.val(), wisChk:pdWisChk }, function (q) {
             console.info(q);
             if(q.errName){
                 XLIB.wcAddErrtest(usn, q.errName);
+            }else if(q.successful){
+                window.location = "/register/clr";
             }
         },'json');
 

@@ -8,6 +8,8 @@ module.exports = function (res, err, s) {
                     return "您访问的既不是帖子 也不是吧 也不是用户页 也不是……\n总之我们不知道您在访问什么……\n";
                 case "E_SERVER_ERROR":
                     return "请稍候重试";
+                case "MD_TIP_NOTFIND":
+                    return "此Markdown帮助不存在。";
                 default :
                     return "嗯。。是发生错误了\n但是我们不知道这是什么错误，也不知道哪里错误了……\n" +
                         "错误码是" + err.status + "。"

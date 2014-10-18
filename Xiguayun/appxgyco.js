@@ -28,7 +28,7 @@ app.use(function (req, res, next) {
 var db = mongo.createConnection('localhost','websint');
 db.on('error',console.error.bind(console,'连接错误:'));
 db.once('open',function(){
-    var routes = require('./routes/index')({mongo:mongo,db:db});
+    var routes = require('./routes/xgyco')({mongo:mongo,db:db});
     app.use('/', routes);
     // catch 404 and forward to error handler
     app.use(function (req, res, next) {
@@ -39,8 +39,7 @@ db.once('open',function(){
     });
     app.use(function (err, req, res, next) {
         if(!err.httpste){
-            console.info(err);
-            err = new Error("系统错误");
+            err = new Error(err.message);
             err.status = "E_SERVER_ERROR";
             err.httpste = 500;
         }

@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 var fs = require('fs');
 var app = require('../app');
+var appxgyco = require('../appxgyco');
 var https = require('https');
 
 var server = https.createServer({key: fs.readFileSync('/home/maomao/localhost.key', 'utf8'), cert: fs.readFileSync('/home/maomao/localhost.crt', 'utf8')}, app).listen(3000);
+var sxgyco = https.createServer({key: fs.readFileSync('/home/maomao/localhost.key', 'utf8'), cert: fs.readFileSync('/home/maomao/localhost.crt', 'utf8')}, appxgyco).listen(3001);

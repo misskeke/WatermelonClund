@@ -1,0 +1,20 @@
+.dbd {
+    padding: 0 24px 0 24px;
+    font-size: 14px;
+    opacity: 0.9;
+    line-height: 50px;
+    background-color: rgba(255, 255, 255, 0.4);
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 98;
+    border-left: solid #8b1819 0px;
+    -webkit-transition: border-left 150ms, padding 150ms;
+    transition: border-left 150ms, padding 150ms;
+}
+
+.dbd:hover {
+    border-left: solid #8b1819 4px;
+    padding: 0 24px 0 20px;
+}

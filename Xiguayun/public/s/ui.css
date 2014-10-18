@@ -135,6 +135,7 @@ a:hover {
     font-size: 16px;
     padding-left: 4px;
     padding-right: 8px;
+    word-break: keep-all;
     background-color: #ffffff;
 }
 
@@ -149,4 +150,16 @@ a:hover {
 }
 .redlink:hover {
     color: #800c23;
+}
+
+code {
+    color: #222222;
+}
+.zs {
+    font-size: 80%;
+    opacity: 0.8;
+    font-style: oblique;
+}
+.inlblock {
+    display: inline-block;
 }
