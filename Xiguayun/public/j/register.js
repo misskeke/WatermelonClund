@@ -1,7 +1,7 @@
 $(function () {
     var pwd = $('.lginpwd'), pwdc = $('.lginpwdc');
     var f = $('.lgrs-box'), usn = $('.lginusn'), emi = $('.lginemi');
-    var pwdgent = $('.lginpwdgenb');
+    var pwdgent = $('.lginpwdgenb'), btn=$('.lginsbmit');
     var lastGentn = "";
     f.bind("submit", function () {
         if (XLIB.strSpaceOh(usn.val()).length < 3 || XLIB.strSpaceOh(usn.val()).length > 15) {
@@ -27,10 +27,12 @@ $(function () {
             return false;
         }
 
+        btn.attr('disabled',"true");
         $.post('/register', {emill: emi.val(), username: usn.val(), password: pwd.val(), wisChk: pdWisChk }, function (q) {
             console.info(q);
             if (q.errName) {
                 XLIB.wcAddErrtest(usn, q.errName);
+                btn.removeAttr('disabled');
             } else if (q.successful) {
                 window.location = "/register/clr";
             }

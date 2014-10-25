@@ -1,0 +1,15 @@
+-var aStyle="color: #056db2; text-decoration: none; text-shadow: 0 0 2px rgba(0, 0, 0, 0.60);";
+doctype html
+html
+    head
+        title #{MailTitle}
+        meta(charset="utf-8")
+    body(style="font: 16px Helvetica, Arial, sans-serif, \"Lucida Grande\", \"微软雅黑\", \"黑体\";")
+        div(style="margin: 0 6px 4px 6px; border-left: seagreen solid 3px; padding: 2px 6px 2px 6px;") #{MailTitle}
+        div(style="font-size: 14px; color: #aaaaaa; font-style: oblique;") 来自 Yoghour 的自动发送邮件。请勿回复。
+            -if (tdlink)
+                a(href=tdlink,target="_blank",style=aStyle) 退订此类邮件
+        p(style="margin: 12px; border-top: saddlebrown 1px dashed; border-bottom: saddlebrown 1px dashed; padding: 8px;")!=content
+        div(style="margin-left: 10px;") 此致
+            br
+            a(style=aStyle,href="https://websint.org",target="_blank") Websint

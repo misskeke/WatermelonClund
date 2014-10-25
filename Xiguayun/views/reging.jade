@@ -1,8 +1,22 @@
 extends layout
 
+block head
+    script(src="/j/reging.js",type="text/javascript")
+    link(rel="stylesheet",href="/s/ri.css")
 block hct
     .sucrf
         | 信息已提交！请验证邮箱。欢迎您加入Yoghourt。
+        a.sucrf_undo.sud(href="javascript:void(0);") 撤销/重写
         a.sucrf_close(href="javascript:void(0);") &nbsp;
 block content
-    p - regtaskid: #{regTask.id}
+    .box_vcd
+        p 为了确认这不是在进行CC攻击，请输入验证码。
+        img.vcd_img(src="/dev/fatchVcode")
+        br
+        a.vcd_gennew(href="javascript:void") ojz这什么鬼窝要换一个！
+        br
+        input.rgivcd.xui-input-text(type="text",placeholder="验证码",name="vcode",maxlength="4")
+        .mlc 您的注册邮箱为： #{regTask.email} 此邮箱不正确？
+            a.sud(href="javascript:void") 返回重填
+        br
+        input.rgtsubmit.xui-buttom(type="button",value="注册")

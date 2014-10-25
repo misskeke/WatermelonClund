@@ -1,9 +1,11 @@
 var express = require('express');
 var strlib = require('../bin/str.js');
+var smail = require('../bin/mail.js');
 var cy = require('crypto');
 var router = express.Router();
 var Memcached = require('memcached');
 var marked = require('marked');
+var ccap = require('ccap');
 var dbc, mon;
 
 marked.setOptions({
@@ -67,6 +69,14 @@ function wisChk(req, res, cbc) {
         } else {
             res.render('ccr', {title: "Oh", SpecH1: ""});
         }
+    });
+}
+
+function markusedVcode(wi,cbc){
+    delete wi.session.vcodeState;
+    wi.markModified('session');
+    wi.save(function (e) {
+        cbc(e);
     });
 }
 
@@ -182,11 +192,60 @@ router.post('/register', function (req, res) {
     });
 });
 
+router.post("/register/undoTask", function (req, res) {
+    wisChk(req, res, function () {
+        var wi = res.sessWi;
+        if (res.sessWi.session.reg) {
+            var xgRegTaskModel = dbc.model('xgRegTask');
+            xgRegTaskModel.find({_id: wi.session.reg}, function (e, s) {
+                if (e) {
+                    s = []
+                }
+                if (s.length > 0) {
+                    xgRegTaskModel.remove({_id: wi.session.reg}, function (e, s) {
+                        if (e) {
+                            res.send({error: -2});
+                        } else {
+                            res.send({error: 0});
+                        }
+                    });
+                } else {
+                    res.send({error: -1});
+                }
+            });
+        } else {
+            res.send({error: -1});
+        }
+    });
+});
+
+router.post('/register/doConfirm',function(req,res){
+    wisChk(req,res,function(){
+        var wi = res.sessWi;
+        if(wi.session.vcodeState && wi.session.vcodeState.text){
+            if(req.body.vcode == wi.session.vcodeState.text){
+                markusedVcode(wi,function(){
+                    res.send({error:"OK"});
+                });
+            }else{
+                res.send({error:"验证码错误"});
+            }
+        }else{
+            res.send({error:"验证码已过期。请更换验证码。"});
+        }
+    });
+});
+
 router.post('/login', function (req, res) {
     res.end();
 });
 router.post('/register', function (req, res) {
     res.end();
+});
+
+router.get('/dev/mailView',function(req,res){
+    smail("Hello World", "世界，您好！", "wtmtim@126.com", "王庭茂");
+    res.render('mailT',{MailTitle:"Example Title 测试模板",tdlink:"/",content:"<b>默认内容</b>"});
 });
 
 router.get('/markdown/try', function (req, res) {
@@ -210,6 +269,51 @@ router.post('/markdown/preview', function (req, res) {
                 res.send({preview: "With error.", error: err.message})
             } else {
                 res.send({preview: content});
+            }
+        });
+    });
+});
+
+router.get('/dev/fatchVcode', function (req, res) {
+    res.set("Pragma","no-cache");
+    res.set("Cache-Control","no-cache");
+    var wi = res.sessWi;
+    res.type('jpg');
+    function genVcode() {
+        var cap = ccap({
+            width: 150,
+            height: 40,
+            offset: 0,
+            quality: 100,
+            fontsize: 24,
+            generate: function () {
+                return strlib.randomStr(4, '0123456789');
+            }
+        });
+        return cap.get();
+    }
+
+    if (wi.session.vcodeState && wi.session.vcodeState.buff && wi.session.vcodeState.text) {
+        res.send(wi.session.vcodeState.buff.read(0));
+    } else {
+        var gc = genVcode();
+        wi.session.vcodeState = {buff: gc[1], text: gc[0]};
+        wi.markModified("session");
+        wi.save(function () {
+            res.send(wi.session.vcodeState.buff);
+        });
+    }
+});
+router.post('/dev/fatchVcode/new', function (req, res) {
+    wisChk(req, res, function () {
+        var wi = res.sessWi;
+        delete wi.session.vcodeState;
+        wi.markModified('session');
+        wi.save(function (e) {
+            if (e) {
+                res.send({error: -1})
+            } else {
+                res.send({error: 0})
             }
         });
     });

@@ -55,7 +55,7 @@ router.get('/short', function (req, res) {
                     res.send({tiny: s[0].tinyurl});
                 } else {
                     var urlEnt = new shourlModel({fullurl: url,
-                        tinyurl: req.query.tiny || strlib.randomStr(10, 'abcdefhkmnopqtwxz'), appendip: req.ip, appenddate: new Date() });
+                        tinyurl: req.query.tiny || strlib.randomStr(5, 'abcdefhkmnopqtwxz'), appendip: req.ip, appenddate: new Date() });
                     urlEnt.save(function (err) {
                         if (err) {
                             res.send({error: err.message});
