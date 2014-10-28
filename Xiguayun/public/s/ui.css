@@ -50,15 +50,24 @@ h3 {
     line-height: 100%;
 }
 
-a {
+a,.xui-a {
     color: #099eff;
     text-decoration: none;
-    -webkit-transition: color 500ms;
-    transition: color 500ms;
+    -webkit-transition: all 500ms;
+    transition: all 500ms;
 }
 
-a:hover {
+a:hover,.xui-a:hover {
     color: #4564ff;
+    text-shadow: 0 0 1px rgba(69, 100, 255, 0.59);
+}
+
+.xui-aBig:hover {
+    text-shadow: 0 0 3px rgba(69, 100, 255, 0.86);
+}
+
+.xui-a {
+    cursor: pointer;
 }
 
 .xui-input-ok {

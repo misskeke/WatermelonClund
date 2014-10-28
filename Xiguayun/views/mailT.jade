@@ -9,6 +9,8 @@ html
         div(style="font-size: 14px; color: #aaaaaa; font-style: oblique;") 来自 Yoghour 的自动发送邮件。请勿回复。
             -if (tdlink)
                 a(href=tdlink,target="_blank",style=aStyle) 退订此类邮件
+            -if (readonl)
+                a(href=readonl,target="_blank",style=aStyle) 如果邮件无法正常显示……
         p(style="margin: 12px; border-top: saddlebrown 1px dashed; border-bottom: saddlebrown 1px dashed; padding: 8px;")!=content
         div(style="margin-left: 10px;") 此致
             br

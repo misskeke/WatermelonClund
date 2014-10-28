@@ -26,6 +26,8 @@ $(function () {
             if(q.error){
                 $('.rgtsubmit').removeAttr('disabled');
                 XLIB.wcAddErrtest(vc, q.error);
+            }else{
+                window.location.assign("/register/2");
             }
         },'json');
     });

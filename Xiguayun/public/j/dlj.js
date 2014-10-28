@@ -32,7 +32,7 @@ $(function () {
             if (q.tiny) {
                 window.location.assign("/" + q.tiny + "?norec=1&successful=1");
             } else {
-                XLIB.wcAddErrtest(url, q.error);
+                XLIB.wcAddErrtest((q.seOdl?tiny:url), q.error);
             }
         }, 'json');
     });

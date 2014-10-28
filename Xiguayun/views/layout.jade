@@ -5,7 +5,6 @@ html
         link(rel="stylesheet",href="/s/ui.css")
         script(src="https://upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js",type="text/javascript")
         script(src="https://upcdn.b0.upaiyun.com/libs/jqueryui/jquery.ui-1.10.3.min.js",type="text/javascript")
-        script(src="/j/jquery.js",type="text/javascript")
         script(src="/j/xlib.js",type="text/javascript")
         script(src="/j/gl.js",type="text/javascript")
         -if (dTitle)
@@ -19,10 +18,19 @@ html
     body
         a#top
         block hct
-        .dbd
+        .dbd(style=dbdStyle)
             a(href="/") Yoghourt
-            a(href="/login") 登录
-            a(href="/register") 注册
+            -if (!uud)
+                -if(!lognUsn)
+                    a(href="/login") 登录
+                    a(href="/register") 注册
+                -else
+                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-----&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    span= lognUsn
+                    -if (lognIsReg)
+                        | ，
+                        a(href="/register") 完成注册
+            block czz
         -if (typeof SpecH1 == "string")
             -if (SpecH1.length > 0)
                 h1= SpecH1

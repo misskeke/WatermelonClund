@@ -1,0 +1,14 @@
+extends layout
+block head
+    script(src="/j/rd.js",type="text/javascript")
+    link(rel="stylesheet",href="/s/rd.css")
+block hct
+    .sucrf
+        | 邮件已发送
+        a.sucrf_close(href="javascript:void(0);") &nbsp;
+block content
+    .box_vcd
+        p 验证码已发送～请输入验证码
+        input.rgitcxd.xui-input-text(type="text",placeholder="验证码",name="vcode",maxlength="6")
+        button.go.xui-buttom →
+        a.gp(href="/register/clr") 重发

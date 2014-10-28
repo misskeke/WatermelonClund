@@ -47,20 +47,27 @@ router.get('/short', function (req, res) {
             res.send({error: "URL not valid"});
         } else {
             var shourlModel = dbc.model('shourl');
-            shourlModel.find({fullurl: url}, function (e, s) {
-                if (e) {
-                    s = []
-                }
-                if (s.length > 0 && (!req.query.tiny || req.query.tiny == s[s.length - 1].tinyurl)) {
-                    res.send({tiny: s[0].tinyurl});
-                } else {
-                    var urlEnt = new shourlModel({fullurl: url,
-                        tinyurl: req.query.tiny || strlib.randomStr(5, 'abcdefhkmnopqtwxz'), appendip: req.ip, appenddate: new Date() });
-                    urlEnt.save(function (err) {
-                        if (err) {
-                            res.send({error: err.message});
+            shourlModel.find({tinyurl: req.query.tiny},function(e,s){
+                if(e){s=[];}
+                if(s.length>0){
+                    res.send({error: "短链接已存在。",seOdl: true});
+                }else{
+                    shourlModel.find({fullurl: url}, function (e, s) {
+                        if (e) {
+                            s = []
+                        }
+                        if (s.length > 0 && (!req.query.tiny || req.query.tiny == s[s.length - 1].tinyurl)) {
+                            res.send({tiny: s[0].tinyurl});
                         } else {
-                            res.send({tiny: urlEnt.tinyurl});
+                            var urlEnt = new shourlModel({fullurl: url,
+                                tinyurl: req.query.tiny || strlib.randomStr(5, 'abcdefhkmnopqtwxz'), appendip: req.ip, appenddate: new Date() });
+                            urlEnt.save(function (err) {
+                                if (err) {
+                                    res.send({error: err.message});
+                                } else {
+                                    res.send({tiny: urlEnt.tinyurl});
+                                }
+                            });
                         }
                     });
                 }
@@ -74,12 +81,19 @@ router.get('/short', function (req, res) {
 router.get('/:dl', function (req, res) {
     var ddc = req.params.dl;
     var shourlModel = dbc.model('shourl');
-    shourlModel.find({tinyurl: ddc}, "fullurl", function (e, s) {
+    shourlModel.find({tinyurl: ddc}, function (e, s) {
         if (e) {
             s = []
         }
-        if (s.length > 1 || req.query.norec == 1) {
-            res.render('xgycolist', { title: "短链接", tiny: ddc, count: s.length, s: s, succ: req.query.successful == 1 });
+        if(s.length > 0){
+            if(isNaN(s[0].fwAcount)){
+                s[0].set('fwAcount',0);
+            }
+            s[0].fwAcount++;
+            s[0].save();
+        }
+        if (s.length > 1 || (req.query.norec == 1 && s.length > 0)) {
+            res.render('xgycolist', { title: "短链接", tiny: ddc, count: s.length, s: s, succ: req.query.successful == 1, aco: s[0].fwAcount });
         } else if (s.length < 1) {
             res.render('xgyconotfind', { title: "url未找到", tiny: ddc });
         } else {
@@ -98,7 +112,8 @@ module.exports = function (d) {
         tinyurl: String,
         appendip: String,
         appenddate: Date,
-        appendby: String
+        appendby: String,
+        fwAcount: {type: Number, default: 0}
     });
     var shourlModel = dbc.model('shourl', shourl);
     strlib.init(memcached);

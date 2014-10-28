@@ -1,0 +1,23 @@
+.box_vcd {
+    /* top right bottom left */
+    margin: 16px auto 16px auto;
+    border: #aa371d solid 1px;
+    background-color: #ff9d1f;
+    text-align: center;
+    width: 800px;
+    height: 50px;
+    overflow: hidden;
+    padding: 0;
+}
+.xb_cavmain {
+    width: 800px;
+    height: 1000px;
+    margin: 0;
+}
+.dd_pgr {
+    width: 0;
+    background-color: deepskyblue;
+    height: 2px;
+    -webkit-transition: width 1000ms, height 1000ms;
+    transition: width 1000ms, height 1000ms;
+}

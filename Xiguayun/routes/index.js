@@ -1,6 +1,7 @@
 var express = require('express');
 var strlib = require('../bin/str.js');
-var smail = require('../bin/mail.js');
+var smail;
+var ersp = require('../bin/errrsp.js');
 var cy = require('crypto');
 var router = express.Router();
 var Memcached = require('memcached');
@@ -33,7 +34,7 @@ function wisGen(req, res, cbc) {
     function genc(cbc) {
         var wi = new xgWisModel({wis: cy.randomBytes(255).toString("hex"), wisRq: cy.randomBytes(255).toString("hex"), session: {}});
         res.cookie("wis", wi.wis, {
-            httpOnly: true, secure: true
+            httpOnly: true, secure: true, expires: new Date(Date.now() + 99999999999)
         });
         wi.save(function () {
             cbc(wi.wis, wi.wisRq, wi);
@@ -72,7 +73,7 @@ function wisChk(req, res, cbc) {
     });
 }
 
-function markusedVcode(wi,cbc){
+function markusedVcode(wi, cbc) {
     delete wi.session.vcodeState;
     wi.markModified('session');
     wi.save(function (e) {
@@ -87,6 +88,17 @@ router.use(function (req, res, next) {
         next();
     });
 });
+
+router.use(function (req, res, next) {
+    res.sessWi.username(function(un, isn){
+        res.locals.lognUsn = un;
+        res.locals.lognIsReg = isn;
+        res.locals.dbdStyle= (un?"text-align: right;":"");
+        next();
+    });
+});
+
+
 
 router.get('/', function (req, res) {
     res.render('index', { title: "推吧 - 帖子，微博", dTitle: true, SpecH1: "",
@@ -133,6 +145,10 @@ router.get('/register/clr', function (req, res) {
                 s = []
             }
             if (s.length > 0) {
+                if(s[0].confired){
+                    res.redirect('/register/3');
+                    return;
+                }
                 res.render('reging', { title: "欢迎！" + s[0].name, regTask: s[0] });
             } else {
                 res.redirect('/register');
@@ -140,6 +156,54 @@ router.get('/register/clr', function (req, res) {
         });
     } else {
         res.redirect('/register');
+    }
+});
+router.get('/register/2', function (req, res) {
+    var wi = res.sessWi;
+    if (res.sessWi.session.reg) {
+        var xgRegTaskModel = dbc.model('xgRegTask');
+        xgRegTaskModel.find({_id: wi.session.reg}, function (e, s) {
+            if (e) {
+                s = []
+            }
+            if (s.length > 0) {
+                if(s[0].confired){
+                    res.redirect('/register/3');
+                    return;
+                }
+                if (s[0].lastCode.length > 0) {
+                    res.render('zcIptconf', { title: "输入邮箱验证码" });
+                } else {
+                    res.redirect("/register/clr");
+                }
+            } else {
+                ersp(res, new Error("-"));
+            }
+        });
+    } else {
+        ersp(res, new Error("-"));
+    }
+});
+router.get('/register/3', function (req, res) {
+    var wi = res.sessWi;
+    if (res.sessWi.session.reg) {
+        var xgRegTaskModel = dbc.model('xgRegTask');
+        xgRegTaskModel.find({_id: wi.session.reg}, function (e, s) {
+            if (e) {
+                s = []
+            }
+            if (s.length > 0) {
+                if (s[0].confired) {
+                    res.render('zcStun', { title: "最后事项", SpecH1: "", uud:true });
+                } else {
+                    res.redirect("/register/2");
+                }
+            } else {
+                ersp(res, new Error("-"));
+            }
+        });
+    } else {
+        ersp(res, new Error("-"));
     }
 });
 
@@ -170,22 +234,29 @@ router.post('/register', function (req, res) {
                 res.send({successed: false, errName: "用户名已存在"});
             } else {
                 var xgRegTaskModel = dbc.model('xgRegTask');
-                var ddcTask = new xgRegTaskModel({name: mbname, password: strlib.md5(mbpasswd), regIp: req.ip, regDate: new Date(),
-                    email: mbemill });
-                ddcTask.save(function (err) {
-                    if (err) {
-                        res.send({errName: err.message + "，请稍候重试。"});
-                    } else {
-                        wi.session.reg = ddcTask.id;
-                        wi.markModified('session');
-                        wi.save(function (e) {
-                            if (e) {
-                                res.send({errName: err.message + "，请稍候重试。"});
-                            } else {
-                                res.send({successful: true});
-                            }
-                        });
+                xgRegTaskModel.find({name: mbname, confired: true},function(e,s){
+                    if(e){s=[];}
+                    if(s.length>0){
+                        res.send({successed: false, errName: "用户名已存在"});
+                        return;
                     }
+                    var ddcTask = new xgRegTaskModel({name: mbname, password: strlib.md5(mbpasswd), regIp: req.ip, regDate: new Date(),
+                        email: mbemill });
+                    ddcTask.save(function (err) {
+                        if (err) {
+                            res.send({errName: err.message + "，请稍候重试。"});
+                        } else {
+                            wi.session.reg = ddcTask.id;
+                            wi.markModified('session');
+                            wi.save(function (e) {
+                                if (e) {
+                                    res.send({errName: err.message + "，请稍候重试。"});
+                                } else {
+                                    res.send({successful: true});
+                                }
+                            });
+                        }
+                    });
                 });
             }
         });
@@ -219,19 +290,55 @@ router.post("/register/undoTask", function (req, res) {
     });
 });
 
-router.post('/register/doConfirm',function(req,res){
-    wisChk(req,res,function(){
+router.post('/register/doConfirm', function (req, res) {
+    wisChk(req, res, function () {
         var wi = res.sessWi;
-        if(wi.session.vcodeState && wi.session.vcodeState.text){
-            if(req.body.vcode == wi.session.vcodeState.text){
-                markusedVcode(wi,function(){
-                    res.send({error:"OK"});
-                });
-            }else{
-                res.send({error:"验证码错误"});
-            }
+        var xgRegTaskModel = dbc.model('xgRegTask');
+        if(req.body.hasOwnProperty("code")){
+            xgRegTaskModel.find({_id: wi.session.reg}, function (e, s) {
+                if (e) {
+                    s = []
+                }
+                if (s.length > 0) {
+                    if(s[0].lastCode == req.body.code){
+                        s[0].confired = true;
+                        s[0].save(function(){
+                            res.send({});
+                        });
+                    }else{
+                        res.send({error: "……"});
+                    }
+                } else {
+                    res.send({error: "内部错误，请重试。"});
+                }
+            });
         }else{
-            res.send({error:"验证码已过期。请更换验证码。"});
+            if (wi.session.vcodeState && wi.session.vcodeState.text) {
+                if (req.body.vcode == wi.session.vcodeState.text) {
+                    markusedVcode(wi, function () {
+                        xgRegTaskModel.find({_id: wi.session.reg}, function (e, s) {
+                            if (e) {
+                                s = []
+                            }
+                            if (s.length > 0) {
+                                s[0].lastCode = strlib.randomStr(6, "0123456789");
+                                smail("您的邮箱验证码", "您刚刚注册了本站帐号，您的邮箱验证码为：" +
+                                    "<b style='color: deepskyblue; margin: 4px;'>" + s[0].lastCode + "</b>。" +
+                                    "<br>如果您没有注册，请直接忽略本邮件。", s[0].email, s[0].name, undefined, wi, true);
+                                s[0].save(function () {
+                                    res.send({});
+                                });
+                            } else {
+                                res.send({error: "内部错误，请重试。"});
+                            }
+                        });
+                    });
+                } else {
+                    res.send({error: "验证码错误"});
+                }
+            } else {
+                res.send({error: "验证码已过期。请更换验证码。"});
+            }
         }
     });
 });
@@ -243,9 +350,31 @@ router.post('/register', function (req, res) {
     res.end();
 });
 
-router.get('/dev/mailView',function(req,res){
-    smail("Hello World", "世界，您好！", "wtmtim@126.com", "王庭茂");
-    res.render('mailT',{MailTitle:"Example Title 测试模板",tdlink:"/",content:"<b>默认内容</b>"});
+router.get('/dev/mailView/:mdchk?', function (req, res) {
+    var wi = res.sessWi;
+    if (req.params.mdchk) {
+        var xgMail = dbc.model('xgMil');
+        xgMail.find({_id: req.params.mdchk}, function (e, s) {
+            if (e) {
+                s = [];
+            }
+            if (s.length < 1) {
+                var ep = new Error("邮件不存在");
+                ep.status = "ITEM_NOTFIND";
+                ersp(res, ep, 404);
+            } else {
+                if (s[0].canShow(wi.username(), wi.wis)) {
+                    res.render('mailT', {MailTitle: s[0].subject, content: s[0].content});
+                } else {
+                    var epa = new Error("拒绝访问");
+                    epa.status = "ACCESS_DENIED";
+                    ersp(res, epa, 401);
+                }
+            }
+        });
+    } else {
+        res.render('mailT', {MailTitle: "Hi~", content: "Hello World."});
+    }
 });
 
 router.get('/markdown/try', function (req, res) {
@@ -275,8 +404,8 @@ router.post('/markdown/preview', function (req, res) {
 });
 
 router.get('/dev/fatchVcode', function (req, res) {
-    res.set("Pragma","no-cache");
-    res.set("Cache-Control","no-cache");
+    res.set("Pragma", "no-cache");
+    res.set("Cache-Control", "no-cache");
     var wi = res.sessWi;
     res.type('jpg');
     function genVcode() {
@@ -354,6 +483,7 @@ module.exports = function (d) {
         regIp: String,
         regDate: Date,
         email: String,
+        lastCode: { type: String, default: "" },
         confired: { type: Boolean, default: false },
         userCreated: { type: Boolean, default: false }
     });
@@ -362,9 +492,38 @@ module.exports = function (d) {
         wisRq: String,
         session: {type: {}, default: {}}
     });
+    xgWis.methods.username = function (callback) {
+        if (this.session.reg) {
+            var xgRegTaskModel = dbc.model('xgRegTask');
+            xgRegTaskModel.find({_id: this.session.reg}, function (e, s) {
+                if (e) {
+                    s = []
+                }
+                if (s.length > 0) {
+                    callback(s[0].name, true);
+                }else{
+                    callback("");
+                }
+            });
+        }else{
+            callback("");
+        }
+    };
+    var xgMil = new mon.Schema({
+        auth_user: {type: String, default: ""},
+        auth_wis: String,
+        subject: String,
+        content: String,
+        readFromWeb_can: {type: Boolean, default: true}
+    });
+    xgMil.methods.canShow = function (usr, wis) {
+        return this.readFromWeb_can && ((usr == this.auth_user && this.auth_user != "") || (this.auth_user.length < 0 && this.auth_wis == wis));
+    };
     var xgUserModel = dbc.model('xgUser', xgUser);
     var xgRegTaskModel = dbc.model('xgRegTask', xgRegTask);
     var xgWisModel = dbc.model('xgWis', xgWis);
+    var xgMilModel = dbc.model('xgMil', xgMil);
+    smail = require('../bin/mail.js')(dbc, mon);
     return router;
 };
 

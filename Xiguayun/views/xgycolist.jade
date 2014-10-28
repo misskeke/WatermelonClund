@@ -4,7 +4,7 @@ block head
 block content
     -if(succ)
         | 创建成功～ 使用 xgy.co/#{tiny} 访问
-    p 此页面链接到了#{count}个url……
+    p 此页面链接到了#{count}个url…… 已被访问#{aco}次。
     -for(var i=0;i<s.length;i++)
         a(href="#{s[i].fullurl}") #{s[i].fullurl}
         | &nbsp;
