@@ -27,6 +27,10 @@ $(function () {
                 XLIB.wcAddErrtest(tiny, "不能用这个- -");
                 return;
             }
+            if (tiny.val().charAt(0) == "@") {
+                XLIB.wcAddErrtest(tiny, "不能用这个- -");
+                return;
+            }
         }
         $.get("/short?url=" + encodeURIComponent(url.val()) + (tiny.val().length > 0 ? "&tiny=" + encodeURIComponent(tiny.val()) : ""), function (q) {
             if (q.tiny) {

@@ -1,10 +1,11 @@
 var express = require('express');
 var strlib = require('../bin/str.js');
-var cacVsid = {};
 var Memcached = require('memcached');
 var cy = require('crypto');
 var router = express.Router();
 var marked = require('marked');
+var ersp = require('../bin/errrsp.js');
+var xadd;
 var dbc, mon;
 
 
@@ -41,6 +42,11 @@ router.get('/short', function (req, res) {
         if (req.query.tiny) {
             if (req.query.tiny.match(/[\/\\\?#]/)) {
                 res.send({error: "未知错误"});
+                return;
+            }
+            if (req.query.tiny.charAt(0)=="@") {
+                res.send({error: "未知错误"});
+                return;
             }
         }
         if (portal && portal != "http" && portal != "https") {
@@ -80,6 +86,9 @@ router.get('/short', function (req, res) {
 
 router.get('/:dl', function (req, res) {
     var ddc = req.params.dl;
+    if(ddc.charAt(0)=="@"){
+        return xadd.shoAtHandle(req,res);
+    }
     var shourlModel = dbc.model('shourl');
     shourlModel.find({tinyurl: ddc}, function (e, s) {
         if (e) {
@@ -95,6 +104,7 @@ router.get('/:dl', function (req, res) {
         if (s.length > 1 || (req.query.norec == 1 && s.length > 0)) {
             res.render('xgycolist', { title: "短链接", tiny: ddc, count: s.length, s: s, succ: req.query.successful == 1, aco: s[0].fwAcount });
         } else if (s.length < 1) {
+            res.status(404);
             res.render('xgyconotfind', { title: "url未找到", tiny: ddc });
         } else {
             res.redirect(s[0].fullurl);
@@ -117,6 +127,7 @@ module.exports = function (d) {
     });
     var shourlModel = dbc.model('shourl', shourl);
     strlib.init(memcached);
+    xadd=require('../bin/xAddon.js')(mon,dbc,strlib,ersp);
     return router;
 };
 

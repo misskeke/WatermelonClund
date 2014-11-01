@@ -1,0 +1,3 @@
+$(function () {
+    $('.midiAc').markboxInit();
+});

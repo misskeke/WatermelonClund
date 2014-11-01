@@ -89,6 +89,12 @@ router.use(function (req, res, next) {
     });
 });
 
+router.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", ["https://*.websint.org","xgy.co"]);
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+});
+
 router.use(function (req, res, next) {
     res.sessWi.username(function(un, isn){
         res.locals.lognUsn = un;
@@ -387,19 +393,17 @@ router.get('/markdown/:hel', function (req, res) {
     throw {message: "此提示不存在", httpste: 404, status: "MD_TIP_NOTFIND"};
 });
 router.post('/markdown/preview', function (req, res) {
-    wisChk(req, res, function () {
-        var mdc = req.body.md;
-        if (!mdc || mdc.trim().length < 1) {
-            res.send({preview: "Nothing."});
-            return;
+    var mdc = req.body.md;
+    if (!mdc || mdc.trim().length < 1) {
+        res.send({preview: "Nothing."});
+        return;
+    }
+    marked(mdc, function (err, content) {
+        if (err) {
+            res.send({preview: "With error.", error: err.message})
+        } else {
+            res.send({preview: content});
         }
-        marked(mdc, function (err, content) {
-            if (err) {
-                res.send({preview: "With error.", error: err.message})
-            } else {
-                res.send({preview: content});
-            }
-        });
     });
 });
 

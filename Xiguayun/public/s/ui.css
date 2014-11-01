@@ -184,3 +184,8 @@ code {
 .inlblock {
     display: inline-block;
 }
+
+blockquote {
+    border-left: solid 3px sandybrown;
+    padding-left: 4px;
+}

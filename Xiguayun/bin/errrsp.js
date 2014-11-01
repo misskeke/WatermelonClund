@@ -14,6 +14,8 @@ module.exports = function (res, err, s) {
                     return "您指定的项目不存在。";
                 case "ACCESS_DENIED":
                     return "您没有权限访问此页面。也许您需要登录？";
+                case "SURL_@_UNDEFINED":
+                    return "该特殊页面不存在。特殊页面是以@开头的短链接，无法创建。";
                 default :
                     return "嗯。。是发生错误了\n但是我们不知道这是什么错误，也不知道哪里错误了……\n" +
                         "错误码是" + err.status + "。";
