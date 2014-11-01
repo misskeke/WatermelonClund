@@ -1,30 +1,4 @@
 .di {
-    position: relative;
-    margin: 0;
-    padding: 0;
-}
-
-.dLeft {
-    display: inline-block;
-    width: 45%;
-    margin: 0;
-    vertical-align: top;
-}
-
-.dRight {
-    width: 50%;
-    float: right;
-}
-
-.mdTestarea {
-    display: block;
-    margin: 16px;
-    min-height: 200px;
-    resize: vertical;
-}
-
-.wigWitherror {
-    color: red;
-    font-size: 80%;
-    border-top: solid red 1px;
+    /* top right bottom left */
+    margin: 4px auto 4px auto;
 }

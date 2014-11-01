@@ -6,8 +6,12 @@ var cy = require('crypto');
 var router = express.Router();
 var Memcached = require('memcached');
 var marked = require('marked');
+var fs = require('fs');
 var ccap = require('ccap');
 var dbc, mon;
+var conts={
+    mdHelp: fs.readFileSync('public/i/Mdhelp.md', 'utf8')
+};
 
 marked.setOptions({
     renderer: new marked.Renderer(),
@@ -380,26 +384,35 @@ router.get('/dev/mailView/:mdchk?', function (req, res) {
 router.get('/markdown/try', function (req, res) {
     res.render('mdtry', {title: "测试Markdown"});
 });
+router.get('/markdown/helptips', function (req, res) {
+    res.render('markdownHelp', {title: "学习使用`Markdown`", mdc:conts.mdHelpmded});
+});
 router.get('/markdown/', function (req, res) {
     res.redirect('/markdown/try');
+});
+router.get('/markdown/helptipssrc', function (req, res) {
+    res.redirect('/i/Mdhelp.md');
 });
 router.get('/markdown/:hel', function (req, res) {
     throw {message: "此提示不存在", httpste: 404, status: "MD_TIP_NOTFIND"};
 });
+router.post('/@md/preview', function (req, res) {
+    var mdc = req.body.md;
+    if (!mdc || mdc.trim().length < 1) {
+        res.send({preview: "没什么可预览的."});
+        return;
+    }
+    marked(mdc, function (err, content) {
+        if (err) {
+            res.send({preview: "错误.", error: err.message})
+        } else {
+            res.send({preview: content});
+        }
+    });
+});
 router.post('/markdown/preview', function (req, res) {
     wisChk(req, res, function () {
-        var mdc = req.body.md;
-        if (!mdc || mdc.trim().length < 1) {
-            res.send({preview: "Nothing."});
-            return;
-        }
-        marked(mdc, function (err, content) {
-            if (err) {
-                res.send({preview: "With error.", error: err.message})
-            } else {
-                res.send({preview: content});
-            }
-        });
+        res.redirect("/@md/preview");
     });
 });
 
@@ -524,6 +537,9 @@ module.exports = function (d) {
     var xgWisModel = dbc.model('xgWis', xgWis);
     var xgMilModel = dbc.model('xgMil', xgMil);
     smail = require('../bin/mail.js')(dbc, mon);
+    marked(conts.mdHelp, function (err, content) {
+        conts.mdHelpmded=content;
+    });
     return router;
 };
 

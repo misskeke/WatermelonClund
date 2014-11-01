@@ -116,12 +116,12 @@ router.get('/:dl', function (req, res) {
 router.post('/@md/preview', function (req, res) {
     var mdc = req.body.md;
     if (!mdc || mdc.trim().length < 1) {
-        res.send({preview: "Nothing."});
+        res.send({preview: "没什么可预览的."});
         return;
     }
     marked(mdc, function (err, content) {
         if (err) {
-            res.send({preview: "With error.", error: err.message})
+            res.send({preview: "错误.", error: err.message})
         } else {
             res.send({preview: content});
         }

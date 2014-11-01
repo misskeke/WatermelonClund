@@ -2,8 +2,6 @@
     margin: 4px;
     border: 2px solid rgba(0, 0, 0, 0.37);
     padding: 0;
-    min-height: 200px;
-    max-height: 1109px;
     overflow: hidden;
 }
 .markBoxMobar {
@@ -32,7 +30,7 @@
 .markBoxEdit {
     min-height: 24px;
     outline: medium;
-    height: 300px;
+    height: 450px;
     resize: vertical;
     width: 100%;
     border: hidden;

@@ -3,7 +3,7 @@ module.exports = function(mon,dbc,strlib,ersp){
         shoAtHandle: function(req, res){
             var ddc = req.params.dl;
             switch (ddc.substr(1)){
-                case "xmark":
+                case "markedit":
                     res.render('xgycoxmark', {title: "Xmark - 文本托管服务"});
                     break;
                 default :

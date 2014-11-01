@@ -1,25 +1,92 @@
 (function($){
-    $.fn.markboxInit=function(){
+    $.fn.markboxInit=function(d){
         var manDoma=$('<div class="markBox"></div>');
         var xPrev=$('<div class="markBoxPrevx"></div>');
         manDoma.append(xPrev);
         var moBar=$('<div class="markBoxMobar"></div>');
+        var lastDfd="";
         manDoma.append(moBar);
         var bout=$('<div class="markBoxEditOut"></div>');
         var ddMb=$('<span class="markBoxModdmb"></span>');
         moBar.append($('<b class="markBoxSelo">使用Markdown编辑</b>'));
         moBar.append(ddMb);
-        ddMb.append($('<b class="markBoxBut">B</b>'));
-        ddMb.append($('<i class="markBoxBut">I</i>'));
-        ddMb.append($('<span class="markBoxBut">&lt;a</span>'));
-        ddMb.append($('<span class="markBoxBut">"</span>'));
-        ddMb.append($('<span class="markBoxBut">&lt;pre</span>'));
-        ddMb.append($('<span class="markBoxBut">&lt;img</span>'));
-        ddMb.append($('<span class="markBoxBut">&lt;ol</span>'));
-        ddMb.append($('<span class="markBoxBut">&lt;ul</span>'));
-        ddMb.append($('<b class="markBoxBut">&lt;h1</b>'));
-        ddMb.append($('<b class="markBoxBut">&lt;h2</b>'));
-        ddMb.append($('<span class="markBoxBut">--</span>'));
+        ddMb.append($('<b class="markBoxBut">B</b>').click(function(){
+            selection("**"+seldef("粗体文字")+"**");
+        }));
+        ddMb.append($('<i class="markBoxBut">I</i>').click(function(){
+            selection("*"+seldef("斜体文字")+"*");
+        }));
+        ddMb.append($('<span class="markBoxBut">&lt;a</span>').click(function(){
+            selection("["+seldef("链接文本")+"](链接)");
+        }));
+        ddMb.append($('<span class="markBoxBut">"</span>').click(function(){
+            var str=seldef("////");
+            var buf="";
+            var lines=str.split("\n");
+            for(var i=0;i<lines.length;i++){
+                buf+="> "+lines[i]+"\n";
+            }
+            selection("\n"+buf);
+        }));
+        ddMb.append($('<span class="markBoxBut">&lt;pre</span>').click(function(){
+            var str=seldef("console.info('Hello World');");
+            var buf="";
+            var lines=str.split("\n");
+            for(var i=0;i<lines.length;i++){
+                buf+="    "+lines[i]+"\n";
+            }
+            selection("\n"+buf);
+        }));
+        ddMb.append($('<span class="markBoxBut">&lt;`code`加行号</span>').click(function(){
+            var str=seldef("console.info('Hello World');");
+            var buf="";
+            var lines=str.split("\n");
+            for(var i=0;i<lines.length;i++){
+                buf+="0. "+(lines[i].trim().length>0?"`"+lines[i]+"`":"   ")+"\n";
+            }
+            selection("\n"+buf);
+        }));
+        ddMb.append($('<span class="markBoxBut">&lt;img</span>').click(function(){
+            selection("!["+seldef("图片名称")+"](图片链接)");
+        }));
+        ddMb.append($('<span class="markBoxBut">&lt;ol</span>').click(function(){
+            var str=seldef("第一项");
+            var buf="";
+            var lines=str.split("\n");
+            for(var i=0;i<lines.length;i++){
+                buf+=(i+1)+". "+lines[i]+"\n";
+            }
+            selection("\n"+buf);
+        }));
+        ddMb.append($('<span class="markBoxBut">&lt;ul</span>').click(function(){
+            var str=seldef("第一项");
+            var buf="";
+            var lines=str.split("\n");
+            for(var i=0;i<lines.length;i++){
+                buf+="* "+lines[i]+"\n";
+            }
+            selection("\n"+buf);
+        }));
+        ddMb.append($('<b class="markBoxBut">&lt;h1</b>').click(function(){
+            selection("\n# "+seldef("xxx")+"\n");
+        }));
+        ddMb.append($('<b class="markBoxBut">&lt;h2</b>').click(function(){
+            selection("\n## "+seldef("xxx")+"\n");
+        }));
+        ddMb.append($('<span class="markBoxBut">--</span>').click(function(){
+            selection("\n---\n");
+        }));
+        ddMb.append($('<span class="markBoxBut">撤销</span>').click(function(){
+            if(lastDfd.length>0){
+                var dx=editBox.val();
+                editBox.val(lastDfd);
+                lastDfd=dx;
+            }
+        }));
+        ddMb.append($('<span class="markBoxBut">传图</span>'));
+        moBar.append($('<span class="markBoxBut">帮助·提示</span>').click(function(){
+            window.open("https://websint.org/markdown/helptips");
+        }));
         var moBfar=$('<span class="markBoxFlort"></span>');
         moBar.append(moBfar);
         var tl=this;
@@ -28,25 +95,45 @@
             tl.preview(!tl.previewing);
         });
         moBfar.append(prev);
-        moBfar.append($('<span class="markBoxBut">发布</span>'));
+        var submitBtn=$('<span class="markBoxBut">发布</span>');
+        moBfar.append(submitBtn);
         var editBox=$('<textarea class="markBoxEdit" contenteditable="true"></textarea>');
         manDoma.append(bout);
         bout.append(editBox);
         this.previewing=false;
+        if(localStorage["cvg"+d]){
+            editBox.val(localStorage["cvg"+d]);
+        }
         var savint=setInterval(function(){
+            localStorage["cvg"+d]=tl.getMarkdownText();
         },500);
+        var lastState=true;
+        var selint=setInterval(function(){
+            if(selection().length>0 && !lastState){
+                lastState=true;
+                ddMb.stop(true,false,false).animate({backgroundColor: "rgba(255, 255, 255, 0.16)", opacity:1},200);
+            }else if(selection().length==0 && lastState){
+                lastState=false;
+                ddMb.stop(true,false,false).animate({backgroundColor: "rgba(255, 255, 255, 0)", opacity: 0.7},200);
+            }
+        },1);
         this.markboxFal=function(){
+            clearInterval(savint);
+            clearInterval(selint);
         };
         this.getMarkdownText=function(){
             return editBox.val();
         };
+        this.setSubmit=function(st){
+            return submitBtn.text(st);
+        };
         this.preview=function(swi){
-            if(swi){
+            if(swi && !this.previewing){
                 this.previewing=true;
                 xPrev.html("Loading");
                 xPrev.css({opacity: 1, padding: "8px"});
-                xPrev.animate({height: "300px"}, 800);
-                bout.animate({height: "0", margin: "0", padding: "0"}, 300);
+                xPrev.animate({height: "450px"}, 800);
+                bout.animate({height: "15px", margin: "0", padding: "0"}, 300);
                 $.post('/@md/preview', {md: this.getMarkdownText()}, function (q) {
                     xPrev.html(q.preview);
                     if (q.error) {
@@ -56,20 +143,54 @@
                 }, 'json');
                 prev.addClass("markBoxRevHowedBtn");
                 ddMb.css({display: "none"});
-            }else{
+            }else if(!swi && this.previewing){
                 this.previewing=false;
                 xPrev.animate({height: 0, opacity: 0}, 800, function(){
                     xPrev.html("");
+                    ddMb.css({display: ""});
                 });
                 setTimeout(function(){
                     xPrev.animate({padding: 0}, 100);
                 },700);
                 bout.css({height: "", opacity:0});
                 bout.animate({padding: "4px", margin: "8px", opacity: 1}, 300);
-                ddMb.css({display: ""});
                 prev.removeClass("markBoxRevHowedBtn");
             }
         };
+        function selection(a){
+            var ddt=editBox[0];
+            if(a){
+                lastDfd=editBox.val();
+            }
+            if(document.selection != undefined){
+                var sel = document.selection.createRange();
+                if(a){
+                    sel.text=a;
+                }
+                return sel.text;
+            }else if(ddt.selectionStart != undefined){
+                if(a){
+                    editBox.val(editBox.val().substring(0,ddt.selectionStart)+a+editBox.val().substring(ddt.selectionEnd));
+                }
+                return editBox.val().substring(ddt.selectionStart,ddt.selectionEnd);
+            }
+        }
+        function seldef(def){
+            var se=selection();
+            if(se.length>0){
+                return se;
+            }else{
+                return def;
+            }
+        }
+        $([moBar,xPrev]).bind("focus selectstart select mousedown mouseup",function(e){
+            e.preventDefault();
+            return false;
+        });
+        editBox.focus(function(){
+            tl.preview(false);
+        });
         this.append(manDoma);
+        return this;
     };
 })(jQuery);

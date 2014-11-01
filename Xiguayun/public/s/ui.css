@@ -189,3 +189,13 @@ blockquote {
     border-left: solid 3px sandybrown;
     padding-left: 4px;
 }
+hr {
+    border: hidden;
+    border-bottom: #9B9B9B 1px solid;
+}
+
+.wigWitherror {
+    color: red;
+    font-size: 80%;
+    border-top: solid red 1px;
+}
