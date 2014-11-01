@@ -113,6 +113,21 @@ router.get('/:dl', function (req, res) {
     });
 });
 
+router.post('/@md/preview', function (req, res) {
+    var mdc = req.body.md;
+    if (!mdc || mdc.trim().length < 1) {
+        res.send({preview: "Nothing."});
+        return;
+    }
+    marked(mdc, function (err, content) {
+        if (err) {
+            res.send({preview: "With error.", error: err.message})
+        } else {
+            res.send({preview: content});
+        }
+    });
+});
+
 module.exports = function (d) {
     mon = d.mongo;
     dbc = d.db;

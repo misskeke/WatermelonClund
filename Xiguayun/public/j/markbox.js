@@ -47,7 +47,7 @@
                 xPrev.css({opacity: 1, padding: "8px"});
                 xPrev.animate({height: "300px"}, 800);
                 bout.animate({height: "0", margin: "0", padding: "0"}, 300);
-                $.post('https://websint.org/markdown/preview', {md: this.getMarkdownText()}, function (q) {
+                $.post('/@md/preview', {md: this.getMarkdownText()}, function (q) {
                     xPrev.html(q.preview);
                     if (q.error) {
                         xPrev.append($('<div class="wigWitherror"></div>').text(q.error));
