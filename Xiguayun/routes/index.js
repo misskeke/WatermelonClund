@@ -10,7 +10,7 @@ var fs = require('fs');
 var ccap = require('ccap');
 var dbc, mon;
 var conts={
-    mdHelp: fs.readFileSync('public/i/Mdhelp.md', 'utf8')
+    mdHelp: fs.readFileSync('../public/i/Mdhelp.md', 'utf8')
 };
 
 marked.setOptions({
