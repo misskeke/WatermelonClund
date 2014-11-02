@@ -6,6 +6,8 @@ var bodyParser = require('body-parser');
 var errpc = require('./bin/errrsp.js');
 var mongo = require('mongoose');
 
+var passR=require('./bin/passR');
+
 var app = express();
 
 // view engine setup
@@ -28,7 +30,7 @@ app.use(function (req, res, next) {
 var db = mongo.createConnection('localhost', 'websint');
 db.on('error', console.error.bind(console, '连接错误:'));
 db.once('open', function () {
-    var routes = require('./routes/xgyco')({mongo: mongo, db: db});
+    var routes = require('./routes/xgyco')({mongo: mongo, db: db, passR: passR});
     app.use('/', routes);
     // catch 404 and forward to error handler
     app.use(function (req, res, next) {

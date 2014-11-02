@@ -1,6 +1,7 @@
 var express = require('express');
 var strlib = require('../bin/str.js');
 var smail;
+var path = require('path');
 var ersp = require('../bin/errrsp.js');
 var cy = require('crypto');
 var router = express.Router();
@@ -9,8 +10,9 @@ var marked = require('marked');
 var fs = require('fs');
 var ccap = require('ccap');
 var dbc, mon;
+var nodpath=path.join(__dirname,"..");
 var conts={
-    mdHelp: fs.readFileSync('../public/i/Mdhelp.md', 'utf8')
+    mdHelp: fs.readFileSync(nodpath+'/public/i/Mdhelp.md', 'utf8')
 };
 
 marked.setOptions({
@@ -536,7 +538,7 @@ module.exports = function (d) {
     var xgRegTaskModel = dbc.model('xgRegTask', xgRegTask);
     var xgWisModel = dbc.model('xgWis', xgWis);
     var xgMilModel = dbc.model('xgMil', xgMil);
-    smail = require('../bin/mail.js')(dbc, mon);
+    smail = require('../bin/mail.js')(dbc, mon, d.passR);
     marked(conts.mdHelp, function (err, content) {
         conts.mdHelpmded=content;
     });
