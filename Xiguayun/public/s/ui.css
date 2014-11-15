@@ -199,3 +199,9 @@ hr {
     font-size: 80%;
     border-top: solid red 1px;
 }
+
+code {
+    color: #474747;
+    border-bottom: solid salmon 1px;
+    margin: 4px;
+}
