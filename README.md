@@ -3,7 +3,7 @@
 
 ## 网站原码公开git repo
 
-** 运行前 **
+**运行**
 
     npm install body-parser ccap cookie-parser debug express jade marked memcached mongoose morgan nodemailer pygmentize-bundled
 
