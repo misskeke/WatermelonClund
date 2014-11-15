@@ -106,4 +106,38 @@ XLIB.reflashLight = function () {
             });
         })($(hls[i]));
     }
+
+    var mde=$('.m');
+    mde.find('h1').addClass('mh1');
+    mde.find('h2').addClass('mh2');
+    mde.find('h3').addClass('mh3');
+    mde.find('h4').addClass('mh4');
 };
+
+XLIB.centEditCf=function(ct){
+    var editing=false;
+    var ipt=$('<input class="xui-ipt-editable" type="text">');
+    ct.mousedown(function(){
+        setTimeout(function(){
+            if(!editing){
+                var width=ct.width();
+                ipt.css({width: width+"px"});
+                editing=true;
+                ipt.val(ct.text());
+                ct.html("");
+                ct.append(ipt);
+                ipt.animate({width: "200px"},125);
+                ipt.focus();
+                ipt.blur(function(){
+                    ct.text(ipt.val());
+                    ipt.remove();
+                    editing=false;
+                    ct.removeClass("editable-focus");
+                });
+                ct.addClass("editable-focus");
+            }
+        },1);
+    });
+};
+
+$(XLIB.reflashLight);

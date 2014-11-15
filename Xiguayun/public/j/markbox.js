@@ -1,7 +1,7 @@
 (function($){
     $.fn.markboxInit=function(d){
         var manDoma=$('<div class="markBox"></div>');
-        var xPrev=$('<div class="markBoxPrevx"></div>');
+        var xPrev=$('<div class="markBoxPrevx m"></div>');
         manDoma.append(xPrev);
         var moBar=$('<div class="markBoxMobar"></div>');
         var lastDfd="";

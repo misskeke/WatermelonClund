@@ -200,7 +200,12 @@ router.get('/register/3', function (req, res) {
             }
             if (s.length > 0) {
                 if (s[0].confired) {
-                    res.render('zcStun', { title: "最后事项", SpecH1: "", uud:true });
+                    var dte=new Date();
+                    dbc.model('xgUser').count({},function(e,c){
+                        if(e){c=-1}
+                        res.render('zcStun', { title: "入门提示", uud:true, username:s[0].name, mounth:(dte.getMonth()+1)+"月", year:(dte.getFullYear())
+                            , time: dte.toLocaleString(), usercount: c});
+                    });
                 } else {
                     res.redirect("/register/2");
                 }

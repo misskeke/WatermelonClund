@@ -1,0 +1,16 @@
+.dbox_kard {
+    /* top right bottom left */
+    margin: 8px auto 8px auto;
+    padding: 32px;
+    border: dashed #aaaaaa 2px;
+    max-width: 450px;
+}
+.dbox_kard p {
+    padding: 2px 16px 2px 16px;
+    margin: 0;
+}
+.dbox_kard a {
+    margin: 4px;
+}
+.ttc {
+}
