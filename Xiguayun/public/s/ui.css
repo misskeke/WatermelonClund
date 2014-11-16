@@ -78,6 +78,9 @@ a,.xui-a {
     -webkit-transition: color 500ms,text-shadow 500ms;
     transition: color 500ms,text-shadow 500ms;
 }
+.vc {
+    vertical-align: middle;
+}
 .nomar {
     margin: 0;
 }
