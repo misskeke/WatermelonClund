@@ -84,6 +84,33 @@ router.get('/short', function (req, res) {
     }
 });
 
+router.get('/@', function(req, res){
+    var rf=strlib.strsftrim(req.query.u);
+    if(rf && rf.match(/^http(s*):\/\/.+$/)){
+        var shourlModel = dbc.model('shourl');
+        shourlModel.find({fullurl: rf}, function (e, s) {
+            if (e) {
+                s = []
+            }
+            if (s.length > 0) {
+                res.redirect("/"+s[0].tinyurl+"?norec=1&successful=1");
+            } else {
+                var urlEnt = new shourlModel({fullurl: rf,
+                    tinyurl: strlib.randomStr(5, 'abcdefhkmnopqtwxz'), appendip: req.ip, appenddate: new Date() });
+                urlEnt.save(function (err) {
+                    if (err) {
+                        res.send({error: err.message});
+                    } else {
+                       res.redirect("/"+urlEnt.tinyurl+"?norec=1&successful=1");
+                    }
+                });
+            }
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+
 router.get('/:dl', function (req, res) {
     var ddc = req.params.dl;
     if(ddc.charAt(0)=="@"){

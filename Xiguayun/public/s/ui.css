@@ -273,4 +273,5 @@ code {
 
 .cs0 {
     cursor: default;
+    pointer-events: none;
 }

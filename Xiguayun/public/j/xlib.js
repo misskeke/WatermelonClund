@@ -139,5 +139,24 @@ XLIB.centEditCf=function(ct){
         },1);
     });
 };
-
+XLIB.dinit=function(){
+    setTimeout(function(){
+        var f=function(){
+            console.clear();
+            for(var i=0;i<50;i++){
+                console.log("                                                            ".substr(i));
+            }
+            console.log("  Welcome to Xgy's F12 Scripting Platform!");
+            for(i=0;i<3;i++){
+                console.log("                                                            ".substr(i));
+            }
+            console.log("         For help, type help()");
+            for(i=0;i<3;i++){
+                console.log("                                                            ".substr(i));
+            }
+        };
+        eval("("+f.toString()+")();");
+    },1);
+};
+XLIB.dinit();
 $(XLIB.reflashLight);
