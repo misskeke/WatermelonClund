@@ -1,1 +1,1 @@
-javascript:window.location.assign("http://xgy.co/@?u="+encodeURIComponent(window.location.toString()));
+javascript:window.open("http://xgy.co/@?u="+encodeURIComponent(window.location.toString()));

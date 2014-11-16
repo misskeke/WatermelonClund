@@ -70,6 +70,17 @@ a,.xui-a {
     transition: all 500ms;
     cursor: pointer;
 }
+.noanimate {
+    -webkit-transition: none;
+    transition: none;
+}
+.coloranimate {
+    -webkit-transition: color 500ms,text-shadow 500ms;
+    transition: color 500ms,text-shadow 500ms;
+}
+.nomar {
+    margin: 0;
+}
 
 a:hover,.xui-a:hover {
     color: #4564ff;
