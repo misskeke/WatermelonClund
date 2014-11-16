@@ -6,6 +6,20 @@ $(function(){
     $('.xbM').click(function(){
             xb.val("女");
     });
-    XLIB.centEditCf($('.ttc'));
-    $('.btcc').html("<h1>这样</h1>的是这个页面的大标题，一般只会出现一次。<h2>我是第二标题</h2>一般会出现很多次。<h3>第三</h3><h4>第四</h4>");
+    XLIB.wcAddErrtestAutoNo(xb);
+    $('.subm').click(function(){
+        if(xb.val().length<1){
+            XLIB.wcAddErrtest(xb, "必须要有性别哦","无性");
+            return;
+        }
+        if(xb.val().trim().length>5){
+            XLIB.wcAddErrtest(xb, "性别太长了啦");
+            return;
+        }
+        $.post("/register/finish",{wisChk: pdWisChk, sex:xb.val()},function(q){
+            if(q.successful){
+                window.location="/";
+            }
+        }, 'json');
+    });
 });

@@ -1,0 +1,90 @@
+.
+├── console西瓜字符画.txt
+├── LICENSE
+├── __od
+│   └── n
+├── phpinfo.php
+├── README.md
+├── SQL
+│   └── devwebs.sql
+├── STX
+├── tree
+├── xgyco-ext-chrome
+│   ├── b.js
+│   └── manifest.json
+├── Xiguayun
+│   ├── a.js
+│   ├── app.js
+│   ├── appxgyco.js
+│   ├── bin
+│   │   ├── errrsp.js
+│   │   ├── mail.js
+│   │   ├── passR.js
+│   │   ├── str.js
+│   │   ├── www
+│   │   └── xAddon.js
+ ------------------------------- 
+│   ├── package.json
+│   ├── proj.sublime-project
+│   ├── proj.sublime-workspace
+│   ├── public
+│   │   ├── favicon.ico
+│   │   ├── i
+│   │   │   └── Mdhelp.md
+│   │   ├── j
+│   │   │   ├── dlj.js
+│   │   │   ├── gl.js
+│   │   │   ├── gu.js
+│   │   │   ├── login.js
+│   │   │   ├── lps
+│   │   │   │   ├── main.js
+│   │   │   │   ├── s1j.js
+│   │   │   │   └── shortVideo_init.js
+│   │   │   ├── markbox.js
+│   │   │   ├── mdtry.js
+│   │   │   ├── rd.js
+│   │   │   ├── reging.js
+│   │   │   ├── register.js
+│   │   │   ├── ru.js
+│   │   │   ├── xlib.js
+│   │   │   └── xmark.js
+│   │   └── s
+│   │       ├── e.css
+│   │       ├── g.css
+│   │       ├── gu.css
+│   │       ├── i.css
+│   │       ├── l.css
+│   │       ├── mb.css
+│   │       ├── mdTest.css
+│   │       ├── rd.css
+│   │       ├── ri.css
+│   │       ├── ru.css
+│   │       ├── ui.css
+│   │       ├── x.css
+│   │       └── xg.css
+│   ├── routes
+│   │   ├── index.js
+│   │   └── xgyco.js
+│   └── views
+│       ├── ccr.jade
+│       ├── ccrtest.jade
+│       ├── error.jade
+│       ├── index.jade
+│       ├── indexxgyco.jade
+│       ├── layout.jade
+│       ├── layxgy.jade
+│       ├── login.jade
+│       ├── mailT.jade
+│       ├── markdownHelp.jade
+│       ├── mdtry.jade
+│       ├── reging.jade
+│       ├── register.jade
+│       ├── xgycolist.jade
+│       ├── xgyconotfind.jade
+│       ├── xgycoxmark.jade
+│       ├── zcIptconf.jade
+│       └── zcStun.jade
+├── y
+└── 通知.png
+
+527 directories, 2302 files

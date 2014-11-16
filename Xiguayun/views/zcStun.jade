@@ -6,59 +6,15 @@ block czz
     | &nbsp;&nbsp;-&nbsp;&nbsp;欢迎！
 block content
     p 欢迎你来到西瓜云·推吧！
-    p 截止#{time}，总共#{usercount}个人注册推吧！
-    h2 使用技巧
-    p
-        | 像
-        span.editable 这样
-        | 的地方是你可以编辑的，明显的文本框你也可以编辑。文本框都会有像
-        span.xui-input-text 这样
-        | 的绿线。
-        br
-        | 像
-        a 这样
-        | 的是链接，你可以点击，不一定会跳转页面。
-        br
-        | 文本框里该输入什么都会像
-        input.xui-input-text.inline(placeholder="这样",style="width: 30px;",readonly="1")
-        | 提示，输入即消失。
-        br
-        | 像
-        .btcc
-        | 以此类推。
-        br
+    p 您将会成为第#{usercount+1}个用户！
     .dbox_kard
         p
-            | 姓名：
-            u #{username}
-            | &nbsp;&nbsp;&nbsp;&nbsp;
-            | 班级：
-            span.editable.ttc #{year} #{mounth}注册的新人
-        h2 必填项
-        p
             | 性别：&nbsp;
-            span.ops 如果是外星人请填写您的性别
             a.xbF 男
             a.xbM 女
-            span.ops 对真实性不作任何要求。
+            span.ops 如果是外星人请手动填写您的性别
+            br
+            spaN.ops 对真实性不作任何要求。
             br
             input.xui-input-text.xb(placeholder="其他性别")
-            hr
-        p
-            input.xui-input-text(placeholder="年龄",type="number",min=0,value="")
-        hr
-        span.ops 以下内容如果不希望公开，请留空
-        h2 附加项
-        p
-            br
-            | 动态
-            textarea.xui-input-text(style="height: 80px; resize: none;")
-                |「#{username}|#{mounth}」「啊拉窝还木签名诶」
-            h3 社交圈
-            p
-                input.xui-input-text(placeholder="QQ",type="text",min=0,value="")
-                input.xui-input-text(placeholder="Twitter",type="text",min=0,value="")
-                input.xui-input-text(placeholder="Google+",type="text",min=0,value="")
-                input.xui-input-text(placeholder="网站",type="text",min=0,value="")
-                input.xui-input-text(placeholder="其他",type="text",min=0,value="")
-        button.xui-buttom 提交
+        button.xui-buttom.subm 提交

@@ -9,6 +9,7 @@ var Memcached = require('memcached');
 var marked = require('marked');
 var fs = require('fs');
 var ccap = require('ccap');
+var aStyleMill="color: #056db2; text-decoration: none; text-shadow: 0 0 2px rgba(0, 0, 0, 0.60);";
 var dbc, mon;
 var nodpath=path.join(__dirname,"..");
 var conts={
@@ -38,7 +39,8 @@ function wisGen(req, res, cbc) {
     var xgWisModel = dbc.model('xgWis');
 
     function genc(cbc) {
-        var wi = new xgWisModel({wis: cy.randomBytes(255).toString("hex"), wisRq: cy.randomBytes(255).toString("hex"), session: {}});
+        var wi = new xgWisModel({wis: cy.randomBytes(255).toString("hex"), wisRq: cy.randomBytes(255).toString("hex"), session: {},
+            ip: req.ip});
         res.cookie("wis", wi.wis, {
             httpOnly: true, secure: true, expires: new Date(Date.now() + 99999999999)
         });
@@ -53,6 +55,9 @@ function wisGen(req, res, cbc) {
                 s = [];
             }
             if (s.length > 0) {
+                if(!s[0].ip){
+                    s[0].set("ip",req.ip);
+                }
                 cbc(wisZd, s[0].wisRq, s[0]);
             } else {
                 genc(cbc);
@@ -135,11 +140,17 @@ router.get('/register', function (req, res) {
             if (s.length > 0) {
                 res.redirect('/register/clr');
             } else {
-                res.render('register', { title: "注册" });
+                wi.username(function(c){
+                    res.render('register', { title: (c.length>0?"注册第"+ c.split(', ').length+1+"个帐号":"注册"),isTow: c.length>0 });
+                });
             }
         });
     } else {
-        res.render('register', { title: "注册" });
+        wi.username(function(c){
+            res.render('register', { title: (c.length>0?"注册第"+ (c.split(', ').length+1)+"个帐号":"注册"),isTow: c.length>0, mil: (
+                    wi.session.users && wi.session.users.length>0?wi.session.users[0].xgUser.email:undefined
+                ) });
+        });
     }
 });
 router.get('/register/clr', function (req, res) {
@@ -203,8 +214,7 @@ router.get('/register/3', function (req, res) {
                     var dte=new Date();
                     dbc.model('xgUser').count({},function(e,c){
                         if(e){c=-1}
-                        res.render('zcStun', { title: "入门提示", uud:true, username:s[0].name, mounth:(dte.getMonth()+1)+"月", year:(dte.getFullYear())
-                            , time: dte.toLocaleString(), usercount: c});
+                        res.render('zcStun', { title: "注册", uud:true, username:s[0].name, time: dte.toLocaleString(), usercount: c});
                     });
                 } else {
                     res.redirect("/register/2");
@@ -216,10 +226,6 @@ router.get('/register/3', function (req, res) {
     } else {
         ersp(res, new Error("-"));
     }
-});
-
-router.get('/register/:usr', function (req, res) {
-    res.redirect('/register');
 });
 
 router.post('/register', function (req, res) {
@@ -243,6 +249,8 @@ router.post('/register', function (req, res) {
             }
             if (s.length > 0) {
                 res.send({successed: false, errName: "用户名已存在"});
+            } else if(mbname.match(/,/)) {
+                res.send({successed: false, errName: "用户名什么都可以包括，就是不能有半角逗号。"});
             } else {
                 var xgRegTaskModel = dbc.model('xgRegTask');
                 xgRegTaskModel.find({name: mbname, confired: true},function(e,s){
@@ -335,6 +343,7 @@ router.post('/register/doConfirm', function (req, res) {
                                 s[0].lastCode = strlib.randomStr(6, "0123456789");
                                 smail("您的邮箱验证码", "您刚刚注册了本站帐号，您的邮箱验证码为：" +
                                     "<b style='color: deepskyblue; margin: 4px;'>" + s[0].lastCode + "</b>。" +
+                                    "<br>或者，您也可以<a href='https://websint.org/register/doInputMar?code="+s[0].lastCode+"' style='"+aStyleMill+"'>点击这个链接</a>完成验证。" +
                                     "<br>如果您没有注册，请直接忽略本邮件。", s[0].email, s[0].name, undefined, wi, true);
                                 s[0].save(function () {
                                     res.send({});
@@ -353,12 +362,85 @@ router.post('/register/doConfirm', function (req, res) {
         }
     });
 });
+router.get('/register/doInputMar', function(req, res){
+    if(req.query.code){
+        res.render('doInputMar', {code: req.query.code});
+    }else{
+        res.redirect('/register/2');
+    }
+});
+router.post('/register/finish', function (req, res) {
+    wisChk(req, res, function () {
+        var wi = res.sessWi;
+        var xgRegTaskModel = dbc.model('xgRegTask');
+        if(!req.body.sex){
+            res.send({error: -1});
+            return;
+        }
+        var tsex=strlib.strsftrim(req.body.sex);
+        if(tsex.length>5){
+            res.send({error: -2});
+            return;
+        }
+        xgRegTaskModel.find({_id: wi.session.reg}, function (e, s) {
+            if (e) {
+                s = []
+            }
+            if (s.length > 0) {
+                if(s[0].confired){
+                    var xgUserModel = dbc.model('xgUser');
+                    var ddcUser=new xgUserModel({
+                        name: s[0].name,
+                        password: s[0].password,
+                        regIp: req.ip,
+                        regDate: new Date(),
+                        lastIp: req.ip,
+                        log: [],
+                        email: s[0].email,
+                        headPics: []
+                    });
+                    ddcUser.save(function(err){
+                        if (e) {
+                            res.send({errName: err.message + "，请稍候重试。"});
+                        } else {
+                            var xgUserXzModel = dbc.model('xgUserXz');
+                            var tdz=new xgUserXzModel({
+                                userId: ddcUser.id.toString(),
+                                userName: ddcUser.name,
+                                sex: tsex
+                            });
+                            tdz.save(function(){
+                                wi.addLoginedUser(ddcUser,req.headers['user-agent'],{type: "web"},function(){
+                                    delete wi.session.reg;
+                                    wi.markModified('session');
+                                    wi.save(function(e){
+                                        if(e){
+                                            res.send({errName: e.message + "，请稍候重试。"});
+                                        }else{
+                                            s[0].remove();
+                                            res.send({successful:true});
+                                        }
+                                    });
+                                });
+                            });
+                        }
+                    });
+                }else{
+                    res.send({error: "-"});
+                }
+            } else {
+                res.send({error: "-"});
+            }
+        });
+    });
+});
 
 router.post('/login', function (req, res) {
     res.end();
 });
-router.post('/register', function (req, res) {
-    res.end();
+
+router.get('/register/:usr', function (req, res) {
+    res.redirect('/register');
 });
 
 router.get('/dev/mailView/:mdchk?', function (req, res) {
@@ -510,7 +592,11 @@ module.exports = function (d) {
     var xgWis = new mon.Schema({
         wis: String,
         wisRq: String,
-        session: {type: {}, default: {}}
+        ip: String,
+        session: {type: {
+            reg: String,
+            users: [xgUser]
+        }, default: {}}
     });
     xgWis.methods.username = function (callback) {
         if (this.session.reg) {
@@ -525,9 +611,141 @@ module.exports = function (d) {
                     callback("");
                 }
             });
+        }else if(this.session.users && this.session.users.length>0){
+            var users="";
+            for(var i=0;i<this.session.users.length;i++){
+                users+=this.session.users[i].xgUser.name + (i==this.session.users.length-1?"":", ");
+            }
+            callback(users);
         }else{
             callback("");
         }
+    };
+    xgWis.methods.logoutAll = function(ua,client,callback){
+        var t=this;
+        if(t.session.users){
+            function fall(){
+                t.session.users=[];
+                t.markModified("session.users");
+                t.save(function(){
+                    callback();
+                });
+            }
+            function delU(i){
+                if(i>= t.session.users.length){
+                    fall();
+                }else{
+                    var tsp=new xgUserModel(t.session.users[i].xgUser);
+                    tsp.log.push(new uLogModel({
+                        date: new Date(),
+                        ip: t.ip,
+                        action: "logouted",
+                        uA: ua,
+                        value: {client: client}
+                    }));
+                    tsp.markModified("log");
+                    tsp.save(function(){
+                        delU(i+1);
+                    });
+                }
+            }
+            delU(0);
+        }else{
+            callback();
+        }
+    };
+    xgWis.methods.logoutA = function(xgUser,ua,client,callback){
+        var t=this;
+        if(t.session.users){
+            var toRm=[];
+            function fall(){
+                // [1,2,4,3] - [2,4]
+                // i->0,j->0 1!=2
+                // i->0,j->1 1!=4
+                // (Here loop end, i++)
+                // i->1,j->0 2==2 deleted
+                // [1,4,3]
+                // i--
+                // (Here loop end, i++)
+                // i->1 j->0 4!=2
+                // i->1 j->1 4==4 deleted
+                // [1,3] ----------------------------------------
+                // i--
+                // (Here loop end, i++)                         |
+                // i->1 j->0 3!=2
+                // i->1 j->1 3!=4
+                // (j->2)!<2                                     |
+                // (Here loop end, i++)
+                // (i->2)!<2
+                // [1,2,4,3] - [2,4] = [1,3] <-------------------|
+                var arr=t.session.users;
+                for(var i=0;i<arr.length;i++){
+                    for(var j=0;j<toRm.length;j++){
+                        if(arr[i].xgUser==toRm[j]){
+                            arr.splice(i,1);
+                            i--;
+                            break;
+                        }
+                    }
+                }
+                t.session.users=arr;
+                t.markModified("session.users");
+                t.save(function(){
+                    callback();
+                });
+            }
+            function delU(i){
+                if(i>= t.session.users.length){
+                    fall();
+                }else{
+                    var tsp=new xgUserModel(t.session.users[i].xgUser);
+                    if(tsp == xgUser){
+                        tsp.log.push(new uLogModel({
+                            date: new Date(),
+                            ip: t.ip,
+                            action: "logouted",
+                            uA: ua,
+                            value: {client: client}
+                        }));
+                        tsp.markModified("log");
+                        tsp.save(function(){
+                            toRm.push(tsp);
+                            delU(i+1);
+                        });
+                    }else{
+                        delU(i+1);
+                    }
+                }
+            }
+            delU(0);
+        }else{
+            callback();
+        }
+    };
+    xgWis.methods.addLoginedUser = function(xgUser,ua,client,callback){
+        var t=this;
+        t.logoutA(xgUser,ua,client,function(){
+            var usert={xgUser:xgUser};
+            xgUser.log.push(new uLogModel({
+                date: new Date(),
+                ip: t.ip,
+                action: "logined",
+                uA: ua,
+                value: {client: client}
+            }));
+            xgUser.markModified("log");
+            xgUser.save(function(){
+                if(t.session.users){
+                    t.session.users.push(usert);
+                }else{
+                    t.session.users=[usert];
+                }
+                t.markModified("session.users");
+                t.save(function(){
+                    callback();
+                });
+            });
+        });
     };
     var xgMil = new mon.Schema({
         auth_user: {type: String, default: ""},
@@ -536,6 +754,11 @@ module.exports = function (d) {
         content: String,
         readFromWeb_can: {type: Boolean, default: true}
     });
+    var xgUserXz = new mon.Schema({
+        userId: String,
+        userName: String,
+        sex: String
+    });
     xgMil.methods.canShow = function (usr, wis) {
         return this.readFromWeb_can && ((usr == this.auth_user && this.auth_user != "") || (this.auth_user.length < 0 && this.auth_wis == wis));
     };
@@ -543,6 +766,8 @@ module.exports = function (d) {
     var xgRegTaskModel = dbc.model('xgRegTask', xgRegTask);
     var xgWisModel = dbc.model('xgWis', xgWis);
     var xgMilModel = dbc.model('xgMil', xgMil);
+    var xgUserXzModel = dbc.model('xgUserXz', xgUserXz);
+    var uLogModel = dbc.model('uLog', uLog);
     smail = require('../bin/mail.js')(dbc, mon, d.passR);
     marked(conts.mdHelp, function (err, content) {
         conts.mdHelpmded=content;
