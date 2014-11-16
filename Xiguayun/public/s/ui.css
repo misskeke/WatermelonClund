@@ -259,3 +259,18 @@ code {
     border: none;
     color: inherit;
 }
+.hrx {
+    vertical-align: middle;
+    border-right: solid 1px #aaaaaa;
+    width: 1px;
+    display: inline-block;
+}
+
+.mlr {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.cs0 {
+    cursor: default;
+}

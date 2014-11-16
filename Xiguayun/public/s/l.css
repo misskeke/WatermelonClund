@@ -1,4 +1,24 @@
 .lgrs-box {
-    display: block;
-    width: 350px;
+    /* top right bottom left */
+    display: inline-block;
+    width: 320px;
+    margin-left: 32px;
+    padding: 32px 48px 32px 32px;
+    border-right: dashed 1px #aaaaaa;
+    vertical-align: middle;
+}
+.rgrs-box {
+    /* top right bottom left */
+    display: inline-block;
+    width: 320px;
+    margin-left: 32px;
+    padding: 32px 48px 32px 16px;
+    vertical-align: middle;
+}
+.xulr {
+    font-size: 150%;
+    list-style-type: none;
+}
+.xulr li {
+    margin: 8px;
 }

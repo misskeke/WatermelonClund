@@ -130,6 +130,15 @@ router.get('/login/:usr?', function (req, res) {
 });
 
 router.get('/register', function (req, res) {
+    function r(){
+        wi.username(function(c){
+            dbc.model('xgUser').count({},function(e,d){
+                if(e){d=-1}
+                res.render('register', { title: (c.length>0?"注册第"+ (c.split(', ').length+1)+"个帐号":"注册"),isTow: c.length>0
+                    , c_u:d });
+            });
+        });
+    }
     var wi = res.sessWi;
     if (res.sessWi.session.reg) {
         var xgRegTaskModel = dbc.model('xgRegTask');
@@ -140,17 +149,11 @@ router.get('/register', function (req, res) {
             if (s.length > 0) {
                 res.redirect('/register/clr');
             } else {
-                wi.username(function(c){
-                    res.render('register', { title: (c.length>0?"注册第"+ c.split(', ').length+1+"个帐号":"注册"),isTow: c.length>0 });
-                });
+                r();
             }
         });
     } else {
-        wi.username(function(c){
-            res.render('register', { title: (c.length>0?"注册第"+ (c.split(', ').length+1)+"个帐号":"注册"),isTow: c.length>0, mil: (
-                    wi.session.users && wi.session.users.length>0?wi.session.users[0].xgUser.email:undefined
-                ) });
-        });
+        r();
     }
 });
 router.get('/register/clr', function (req, res) {
