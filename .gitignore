@@ -7,3 +7,6 @@
 /.project
 /php_errors.log
 /.project
+/.idea
+/.idea/*
+*~
