@@ -3,12 +3,15 @@ block head
     link(rel="stylesheet",href="/s/l.css")
     script(src="/j/login.js",type="text/javascript")
 block content
-    .lgrs-box
-        input.lginusn.xui-input-text(type="text",placeholder="用户名",name="username",value=usr)
-        input.lginpwd.xui-input-text(type="password",placeholder="密码",name="password")
-        input.lginsbmit.xui-buttom(type="button",value="登录")
-    .rgrs-box
-        h4 帮助
-        a 忘记密码
-        .opsi.mlr.cs0 |
-        a(href="/register") 注册
+    .rgp
+        .rgs
+            .lgrs-box
+                input.lginusn.xui-input-text(type="text",placeholder="用户名",name="username",value=usr)
+                input.lginpwd.xui-input-text(type="password",placeholder="密码",name="password")
+                input.lginsbmit.xui-buttom(type="button",value="登录")
+            .rgrs-box
+                h4 帮助
+                a 忘记密码
+                .opsi.mlr.cs0 |
+                a(href="/register") 注册
+    .rgg

@@ -3,18 +3,22 @@ block head
     link(rel="stylesheet",href="/s/l.css")
     script(src="/j/register.js",type="text/javascript")
 block content
-    form.lgrs-box(method="post",action="/register")
-        input.lginemi.xui-input-text(type="text",placeholder="emill",name="emill",value=mil)
-        input.lginusn.xui-input-text(type="text",placeholder="用户名",name="username")
-        input.lginpwd.xui-input-text(type="password",placeholder="密码",name="password")
-        input.lginpwdgenb.xui-buttom(type="button",value="帮我想一个")
-        input.lginpwdc.xui-input-text(type="password",placeholder="重新输入密码")
-        input.lginsbmit.xui-buttom(type="submit",value="注册")
-    .rgrs-box
-        p 推吧是由像您这样的人组成的。
-        ul.xulr
-            li #{c_u} 注册用户
-            li 0,000,000 帖子
-            li 0,000 推吧
-            li 00,000 精品
-        a(href="/login") 登录
+    .rgp
+        h1= title
+        .rgs
+            form.lgrs-box(method="post",action="/register")
+                input.lginemi.xui-input-text(type="text",placeholder="emill",name="emill",value=mil)
+                input.lginusn.xui-input-text(type="text",placeholder="用户名",name="username")
+                input.lginpwd.xui-input-text(type="password",placeholder="密码",name="password")
+                input.lginpwdgenb.xui-buttom(type="button",value="帮我想一个")
+                input.lginpwdc.xui-input-text(type="password",placeholder="重新输入密码")
+                input.lginsbmit.xui-buttom(type="submit",value="注册")
+            .rgrs-box
+                p 推吧是由像您这样的人组成的。
+                ul.xulr
+                    li #{c_u} 注册用户
+                    li 0,000,000 帖子
+                    li 0,000 推吧
+                    li 00,000 精品
+                a(href="/login") 登录
+    .rgg

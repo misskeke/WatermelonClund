@@ -20,6 +20,6 @@ Markdown 比这更简单。上述标题用 Markdown 改写后是这样的：
 在 Markdown 的语法里，两个井号（##）代表二级标题。若你要表达某句话是小标题，只要在标题前加入两个井号即可。若该小标题下还有其它小标题（三级标题），只要在三级标题前加上三个井号即可。从打字量上讲，两个井号只需要按两次键，「（小标题）」的按键次数多了一倍不止。从易读性上讲，「（小标题）」是自然语言，容易跟稿件正文混淆，## 则清晰得多。
 
 这里是一份用手写成的 Markdown 文稿：
-![Markdown 文稿](http://apple4.us/wordpress/wp-content/uploads/2012/02/markdown_demo.png)
+![Markdown 文稿](https://static.websint.org/i/ma/markdownHelpExp.png)
 
 你正在读的这篇文章本身也是用 Markdown 写的，你可以在[这里下载](https://localhost:3000/markdown/helptipssrc)。

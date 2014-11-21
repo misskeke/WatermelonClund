@@ -34,7 +34,6 @@ db.on('error', console.error.bind(console, '连接错误:'));
 db.once('open', function () {
     var routes = require('./routes/index')({mongo: mongo, db: db, passR: passR});
     app.use('/', routes);
-    // catch 404 and forward to error handler
     app.use(function (req, res, next) {
         var err = new Error('内容不存在');
         err.status = "E_CONTENT_NOT_FIND";

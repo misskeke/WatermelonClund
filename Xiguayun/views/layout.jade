@@ -12,13 +12,13 @@ html
     head
         link(rel="stylesheet",href="/s/g.css")
         link(rel="stylesheet",href="/s/ui.css")
-        script(src="https://upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js",type="text/javascript")
-        script(src="https://upcdn.b0.upaiyun.com/libs/jqueryui/jquery.ui-1.10.3.min.js",type="text/javascript")
+        script(src="https://static.websint.org/j/jquery.js",type="text/javascript")
+        script(src="https://static.websint.org/j/jquery-ui.js",type="text/javascript")
         script(src="/j/xlib.js",type="text/javascript")
         script(src="/j/gl.js",type="text/javascript")
-        -if (dTitle)
+        - if (dTitle)
             title #{title}
-        -else
+        - else
             title #{title} · 推吧
         block head
         - if(wisChk)
@@ -29,19 +29,19 @@ html
         block hct
         .dbd(style=dbdStyle)
             a(href="/") Yoghourt
-            -if (!uud)
-                -if(!lognUsn)
+            - if (!uud)
+                - if(!lognUsn)
                     a(href="/login") 登录
                     a(href="/register") 注册
                 -else
                     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-----&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     span= lognUsn
-                    -if (lognIsReg)
+                    - if (lognIsReg)
                         | ，
                         a(href="/register") 完成注册
             block czz
-        -if (typeof SpecH1 == "string")
-            -if (SpecH1.length > 0)
+        - if (typeof SpecH1 == "string")
+            - if (SpecH1.length > 0)
                 h1= SpecH1
         -else
             h1= title

@@ -183,6 +183,7 @@ a:hover,.xui-a:hover {
     padding-right: 8px;
     word-break: keep-all;
     background-color: #ffffff;
+    z-index: 3000;
 }
 
 .lginpwd_gentxt {
