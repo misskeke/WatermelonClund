@@ -15,6 +15,15 @@ $(function () {
     XLIB.wcAddErrtestAutoNo(passipt);
     lginsbmit.click(function(){
         lginsbmit.attr({disabled:true});
+        $.post("/usr/login",{wisChk: pdWisChk, name:useript.val(),passwd:passipt.val()},function(q){
+            if(q.unerror){
+                XLIB.wcAddErrtest(useript, q.unerror);
+            }else if(q.perror){
+                XLIB.wcAddErrtest(passipt, q.perror);
+            }else{
+                window.location.assign("/");
+            }
+        },'json');
         lginsbmit.removeAttr("disabled");
     });
 });

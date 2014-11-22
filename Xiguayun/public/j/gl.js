@@ -83,7 +83,8 @@ $(function () {
                 });
             }));
             var thlc=this.offset();
-            alertbox.css({left: thlc.left-60,top: thlc.top+25});
+            var ltp=thlc.left-60;
+            alertbox.css({left: (ltp>$(window).width()-190?$(window).width()-190:ltp),top: thlc.top+25});
             $('body').append(alertbox).mousedown(function(e){
                 if($(e.target).parents(".alertboxusr").length<1 && !$(e.target).hasClass("alertboxusr")){
                     $(".alertboxusrx").remove();

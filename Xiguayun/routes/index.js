@@ -236,7 +236,7 @@ router.post('/register', function (req, res) {
                         res.send({successed: false, errName: "用户名已存在"});
                         return;
                     }
-                    var ddcTask = new xgRegTaskModel({name: mbname, password: strlib.md5(mbpasswd), regIp: req.ip, regDate: new Date(),
+                    var ddcTask = new xgRegTaskModel({name: mbname, password: strlib.sha512(mbpasswd), regIp: req.ip, regDate: new Date(),
                         email: mbemill });
                     ddcTask.save(function (err) {
                         if (err) {
@@ -536,6 +536,28 @@ router.post('/usr/logout', function(req, res){
         });
     });
 });
+router.post('/usr/login',function(req,res){
+    wisChk(req, res, function () {
+        var wi = res.sessWi;
+        var mName = strlib.strsftrim(req.body.name);
+        var mPass = req.body.passwd;
+        var xgUserModel = dbc.model('xgUser');
+        xgUserModel.find({name:mName},function(e,s){
+            if(e){s=[]}
+            if(s.length<1){
+                res.send({unerror: "用户不存在"});
+            }else{
+                wi.tryLogin(s[0],mPass,req.headers['user-agent'],{type: "web"},function(b){
+                    if(b){
+                        res.send({});
+                    }else{
+                        res.send({perror: "密码错误"});
+                    }
+                });
+            }
+        });
+    });
+});
 module.exports = function (d) {
     mon = d.mongo;
     dbc = d.db;
@@ -780,6 +802,16 @@ module.exports = function (d) {
                 });
             });
         });
+    };
+    xgWis.methods.tryLogin = function(xgUser,password,ua,client,callback){
+        var t=this;
+        if(xgUser.password==strlib.sha512(password)){
+            t.addLoginedUser(xgUser,ua,client,function(){
+                callback(true);
+            });
+        }else{
+            callback(false);
+        }
     };
     xgUser.methods.getXz=function(callback){
         xgUserXzModel.find({userId: this.id},function(e,s){
