@@ -114,7 +114,7 @@
                 ddMb.stop(true,false,false).animate({backgroundColor: "rgba(255, 255, 255, 0.16)", opacity:1},200);
             }else if(selection().length==0 && lastState){
                 lastState=false;
-                ddMb.stop(true,false,false).animate({backgroundColor: "rgba(255, 255, 255, 0)", opacity: 0.7},200);
+                ddMb.stop(true,false,false).animate({backgroundColor: "rgba(255, 255, 255, 0)", opacity: 0.9},200);
             }
         },1);
         this.markboxFal=function(){
