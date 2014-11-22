@@ -88,6 +88,14 @@ router.use(function (req, res, next) {
         next();
     });
 });
+router.use(function (req, res, next) {
+    if(decodeURIComponent(JSON.stringify(req.query)).match(/javascript:/)){
+        res.send("XXS Denied");
+        res.end();
+    }else{
+        next();
+    }
+});
 router.get('/', function (req, res) {
     res.render('index', { title: "推吧 - 帖子，微博", dTitle: true, SpecH1: "",
         tieAmount: 0 });
@@ -102,7 +110,7 @@ router.get('/ccr/:usr', function (req, res) {
     res.redirect('/ccr');
 });
 router.get('/login/:usr?', function (req, res) {
-    res.render('login', { title: "登录", usr: req.params.usr });
+    res.render('login', { title: "登录", usr: req.params.usr,redir: req.query.redirect || "/" });
 });
 router.get('/register', function (req, res) {
     function r(){
@@ -557,6 +565,34 @@ router.post('/usr/login',function(req,res){
             }
         });
     });
+});
+router.get('/u/:usr?', function(req,res){
+    function rend(xusr){
+        res.render("usrpage",{title: xusr.name});
+    }
+    var wi=res.sessWi;
+    var xgUserModel = dbc.model('xgUser');
+    var ur=strlib.strsftrim(req.params.usr || "");
+    if(!ur){
+        wi.users(function(u){
+            if(u.length<1){
+                res.redirect("/login?redirect=/u");
+            }else{
+                rend(u[0].xUsr);
+            }
+        });
+    }else{
+        xgUserModel.find({name:ur},function(e,s){
+            if(e){s=[];}
+            if(s.length<1){
+                var er=new Error("用户不存在");
+                er.status="ITEM_NOTFIND";
+                ersp(res, er, 404);
+            }else{
+                rend(s[0]);
+            }
+        });
+    }
 });
 module.exports = function (d) {
     mon = d.mongo;

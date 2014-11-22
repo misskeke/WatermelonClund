@@ -11,7 +11,7 @@ module.exports = function (res, err, s) {
                 case "MD_TIP_NOTFIND":
                     return "此Markdown帮助不存在。";
                 case "ITEM_NOTFIND":
-                    return "您指定的项目不存在。";
+                    return "您指定的内容不存在。";
                 case "ACCESS_DENIED":
                     return "您没有权限访问此页面。也许您需要登录？";
                 case "SURL_@_UNDEFINED":

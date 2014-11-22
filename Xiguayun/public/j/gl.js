@@ -68,7 +68,12 @@ $(function () {
             }
             var st=$('<ul></ul>');
             alertbox.append(st);
-            st.append($('<li></li>').text(name+" 的用户页").append($("<div class='opssn sjl'></div>").text("UID="+uid)));
+            st.append($('<li></li>').text(name+" 的用户页").append($("<div class='opssn sjl'></div>").text("UID="+uid))
+                .click(function(){
+                    process(function(){
+                        window.location.assign("/u/"+encodeURIComponent(name));
+                    });
+                }));
             st.append($('<li>设置</li>'));
             st.append($('<li>登出</li>').click(function(){
                 process(function(st){

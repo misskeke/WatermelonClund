@@ -31,16 +31,25 @@
 
 .gbox {
     text-align: left;
-    background-color: rgba(197, 197, 197, 0.45);
+    background-color: rgba(236, 236, 236, 0.45);
     display: inline-block;
     vertical-align: top;
-    width: 300px;
+    width: 500px;
     height: 400px;
     overflow: auto;
-    margin: 4px;
+    margin: 8px;
     padding: 12px;
     border: solid #aaaaaa 1px;
+    border-top: solid slateblue 1px;
+    color: #222222;
     position: relative;
+    box-shadow: 2px 1px 10px rgba(0, 0, 0, 0.40);
+    -webkit-transition: color 200ms, background-color 200ms;
+    transition: color 200ms, background-color 200ms;
+}
+.gbox:hover {
+    color: rgba(0, 0, 0, 0.90);
+    background-color: #ffffff;
 }
 
 .gbYouknow {
@@ -81,7 +90,7 @@
 }
 
 .gboxEvent {
-    background-color: #e5e6eb;
+    background-color: #f5f5f5;
 }
 
 .gboxSmailTool {

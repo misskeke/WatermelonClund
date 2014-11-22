@@ -21,7 +21,7 @@ $(function () {
             }else if(q.perror){
                 XLIB.wcAddErrtest(passipt, q.perror);
             }else{
-                window.location.assign("/");
+                window.location.assign(redir);
             }
         },'json');
         lginsbmit.removeAttr("disabled");
