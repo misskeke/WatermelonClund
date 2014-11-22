@@ -160,3 +160,4 @@ XLIB.dinit=function(){
 };
 XLIB.dinit();
 $(XLIB.reflashLight);
+XLIB.chiJs=0;

@@ -44,4 +44,51 @@ $(function () {
         clearTimeout(ttl);
         addClose();
     });
+    var urs=$('.usrlgned');
+    urs.click(function(){
+        (function(){
+            var thi=this;
+            $(".alertboxusrx").remove();
+            var name=this.text();
+            var uid=this.data("uid");
+            console.info(name+" .uid="+uid);
+            var alertbox=$('<div class="alertboxusr alertboxusrx"></div>');
+            function process(c){
+                var lv=$('<div class="alewalt">请稍候</div>');
+                alertbox.animate({width: "300px",height: "50px",left: $(window).width()-320,top: 50+(60*XLIB.chiJs)},250);
+                XLIB.chiJs++;
+                st.animate({opacity: 0},250,function(){
+                    st.html("").append(lv);
+                    st.animate({opacity: 1},250);
+                    c(st);
+                });
+                st.find('*').unbind();
+                alertbox.removeClass("alertboxusrx");
+                return lv;
+            }
+            var st=$('<ul></ul>');
+            alertbox.append(st);
+            st.append($('<li></li>').text(name+" 的用户页").append($("<div class='opssn sjl'></div>").text("UID="+uid)));
+            st.append($('<li>设置</li>'));
+            st.append($('<li>登出</li>').click(function(){
+                process(function(st){
+                    $.post("/usr/logout",{userid: uid,wisChk: pdWisChk},function(){
+                        alertbox.animate({opacity: 0},250,function(){
+                            alertbox.remove();
+                        });
+                        thi.animate({opacity: 0},250,function(){
+                            thi.remove();
+                        });
+                    });
+                });
+            }));
+            var thlc=this.offset();
+            alertbox.css({left: thlc.left-60,top: thlc.top+25});
+            $('body').append(alertbox).mousedown(function(e){
+                if($(e.target).parents(".alertboxusr").length<1 && !$(e.target).hasClass("alertboxusr")){
+                    $(".alertboxusrx").remove();
+                }
+            });
+        }).call($(this));
+    });
 });

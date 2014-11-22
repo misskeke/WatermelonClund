@@ -245,6 +245,23 @@ code {
     font-style: normal;
     display: inline;
 }
+.opss {
+    color: #aaaaaa;
+    font-style: normal;
+    display: inline;
+    font-size: 50%;
+}
+.opsin {
+    color: #aaaaaa;
+    font-style: normal;
+    display: inherit;
+}
+.opssn {
+    color: #aaaaaa;
+    font-style: normal;
+    font-size: 50%;
+    display: inherit;
+}
 .inline {
     display: inline;
     width: auto;
@@ -289,4 +306,8 @@ code {
 .cs0 {
     cursor: default;
     pointer-events: none;
+}
+
+.sjl {
+    padding-left: 15px;
 }

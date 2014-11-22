@@ -30,12 +30,18 @@ html
         .dbd(style=dbdStyle)
             a(href="/") Yoghourt
             - if (!uud)
-                - if(!lognUsn)
+                - if(lognUsn.length<1)
                     a(href="/login") 登录
                     a(href="/register") 注册
                 -else
                     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-----&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    span= lognUsn
+                    - for (var i=0;i<lognUsn.length;i++)
+                        - if (lognUsn[i].uxz[0].sex=="女")
+                            a.usrlgned.sexgulr(href="javascript:;",data-uid=lognUsn[i].xUsr._id.toString())= lognUsn[i]
+                        - else if(lognUsn[i].uxz[0].sex=="男")
+                            a.usrlgned.sexbulr(href="javascript:;",data-uid=lognUsn[i].xUsr._id.toString())= lognUsn[i]
+                        - else
+                            a.usrlgned.sexxulr(href="javascript:;",data-uid=lognUsn[i].xUsr._id.toString())= lognUsn[i]
                     - if (lognIsReg)
                         | ，
                         a(href="/register") 完成注册

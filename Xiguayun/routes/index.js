@@ -1,21 +1,6 @@
-var express = require('express');
-var strlib = require('../bin/str.js');
-var smail;
-var path = require('path');
-var ersp = require('../bin/errrsp.js');
-var cy = require('crypto');
-var router = express.Router();
-var Memcached = require('memcached');
-var marked = require('marked');
-var fs = require('fs');
-var ccap = require('ccap');
-var aStyleMill="color: #056db2; text-decoration: none; text-shadow: 0 0 2px rgba(0, 0, 0, 0.60);";
-var dbc, mon;
-var nodpath=path.join(__dirname,"..");
-var conts={
-    mdHelp: fs.readFileSync(nodpath+'/public/i/Mdhelp.md', 'utf8')
+var express = require('express'), strlib = require('../bin/str.js'), smail, path = require('path'), ersp = require('../bin/errrsp.js'), cy = require('crypto'), router = express.Router(), Memcached = require('memcached'), marked = require('marked'), fs = require('fs'), ccap = require('ccap'), aStyleMill = "color: #056db2; text-decoration: none; text-shadow: 0 0 2px rgba(0, 0, 0, 0.60);", dbc, mon, nodpath = path.join(__dirname, ".."), conts = {
+    mdHelp: fs.readFileSync(nodpath + '/public/i/Mdhelp.md', 'utf8')
 };
-
 marked.setOptions({
     renderer: new marked.Renderer(),
     gfm: true,
@@ -33,7 +18,6 @@ marked.setOptions({
         });
     }
 });
-
 function wisGen(req, res, cbc) {
     var wisZd = req.cookies.wis;
     var xgWisModel = dbc.model('xgWis');
@@ -67,7 +51,6 @@ function wisGen(req, res, cbc) {
         genc(cbc);
     }
 }
-
 function wisChk(req, res, cbc) {
     var wisZd = req.cookies.wis;
     var wisChk = req.body.wisChk;
@@ -83,7 +66,6 @@ function wisChk(req, res, cbc) {
         }
     });
 }
-
 function markusedVcode(wi, cbc) {
     delete wi.session.vcodeState;
     wi.markModified('session');
@@ -91,7 +73,6 @@ function markusedVcode(wi, cbc) {
         cbc(e);
     });
 }
-
 router.use(function (req, res, next) {
     wisGen(req, res, function (wis, chk, wi) {
         res.locals.wisChk = chk;
@@ -99,18 +80,14 @@ router.use(function (req, res, next) {
         next();
     });
 });
-
 router.use(function (req, res, next) {
-    res.sessWi.username(function(un, isn){
+    res.sessWi.usersWithZx(function(un, isn){
         res.locals.lognUsn = un;
         res.locals.lognIsReg = isn;
-        res.locals.dbdStyle= (un?"text-align: right;":"");
+        res.locals.dbdStyle= (un.length>0?"text-align: right;":"");
         next();
     });
 });
-
-
-
 router.get('/', function (req, res) {
     res.render('index', { title: "推吧 - 帖子，微博", dTitle: true, SpecH1: "",
         tieAmount: 0 });
@@ -124,11 +101,9 @@ router.get('/ccr/test', function (req, res) {
 router.get('/ccr/:usr', function (req, res) {
     res.redirect('/ccr');
 });
-
 router.get('/login/:usr?', function (req, res) {
     res.render('login', { title: "登录", usr: req.params.usr });
 });
-
 router.get('/register', function (req, res) {
     function r(){
         wi.username(function(c){
@@ -230,7 +205,6 @@ router.get('/register/3', function (req, res) {
         ersp(res, new Error("-"));
     }
 });
-
 router.post('/register', function (req, res) {
     wisChk(req, res, function () {
         var wi = res.sessWi;
@@ -284,7 +258,6 @@ router.post('/register', function (req, res) {
         });
     });
 });
-
 router.post("/register/undoTask", function (req, res) {
     wisChk(req, res, function () {
         var wi = res.sessWi;
@@ -311,7 +284,6 @@ router.post("/register/undoTask", function (req, res) {
         }
     });
 });
-
 router.post('/register/doConfirm', function (req, res) {
     wisChk(req, res, function () {
         var wi = res.sessWi;
@@ -437,15 +409,12 @@ router.post('/register/finish', function (req, res) {
         });
     });
 });
-
 router.post('/login', function (req, res) {
     res.end();
 });
-
 router.get('/register/:usr', function (req, res) {
     res.redirect('/register');
 });
-
 router.get('/dev/mailView/:mdchk?', function (req, res) {
     var wi = res.sessWi;
     if (req.params.mdchk) {
@@ -472,7 +441,6 @@ router.get('/dev/mailView/:mdchk?', function (req, res) {
         res.render('mailT', {MailTitle: "Hi~", content: "Hello World."});
     }
 });
-
 router.get('/markdown/try', function (req, res) {
     res.render('mdtry', {title: "测试Markdown"});
 });
@@ -507,7 +475,6 @@ router.post('/markdown/preview', function (req, res) {
         res.redirect("/@md/preview");
     });
 });
-
 router.get('/dev/fatchVcode', function (req, res) {
     res.set("Pragma", "no-cache");
     res.set("Cache-Control", "no-cache");
@@ -552,7 +519,23 @@ router.post('/dev/fatchVcode/new', function (req, res) {
         });
     });
 });
-
+router.post('/usr/logout', function(req, res){
+    wisChk(req, res, function () {
+        var wi = res.sessWi;
+        var xwUsrid=strlib.strsftrim(req.body.userid);
+        var xgUserModel = dbc.model('xgUser');
+        xgUserModel.find({_id: xwUsrid},function(e,s){
+            if(e){s=[]}
+            if(s.length<1){
+                res.send({error: "用户不存在"});
+            }else{
+                wi.logoutA(s[0],req.headers['user-agent'],{type: "web"},function(){
+                    res.send({});
+                });
+            }
+        });
+    });
+});
 module.exports = function (d) {
     mon = d.mongo;
     dbc = d.db;
@@ -624,6 +607,54 @@ module.exports = function (d) {
             callback("");
         }
     };
+    xgWis.methods.users = function (callback) {
+        if (this.session.reg) {
+            var xgRegTaskModel = dbc.model('xgRegTask');
+            xgRegTaskModel.find({_id: this.session.reg}, function (e, s) {
+                if (e) {
+                    s = []
+                }
+                if (s.length > 0) {
+                    callback([s[0].name], true);
+                }else{
+                    callback([]);
+                }
+            });
+        }else if(this.session.users && this.session.users.length>0){
+            var users=[];
+            for(var i=0;i<this.session.users.length;i++){
+                (function(t,i){
+                    var str={toString: function(){return t.session.users[i].xgUser.name;}};
+                    str.xUsr=t.session.users[i].xgUser;
+                    users.push(str);
+                })(this,i)
+            }
+            callback(users);
+        }else{
+            callback([]);
+        }
+    };
+    xgWis.methods.usersWithZx = function (callback) {
+        this.users(function(u,s){
+            if(u.length<1){
+                callback([]);
+            }else if(s){
+                callback([]);
+            }else{
+                function bm(i){
+                    if(i>= u.length){
+                        callback(u);
+                    }else{
+                        new xgUserModel(u[i].xUsr).getXz(function(e){
+                            u[i].uxz=e;
+                            bm(i+1);
+                        });
+                    }
+                }
+                bm(0);
+            }
+        });
+    };
     xgWis.methods.logoutAll = function(ua,client,callback){
         var t=this;
         if(t.session.users){
@@ -684,7 +715,7 @@ module.exports = function (d) {
                 var arr=t.session.users;
                 for(var i=0;i<arr.length;i++){
                     for(var j=0;j<toRm.length;j++){
-                        if(arr[i].xgUser==toRm[j]){
+                        if(new xgUserModel(arr[i].xgUser).id==toRm[j].id){
                             arr.splice(i,1);
                             i--;
                             break;
@@ -702,7 +733,7 @@ module.exports = function (d) {
                     fall();
                 }else{
                     var tsp=new xgUserModel(t.session.users[i].xgUser);
-                    if(tsp == xgUser){
+                    if(tsp.id == xgUser.id){
                         tsp.log.push(new uLogModel({
                             date: new Date(),
                             ip: t.ip,
@@ -750,6 +781,12 @@ module.exports = function (d) {
             });
         });
     };
+    xgUser.methods.getXz=function(callback){
+        xgUserXzModel.find({userId: this.id},function(e,s){
+            if(e){s=[]}
+            callback(s);
+        });
+    };
     var xgMil = new mon.Schema({
         auth_user: {type: String, default: ""},
         auth_wis: String,
@@ -777,4 +814,3 @@ module.exports = function (d) {
     });
     return router;
 };
-
