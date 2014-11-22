@@ -9,9 +9,16 @@ html
         script(src="/j/xlib.js",type="text/javascript")
         script(src="/j/gl.js",type="text/javascript")
         script(src="/j/xy.js",type="text/javascript")
-        -if (dTitle)
+        script.
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q || []).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-57004724-1', 'auto');
+            ga('send', 'pageview');
+        - if (dTitle)
             title #{title}
-        -else
+        - else
             title #{title} · 推吧
         block head
         - if(wisChk)
@@ -24,9 +31,9 @@ html
             a(href="http://xgy.co/twktb")
                 img.vc(src="http://cdn.nyanit.com/nyan2.gif",style="height: 24px;")
             a.xx.redlink.noanimate.nomar.coloranimate(onclick="return false;",href="javascript:window.open('http://xgy.co/@?u='+encodeURIComponent(window.location.toString()));",name="缩短这个页面") 把窝拖进收藏，以后只需点击一下即可缩短点击所在页面！
-        -if (typeof SpecH1 == "string")
-            -if (SpecH1.length > 0)
+        - if (typeof SpecH1 == "string")
+            - if (SpecH1.length > 0)
                 h1= SpecH1
-        -else
+        - else
             h1= title
         block content
