@@ -30,7 +30,7 @@ html
         .dbd(style=dbdStyle)
             a(href="/") Yoghourt
             - if (!uud)
-                - if(lognUsn.length<1)
+                - if(!lognUsn || lognUsn.length<1)
                     a(href="/login") 登录
                     a(href="/register") 注册
                 -else
