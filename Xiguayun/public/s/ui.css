@@ -280,6 +280,12 @@ code {
 .editable:focus,.editable-focus {
     border: solid rgba(0,0,0,0.1) 1px;
 }
+.padding8 {
+    padding: 8px;
+}
+.margin4 {
+    margin: 4px;
+}
 
 .xui-ipt-editable {
     outline: none;
@@ -290,6 +296,13 @@ code {
     background: transparent;
     border: none;
     color: inherit;
+    min-width: 20px;
+}
+.editable-empty {
+    color: #525252;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #fffad7;
 }
 .hrx {
     vertical-align: middle;
@@ -310,4 +323,20 @@ code {
 
 .sjl {
     padding-left: 15px;
+}
+
+.selfrm-ddx {
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    background-color: rgba(56, 38, 36, 0.75);
+    line-height: 16px;
+    font-size: 16px;
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 50px;
+    height: auto;
+    padding: 17px;
+    text-align: center;
+    z-index: 998;
 }

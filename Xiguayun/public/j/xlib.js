@@ -114,30 +114,40 @@ XLIB.reflashLight = function () {
     mde.find('h4').addClass('mh4');
 };
 
-XLIB.centEditCf=function(ct){
-    var editing=false;
-    var ipt=$('<input class="xui-ipt-editable" type="text">');
-    ct.mousedown(function(){
-        setTimeout(function(){
-            if(!editing){
-                var width=ct.width();
-                ipt.css({width: width+"px"});
-                editing=true;
-                ipt.val(ct.text());
-                ct.html("");
-                ct.append(ipt);
-                ipt.animate({width: "200px"},125);
-                ipt.focus();
-                ipt.blur(function(){
-                    ct.text(ipt.val());
-                    ipt.remove();
-                    editing=false;
-                    ct.removeClass("editable-focus");
-                });
-                ct.addClass("editable-focus");
-            }
-        },1);
-    });
+XLIB.centEditCf=function(ct,on){
+    for(var i=0;i<ct.length;i++){
+        (function(ct){
+            var editing=false;
+            var ipt=$('<input class="xui-ipt-editable" type="text">');
+            ct.mousedown(function(){
+                ct.removeClass("editable-empty");
+                setTimeout(function(){
+                    if(!editing){
+                        var width=ct.width();
+                        ipt.css({width: width+"px"});
+                        editing=true;
+                        ipt.val(ct.text());
+                        ct.html("");
+                        ct.append(ipt);
+                        ipt.animate({width: "200px"},125);
+                        ipt.focus();
+                        ipt.blur(function(){
+                            ipt.val(ipt.val().trim());
+                            ct.text(ipt.val());
+                            if(ipt.val().length<1){
+                                ct.addClass("editable-empty");
+                            }
+                            ipt.remove();
+                            editing=false;
+                            ct.removeClass("editable-focus");
+                            on?setTimeout(on,1):0;
+                        });
+                        ct.addClass("editable-focus");
+                    }
+                },1);
+            });
+        })($(ct[i]));
+    }
 };
 XLIB.dinit=function(){
     setTimeout(function(){
@@ -161,3 +171,22 @@ XLIB.dinit=function(){
 XLIB.dinit();
 $(XLIB.reflashLight);
 XLIB.chiJs=0;
+XLIB.mbm=function(text){
+    var pd=$('<div class="selfrm-ddx"></div>').text(text).css({opacity:0}).animate({opacity:1},150);
+    $('body').append(pd);
+    return {ok: function(){
+        pd.animate({opacity:0},150,function(){
+            pd.remove();
+        });
+    },closeTimeout:function(time){
+        setTimeout(this.ok,time);
+    },text:function(t){
+        pd.text(t);
+    }};
+};
+
+$(function(){
+    $.fn.earmcet=function(){
+        this.removeClass("editable-empty");
+    };
+});

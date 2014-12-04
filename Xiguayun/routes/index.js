@@ -73,6 +73,28 @@ function markusedVcode(wi, cbc) {
         cbc(e);
     });
 }
+/*
+ //////   ////   /////
+ /       /    /  /    /
+ /////   /    /  /    /
+ /       /    /  /////
+ /       /    /  /   /
+ /        ////   /    /
+
+
+ /////   //////  /////   /    /   ////
+ /    /  /       /    /  /    /  /    /
+ /    /  /////   /////   /    /  /
+ /    /  /       /    /  /    /  /  ///
+ /    /  /       /    /  /    /  /    /
+ /////   //////  /////    ////    ////
+
+ REMOVE IT BY YOUR SELF!
+
+*/
+// router.use(function (req, res, next) {
+//     setTimeout(next,250);
+// });
 router.use(function (req, res, next) {
     wisGen(req, res, function (wis, chk, wi) {
         res.locals.wisChk = chk;
@@ -302,7 +324,7 @@ router.post('/register/doConfirm', function (req, res) {
                     s = []
                 }
                 if (s.length > 0) {
-                    if(s[0].lastCode == req.body.code){
+                    if(s[0].lastCode == req.body.code && s[0].lastCode.length > 0){
                         s[0].confired = true;
                         s[0].save(function(){
                             res.send({});
@@ -361,7 +383,7 @@ router.post('/register/finish', function (req, res) {
             return;
         }
         var tsex=strlib.strsftrim(req.body.sex);
-        if(tsex.length>5){
+        if(tsex.length>5 || tsex.length < 1){
             res.send({error: -2});
             return;
         }
@@ -567,10 +589,17 @@ router.post('/usr/login',function(req,res){
     });
 });
 router.get('/u/:usr?', function(req,res){
-    function rend(xusr){
-        res.render("usrpage",{title: xusr.name});
-    }
     var wi=res.sessWi;
+    function rend(xusr){
+        var xgUserXzModel = dbc.model('xgUserXz');
+        xusr.getXz(function(xzs){
+            wi.isLoginName(xusr.name,function(hasPrem){
+                marked(new xgUserXzModel(xzs).welcomeuserpage, function (err, content) {
+                    res.render("usrpage",{title: xusr.name, xusr: xusr, xzs: xzs,wel: content,hasPrem: hasPrem});
+                });
+            });
+        });
+    }
     var xgUserModel = dbc.model('xgUser');
     var ur=strlib.strsftrim(req.params.usr || "");
     if(!ur){
@@ -578,7 +607,7 @@ router.get('/u/:usr?', function(req,res){
             if(u.length<1){
                 res.redirect("/login?redirect=/u");
             }else{
-                rend(u[0].xUsr);
+                res.redirect("/u/"+encodeURIComponent(u[0].xUsr.name));
             }
         });
     }else{
@@ -593,6 +622,67 @@ router.get('/u/:usr?', function(req,res){
             }
         });
     }
+});
+router.post('/usetx/:usrid?', function (req, res) {
+    wisChk(req, res, function () {
+        var wi = res.sessWi;
+        var usr=req.params.usrid;
+        wi.isLoginId(usr,function(hasPrem){
+            if(!hasPrem){
+                res.send({error: "请先登录。"})
+            }else{
+                var xgUserModel = dbc.model('xgUser');
+                xgUserModel.findById(usr,function(e,s){
+                    if(e){res.send({error: e.message});
+                        return;}
+                    if(!s){
+                        res.send({error:"-"});
+                        return;
+                    }
+                    s.getXz(function(fr){
+                        var ir=fr[0];
+                        if(!ir){
+                            res.send({error:"没有创建资料"});
+                            return;
+                        }
+                        if(req.body.hasOwnProperty("sex")){
+                            var tsex=strlib.strsftrim(req.body.sex);
+                            if(tsex.length>5 || tsex.length < 1){
+                                res.send({error: -2, unsc: ir.sex});
+                            }else{
+                                ir.sex=tsex;
+                                ir.save(function(){
+                                    res.send({});
+                                });
+                            }
+                        }else if(req.body.hasOwnProperty("sign")){
+                            var tsign=strlib.strsftrim(req.body.sign);
+                            if(tsign.length>255 || tsign.length < 1){
+                                res.send({error: -2, unsc: ir.get('sign')});
+                            }else{
+                                ir.set('sign',tsign);
+                                ir.save(function(){
+                                    res.send({});
+                                });
+                            }
+                        }else if(req.body.hasOwnProperty("welcomeuserpage")){
+                            var twelcomeuserpage=strlib.strsftrim(req.body.welcomeuserpage);
+                            if(twelcomeuserpage.length>4000 || twelcomeuserpage.length < 1){
+                                res.send({error: -2, unsc: ir.get('welcomeuserpage')});
+                            }else{
+                                ir.set('welcomeuserpage',twelcomeuserpage);
+                                ir.save(function(){
+                                    res.send({});
+                                });
+                            }
+                        }else{
+                            res.send({});
+                        }
+                    });
+                });
+            }
+        });
+    });
 });
 module.exports = function (d) {
     mon = d.mongo;
@@ -712,6 +802,32 @@ module.exports = function (d) {
                 bm(0);
             }
         });
+    };
+    xgWis.methods.isLoginName = function(user,callback){
+        if(this.session.users && this.session.users.length>0){
+            for(var i=0;i<this.session.users.length;i++){
+                if(this.session.users[i].xgUser.name == user){
+                    callback(true);
+                    return;
+                }
+            }
+            callback(false);
+        }else{
+            callback(false);
+        }
+    };
+    xgWis.methods.isLoginId = function(idr,callback){
+        if(this.session.users && this.session.users.length>0){
+            for(var i=0;i<this.session.users.length;i++){
+                if(this.session.users[i].xgUser._id.toString() == idr){
+                    callback(true);
+                    return;
+                }
+            }
+            callback(false);
+        }else{
+            callback(false);
+        }
     };
     xgWis.methods.logoutAll = function(ua,client,callback){
         var t=this;
@@ -865,7 +981,9 @@ module.exports = function (d) {
     var xgUserXz = new mon.Schema({
         userId: String,
         userName: String,
-        sex: String
+        sex: {type: String, default: "性别未知"},
+        sign: {type: String,default:"窝正在完善资料！"},
+        welcomeuserpage: {type: String, default:"欢迎访问窝的**用户页**！"}
     });
     xgMil.methods.canShow = function (usr, wis) {
         return this.readFromWeb_can && ((usr == this.auth_user && this.auth_user != "") || (this.auth_user.length < 0 && this.auth_wis == wis));
