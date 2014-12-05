@@ -340,3 +340,9 @@ code {
     text-align: center;
     z-index: 998;
 }
+.redbox {
+    border: solid red 2px;
+    background-color: #ff9189;
+    margin: 12px;
+    padding: 12px;
+}
