@@ -156,7 +156,7 @@
                 this.previewing=true;
                 xPrev.html("Loading");
                 xPrev.css({opacity: 1, padding: "8px"});
-                xPrev.animate({height: editBox.height()}, 450);
+                xPrev.animate({height: editBox.height()*2}, 450);
                 bout.animate({height: "15px", margin: "0", padding: "0"}, 450);
                 $.post('/@md/preview', {md: this.getMarkdownText()}, function (q) {
                     xPrev.html(q.preview);
@@ -225,6 +225,36 @@
                     //TODO: handle uploaded.
                 });
             });
+        });
+        editBox.keydown(function(e){
+            var ddt=editBox[0];
+            console.info(e);
+            if(e.keyCode == 9){
+                e.preventDefault();
+                var ss=ddt.selectionStart;
+                selection("\t");
+                ddt.setSelectionRange(ss+1,ss+1);
+            }else if(e.keyCode == 13){
+                if(ddt.selectionStart != undefined){
+                    e.preventDefault();
+                    var v=tl.getMarkdownText();
+                    var ss=ddt.selectionStart;
+                    v=v.substr(0,ddt.selectionStart);
+                    v=v.substr(v.lastIndexOf("\n")+1);
+                    var ppt;
+                    if(v.match(/^\d+\./)){
+                        ppt="\n"+(parseInt(v.match(/^\d+/)[0])+1).toString()+". ";
+                    }else if(v.match(/^\*/)){
+                        ppt="\n* ";
+                    }else if(v.match(/^(\>\s*)+/)){
+                        ppt="\n"+v.match(/^(\>\s*)+/)[0];
+                    }else{
+                        ppt="\n"+v.match(/^\s{0,}/)[0];
+                    }
+                    selection(ppt);
+                    ddt.setSelectionRange(ss+ppt.length,ss+ppt.length);
+                }
+            }
         });
         return this;
     };
