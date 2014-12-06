@@ -221,6 +221,7 @@
 
         $.getScript("/j/fileupd.js",function(){
             pp.click(function(){
+                console.info("= =");
                 XLIB.showFileUpd(function(fid){
                     //TODO: handle uploaded.
                 });

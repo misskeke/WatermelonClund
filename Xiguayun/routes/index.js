@@ -740,14 +740,15 @@ router.post('/f/touch/:fname', function(req, res){
         });
     });
 });
+var bodyParser = require('body-parser');
+///// !!!!!!!!!!!!!!!TODO: Add an Mutex lock!!!!
 router.post('/f/write/:fid', function(req, res){
     wisChk(req, res, function () {
         var wi = res.sessWi;
         var fid=strlib.strsftrim(req.params.fid);
         var length=parseInt(req.body.len);
         if(!length>0){
-            res.send({error: "Length inv."});
-            return;
+            length=0;
         }
         var baseed=strlib.strsftrim(req.body.blob);
         try{
@@ -755,6 +756,9 @@ router.post('/f/write/:fid', function(req, res){
             if(bff.length<1){
                 res.send({error: "No data send."});
                 return;
+            }
+            if(length==0){
+                length=bff.length;
             }
             if(bff.length!=length){
                 res.send({error: "data length not match."});
@@ -792,7 +796,8 @@ router.post('/f/write/:fid', function(req, res){
                                                 s.chunks[spaceIndex]=chk._id.toString();
                                                 s.markModified("chunks");
                                                 s.save(function(){
-                                                    res.send({});
+                                                    console.info(s.chunks);
+                                                    res.send({lengthReceived: spaceLen});
                                                 });
                                             });
                                         }
@@ -1194,7 +1199,7 @@ module.exports = function (d) {
         var f=this;
         f.allocedLength(function(l){
             if(f.length>l){
-                callback(new Buffer("updata not finish."));
+                callback(new Buffer("updata not finish.("+l+" != "+f.length+")"));
             }else{
                 f.getChunks(function(d){
                     var bffers=[];

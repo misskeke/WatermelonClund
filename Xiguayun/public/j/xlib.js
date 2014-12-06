@@ -152,7 +152,7 @@ XLIB.centEditCf=function(ct,on){
 XLIB.dinit=function(){
     setTimeout(function(){
         var f=function(){
-            console.clear();
+            // console.clear();
             for(var i=0;i<50;i++){
                 console.log("                                                            ".substr(i));
             }
