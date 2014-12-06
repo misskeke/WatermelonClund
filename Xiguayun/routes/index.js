@@ -1,4 +1,4 @@
-var express = require('express'), strlib = require('../bin/str.js'), smail, path = require('path'), ersp = require('../bin/errrsp.js'), cy = require('crypto'), router = express.Router(), Memcached = require('memcached'), marked = require('marked'), fs = require('fs'), ccap = require('ccap'), aStyleMill = "color: #056db2; text-decoration: none; text-shadow: 0 0 2px rgba(0, 0, 0, 0.60);", dbc, mon, nodpath = path.join(__dirname, ".."), conts = {
+var express = require('express'), strlib = require('../bin/str.js'), smail, path = require('path'), ersp = require('../bin/errrsp.js'), cy = require('crypto'), router = express.Router(), marked = require('marked'), fs = require('fs'), ccap = require('ccap'), aStyleMill = "color: #056db2; text-decoration: none; text-shadow: 0 0 2px rgba(0, 0, 0, 0.60);", dbc, mon, nodpath = path.join(__dirname, ".."), conts = {
     mdHelp: fs.readFileSync(nodpath + '/public/i/Mdhelp.md', 'utf8')
 };
 marked.setOptions({
@@ -827,9 +827,7 @@ router.get('/f/:fid/:fname?', function(req, res){
 module.exports = function (d) {
     mon = d.mongo;
     dbc = d.db;
-    // DISABLE MEMCACHED.
-    var memcached = {};
-    strlib.init(memcached);
+    strlib.init();
     var uLog = new mon.Schema({
         date: Date,
         ip: String,

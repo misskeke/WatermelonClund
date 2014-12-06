@@ -1,6 +1,5 @@
 var express = require('express');
 var strlib = require('../bin/str.js');
-var Memcached = require('memcached');
 var cy = require('crypto');
 var router = express.Router();
 var marked = require('marked');
@@ -158,8 +157,6 @@ router.post('/@md/preview', function (req, res) {
 module.exports = function (d) {
     mon = d.mongo;
     dbc = d.db;
-    // DISABLE MEMCACHED.
-    var memcached = {};
     var shourl = new mon.Schema({
         fullurl: String,
         tinyurl: String,
@@ -169,7 +166,7 @@ module.exports = function (d) {
         fwAcount: {type: Number, default: 0}
     });
     var shourlModel = dbc.model('shourl', shourl);
-    strlib.init(memcached);
+    strlib.init();
     xadd=require('../bin/xAddon.js')(mon,dbc,strlib,ersp);
     return router;
 };

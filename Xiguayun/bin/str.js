@@ -1,8 +1,6 @@
 var m_crypto, shaer, md5er;
 module.exports = {
-    cache: null,
     init: function (c) {
-        this.cache = c;
         m_crypto = require('crypto');
     },
     strsftrim: function (s) {
