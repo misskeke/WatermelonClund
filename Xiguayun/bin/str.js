@@ -6,6 +6,9 @@ module.exports = {
         m_crypto = require('crypto');
     },
     strsftrim: function (s) {
+        if(!s){
+            s="";
+        }
         return s.trim().replace(/[\x00-\x19\x7F-\xA0\u1680\u180E\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF]/g, '').trim();
     },
     md5: function (s) {

@@ -106,7 +106,11 @@
         }
         var savint=setInterval(function(){
             localStorage["cvg"+d]=tl.getMarkdownText();
-        },500);
+            var linenum=tl.getMarkdownText().split('\n').length+1;
+            var height=linenum * 24;
+            height = height.toString()+"px";
+            editBox.stop(true,false,false).animate({height: height},150);
+        },150);
         var lastState=true;
         var selint=setInterval(function(){
             if(selection().length>0 && !lastState){
@@ -120,20 +124,39 @@
         this.markboxFal=function(){
             clearInterval(savint);
             clearInterval(selint);
+            moBar.animate({right: "-100%"},350,function(){
+                tl.remove();
+            });
+            manDoma.animate({opacity: "0"},350);
         };
         this.getMarkdownText=function(){
             return editBox.val();
         };
+        this.setMarkdownText=function(q,e){
+            if(e){
+                if(this.getMarkdownText().trim().length<1){
+                    return editBox.val(q);
+                }
+                return;
+            }
+            return editBox.val(q);
+        };
         this.setSubmit=function(st){
             return submitBtn.text(st);
+        };
+        this.submCilck=function(t){
+            submitBtn.click(t);
+        };
+        this.submunbind=function(a,b,c){
+            submitBtn.unbind(a,b,c);
         };
         this.preview=function(swi){
             if(swi && !this.previewing){
                 this.previewing=true;
                 xPrev.html("Loading");
                 xPrev.css({opacity: 1, padding: "8px"});
-                xPrev.animate({height: "450px"}, 800);
-                bout.animate({height: "15px", margin: "0", padding: "0"}, 300);
+                xPrev.animate({height: editBox.height()}, 450);
+                bout.animate({height: "15px", margin: "0", padding: "0"}, 450);
                 $.post('/@md/preview', {md: this.getMarkdownText()}, function (q) {
                     xPrev.html(q.preview);
                     if (q.error) {
@@ -145,15 +168,15 @@
                 ddMb.css({display: "none"});
             }else if(!swi && this.previewing){
                 this.previewing=false;
-                xPrev.animate({height: 0, opacity: 0}, 800, function(){
+                xPrev.animate({height: 0, opacity: 0}, 450, function(){
                     xPrev.html("");
                     ddMb.css({display: ""});
                 });
                 setTimeout(function(){
                     xPrev.animate({padding: 0}, 100);
                 },700);
-                bout.css({height: "", opacity:0});
-                bout.animate({padding: "4px", margin: "8px", opacity: 1}, 300);
+                bout.css({height: "", opacity:1});
+                bout.animate({padding: "4px", margin: "8px", opacity: 1}, 450);
                 prev.removeClass("markBoxRevHowedBtn");
             }
         };
@@ -191,6 +214,9 @@
             tl.preview(false);
         });
         this.append(manDoma);
+
+        moBar.animate({right: "0"},350);
+        manDoma.animate({opacity: "1"},350);
         return this;
     };
 })(jQuery);

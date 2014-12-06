@@ -92,9 +92,9 @@ function markusedVcode(wi, cbc) {
  REMOVE IT BY YOUR SELF!
 
 */
-// router.use(function (req, res, next) {
-//     setTimeout(next,250);
-// });
+router.use(function (req, res, next) {
+     setTimeout(next,250);
+});
 router.use(function (req, res, next) {
     wisGen(req, res, function (wis, chk, wi) {
         res.locals.wisChk = chk;
@@ -588,13 +588,13 @@ router.post('/usr/login',function(req,res){
         });
     });
 });
-router.get('/u/:usr?', function(req,res){
+router.get('/u/:usr?', function(req,res)    {
     var wi=res.sessWi;
     function rend(xusr){
         var xgUserXzModel = dbc.model('xgUserXz');
         xusr.getXz(function(xzs){
             wi.isLoginName(xusr.name,function(hasPrem){
-                marked(new xgUserXzModel(xzs).welcomeuserpage, function (err, content) {
+                marked(new xgUserXzModel(xzs[0]).get('welcomeuserpage'), function (err, content) {
                     res.render("usrpage",{title: xusr.name, xusr: xusr, xzs: xzs,wel: content,hasPrem: hasPrem});
                 });
             });
@@ -666,13 +666,15 @@ router.post('/usetx/:usrid?', function (req, res) {
                                 });
                             }
                         }else if(req.body.hasOwnProperty("welcomeuserpage")){
-                            var twelcomeuserpage=strlib.strsftrim(req.body.welcomeuserpage);
+                            var twelcomeuserpage=req.body.welcomeuserpage.trim();
                             if(twelcomeuserpage.length>4000 || twelcomeuserpage.length < 1){
                                 res.send({error: -2, unsc: ir.get('welcomeuserpage')});
                             }else{
                                 ir.set('welcomeuserpage',twelcomeuserpage);
                                 ir.save(function(){
-                                    res.send({});
+                                    marked(twelcomeuserpage, function (err, content) {
+                                        res.send({rended: content});
+                                    });
                                 });
                             }
                         }else{
@@ -682,6 +684,127 @@ router.post('/usetx/:usrid?', function (req, res) {
                 });
             }
         });
+    });
+});
+router.get('/ux/:usrid/:xz', function (req, res) {
+    var usr=req.params.usrid;
+    var xgUserModel = dbc.model('xgUser');
+    xgUserModel.findById(usr,function(e,s){
+        if(e){res.send({error: e.message});
+            return;}
+        if(!s){
+            res.send({error:"用户不存在"});
+            return;
+        }
+        s.getXz(function(fr){
+            var ir=fr[0];
+            if(!ir){
+                res.send({error:"没有创建资料"});
+                return;
+            }
+            if(req.params.xz.length>0){
+                res.send({val: ir.get(req.params.xz)});
+            }else{
+                res.send({});
+            }
+        });
+    });
+});
+router.post('/f/touch/:fname', function(req, res){
+    wisChk(req, res, function () {
+        var wi = res.sessWi;
+        var fname=strlib.strsftrim(req.params.fname);
+        if(fname.length<1 || fname.length>255){
+            res.send({error: "Fname inv."});
+            return;
+        }
+        var length=parseInt(req.body.len);
+        if(!length>0){
+            res.send({error: "Length inv."});
+            return;
+        }
+        var xgFileModel = dbc.model('xgFile');
+        wi.users(function(c){
+            if(c.length<1){
+                res.send({error: "未登录。"});
+                return;
+            }
+            var ifile=new xgFileModel({name: fname,
+                length: length,
+                chunks: [],
+                uploader: c[0].xUsr._id.toString(),
+                uploaddate: new Date(),
+                uploadip: req.ip});
+            ifile.save();
+            res.send({id: ifile._id.toString()});
+        });
+    });
+});
+router.post('/f/write/:fid', function(req, res){
+    wisChk(req, res, function () {
+        var wi = res.sessWi;
+        var fid=strlib.strsftrim(req.params.fid);
+        var length=parseInt(req.body.len);
+        if(!length>0){
+            res.send({error: "Length inv."});
+            return;
+        }
+        var baseed=strlib.strsftrim(req.body.blob);
+        try{
+            var bff=new Buffer(baseed, 'base64');
+            if(bff.length<1){
+                res.send({error: "No data send."});
+                return;
+            }
+            if(bff.length!=length){
+                res.send({error: "data length not match."});
+                return;
+            }
+            var xgFileModel = dbc.model('xgFile');
+            wi.users(function(c){
+                if(c.length<1){
+                    res.send({error: "未登录。"});
+                    return;
+                }
+                xgFileModel.findById(fid,function(e,s){
+                    if(!s){
+                        res.send({error: "File("+fid+") Not find."});
+                    }else{
+                        s.hasPrem(wi,function(t){
+                            if(!t){
+                                res.send({error: "Access denied"});
+                            }else{
+                                var spaceIndex=parseInt(req.body.i);
+                                var spaceLen=length;
+                                if(isNaN(spaceIndex) || (!spaceLen>0)){
+                                    res.send({error: "OK."});
+                                }else{
+                                    s.allocedLength(function(lad){
+                                        if(lad+spaceLen> s.length){
+                                            res.send({error: "May overflow."});
+                                        }else{
+                                            var xgFileChunkModel = dbc.model('xgFileChunk');
+                                            var chk=new xgFileChunkModel({file: s._id.toString(),
+                                                index: spaceIndex,
+                                                length: spaceLen,
+                                                data: bff});
+                                            chk.save(function(){
+                                                s.chunks[spaceIndex]=chk._id.toString();
+                                                s.save(function(){
+                                                    res.send({});
+                                                });
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        }catch (e){
+            res.send({error: e});
+        }
     });
 });
 module.exports = function (d) {
@@ -994,6 +1117,65 @@ module.exports = function (d) {
     var xgMilModel = dbc.model('xgMil', xgMil);
     var xgUserXzModel = dbc.model('xgUserXz', xgUserXz);
     var uLogModel = dbc.model('uLog', uLog);
+    var xgFile = new mon.Schema({
+        name: String,
+        length: Number,
+        chunks: [String],
+        uploader: String,
+        uploaddate: Date,
+        uploadip: String
+    });
+    var xgFileChunk = new mon.Schema({
+        file: String,
+        index: Number,
+        length: Number,
+        data: Buffer
+    });
+    xgFile.methods.hasPrem=function(wis,callback){
+        wis.isLoginId(this.uploader,function(t){
+            callback(t);
+        });
+    };
+    xgFileChunk.methods.getFile=function(callback){
+        xgFileModel.findById(this.file,function(e,s){
+            if(s){
+                callback(s);
+            }else{
+                this.remove();
+                callback(null);
+            }
+        });
+    };
+    xgFile.methods.getChunks=function(callback){
+        var chk=this.chunks;
+        var fs=[];
+        function d(i){
+            if(i>=chk.length){
+                callback(fs);
+            }else{
+                xgFileChunkModel.findById(chk[i],function(e,s){
+                    if(s){
+                        fs.push(s);
+                    }else{
+                        fs.push(null);
+                    }
+                    d(i+1);
+                });
+            }
+        }
+        d(0);
+    };
+    xgFile.methods.allocedLength=function(callback){
+        this.getChunks(function(chks){
+            var len=0;
+            for(var i=0;i<chks.length;i++){
+                len+=chks[i].length;
+            }
+            callback(len);
+        });
+    };
+    var xgFileModel = dbc.model('xgFile', xgFile);
+    var xgFileChunkModel = dbc.model('xgFileChunk', xgFileChunk);
     smail = require('../bin/mail.js')(dbc, mon, d.passR);
     marked(conts.mdHelp, function (err, content) {
         conts.mdHelpmded=content;

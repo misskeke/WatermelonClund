@@ -3,6 +3,7 @@
     border: 2px solid rgba(0, 0, 0, 0.37);
     padding: 0;
     overflow: hidden;
+    opacity: 0;
 }
 .markBoxMobar {
     padding: 4px;
@@ -10,6 +11,8 @@
     color: #ffffff;
     font-size: 14px;
     line-height: 20px;
+    position: relative;
+    right: 100%;
 }
 .markBoxSelo {
     font-weight: bold;
@@ -30,11 +33,12 @@
 .markBoxEdit {
     min-height: 24px;
     outline: medium;
-    height: 450px;
-    resize: vertical;
+    height: 0;
+    resize: none;
     width: 100%;
     border: hidden;
     display: block;
+    line-height: 24px;
 }
 .markBoxBut {
     margin: 1px;
