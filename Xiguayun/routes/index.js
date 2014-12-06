@@ -780,7 +780,7 @@ router.post('/f/write/:fid', function(req, res){
                                     res.send({error: "OK."});
                                 }else{
                                     s.allocedLength(function(lad){
-                                        if(lad+spaceLen> s.length){
+                                        if(lad+spaceLen-(s.chunks[spaceIndex]?s.chunks[spaceIndex].length:0)> s.length){
                                             res.send({error: "May overflow."});
                                         }else{
                                             var xgFileChunkModel = dbc.model('xgFileChunk');
@@ -790,6 +790,7 @@ router.post('/f/write/:fid', function(req, res){
                                                 data: bff});
                                             chk.save(function(){
                                                 s.chunks[spaceIndex]=chk._id.toString();
+                                                s.markModified("chunks");
                                                 s.save(function(){
                                                     res.send({});
                                                 });
@@ -804,6 +805,22 @@ router.post('/f/write/:fid', function(req, res){
             });
         }catch (e){
             res.send({error: e});
+        }
+    });
+});
+router.get('/f/:fid/:fname?', function(req, res){
+    var fid=strlib.strsftrim(req.params.fid);
+    var xgFileModel = dbc.model('xgFile');
+    xgFileModel.findById(fid, function(e, s){
+        if(!s){
+            var er=new Error("用户不存在");
+            er.status="ITEM_NOTFIND";
+            ersp(res, er, 404);
+        }else{
+            s.content(function(ct){
+                res.header("Content-Disposition","attachment;filename="+strlib.strsftrim(s.name));
+                res.send(ct);
+            });
         }
     });
 });
@@ -1169,9 +1186,26 @@ module.exports = function (d) {
         this.getChunks(function(chks){
             var len=0;
             for(var i=0;i<chks.length;i++){
-                len+=chks[i].length;
+                len+=chks[i]?chks[i].length:0;
             }
             callback(len);
+        });
+    };
+    xgFile.methods.content=function(callback){
+        var f=this;
+        f.allocedLength(function(l){
+            if(f.length>l){
+                callback(new Buffer("updata not finish."));
+            }else{
+                f.getChunks(function(d){
+                    var bffers=[];
+                    for(var i=0;i<d.length;i++){
+                        bffers.push(d[i].data);
+                    }
+                    var bff=Buffer.concat(bffers);
+                    callback(bff);
+                });
+            }
         });
     };
     var xgFileModel = dbc.model('xgFile', xgFile);
