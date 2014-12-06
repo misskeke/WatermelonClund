@@ -827,7 +827,8 @@ router.get('/f/:fid/:fname?', function(req, res){
 module.exports = function (d) {
     mon = d.mongo;
     dbc = d.db;
-    var memcached = new Memcached("localhost");
+    // DISABLE MEMCACHED.
+    var memcached = {};
     strlib.init(memcached);
     var uLog = new mon.Schema({
         date: Date,

@@ -158,7 +158,8 @@ router.post('/@md/preview', function (req, res) {
 module.exports = function (d) {
     mon = d.mongo;
     dbc = d.db;
-    var memcached = new Memcached("localhost");
+    // DISABLE MEMCACHED.
+    var memcached = {};
     var shourl = new mon.Schema({
         fullurl: String,
         tinyurl: String,

@@ -83,7 +83,8 @@
                 lastDfd=dx;
             }
         }));
-        ddMb.append($('<span class="markBoxBut">传图</span>'));
+        var pp=$('<span class="markBoxBut">传图</span>');
+        ddMb.append(pp);
         moBar.append($('<span class="markBoxBut">帮助·提示</span>').click(function(){
             window.open("https://websint.org/markdown/helptips");
         }));
@@ -217,6 +218,14 @@
 
         moBar.animate({right: "0"},350);
         manDoma.animate({opacity: "1"},350);
+
+        $.getScript("/j/fileupd.js",function(){
+            pp.click(function(){
+                XLIB.showFileUpd(function(fid){
+                    //TODO: handle uploaded.
+                });
+            });
+        });
         return this;
     };
 })(jQuery);

@@ -123,8 +123,8 @@ a:hover,.xui-a:hover {
 }
 
 .xui-buttom {
-    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAAUCAYAAACnOeyiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB1JREFUeNpi4T606j8DEDAxQAAjjMEwWBn/AQIMAMYAA6FCYR+aAAAAAElFTkSuQmCC") left top no-repeat,
-    url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAAUCAYAAACnOeyiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACNJREFUeNpi5D606j8DEDB9sQ1lBDMYoGDQMXgOrwY7FSDAANO/Bp7nRZLyAAAAAElFTkSuQmCC") right top no-repeat;
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAAUCAYAAACnOeyiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB1JREFUeNpi4T606j8DEDAxQAAjjMEwWBn/AQIMAMYAA6FCYR+aAAAAAElFTkSuQmCC") left bottom no-repeat,
+    url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAAUCAYAAACnOeyiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACNJREFUeNpi5D606j8DEDB9sQ1lBDMYoGDQMXgOrwY7FSDAANO/Bp7nRZLyAAAAAElFTkSuQmCC") right bottom no-repeat;
     margin: 4px;
     font-family: f;
     padding: 2px;
@@ -157,8 +157,8 @@ a:hover,.xui-a:hover {
 }
 
 .xui-buttom:active {
-    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAAUCAYAAACnOeyiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB1JREFUeNpi4T606j8DEDAxQAAjjMEwWBn/AQIMAMYAA6FCYR+aAAAAAElFTkSuQmCC") left top no-repeat,
-    url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAAUCAYAAACnOeyiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACNJREFUeNpi5D606j8DEDB9sQ1lBDMYoGDQMXgOrwY7FSDAANO/Bp7nRZLyAAAAAElFTkSuQmCC") right top no-repeat,
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAAUCAYAAACnOeyiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB1JREFUeNpi4T606j8DEDAxQAAjjMEwWBn/AQIMAMYAA6FCYR+aAAAAAElFTkSuQmCC") left bottom no-repeat,
+    url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAAUCAYAAACnOeyiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACNJREFUeNpi5D606j8DEDB9sQ1lBDMYoGDQMXgOrwY7FSDAANO/Bp7nRZLyAAAAAElFTkSuQmCC") right bottom no-repeat,
     rgba(11, 194, 170, 0.18);
     margin-left: 8px;
     margin-right: 8px;
@@ -345,4 +345,28 @@ code {
     background-color: #ff9189;
     margin: 12px;
     padding: 12px;
+}
+
+.winbox {
+    position: fixed;
+    z-index: 1500;
+    box-shadow: 2px 2px 5px #000;
+    left: 25%;
+    right: 25%;
+    top: 25%;
+    width: 50%;
+    height: 50%;
+    background-color: #ffffff;
+}
+.border1 {
+    border: 1px dashed #d0d0d0;
+}
+.center {
+    text-align: center;
+}
+.lineheight12{
+    line-height: 120%;
+}
+.height30 {
+    height: 30px;
 }

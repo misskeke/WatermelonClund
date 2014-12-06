@@ -97,4 +97,5 @@ $(function () {
             });
         }).call($(this));
     });
+    $('.lognplas').attr("href","/login?redirect="+encodeURIComponent(window.location));
 });
