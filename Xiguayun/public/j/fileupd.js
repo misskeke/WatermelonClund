@@ -95,8 +95,10 @@ $(function(){
                                 ps.animate({backgroundColor: "rgb(138, 237, 142)"},200);
                                 finishPartc++;
                                 callFinish();
-                                dg(i+1);
                             });
+                            setTimeout(function(){
+                                dg(i+1);
+                            },100);
                         }
                         dg(0);
                     }else{

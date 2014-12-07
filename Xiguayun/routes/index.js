@@ -92,9 +92,9 @@ function markusedVcode(wi, cbc) {
  REMOVE IT BY YOUR SELF!
 
 */
-router.use(function (req, res, next) {
+/* router.use(function (req, res, next) {
      setTimeout(next,250);
-});
+}); */
 router.use(function (req, res, next) {
     wisGen(req, res, function (wis, chk, wi) {
         res.locals.wisChk = chk;
@@ -770,43 +770,52 @@ router.post('/f/write/:fid', function(req, res){
                     res.send({error: "未登录。"});
                     return;
                 }
-                xgFileModel.findById(fid,function(e,s){
-                    if(!s){
-                        res.send({error: "File("+fid+") Not find."});
-                    }else{
-                        s.hasPrem(wi,function(t){
-                            if(!t){
-                                res.send({error: "Access denied"});
-                            }else{
-                                var spaceIndex=parseInt(req.body.i);
-                                var spaceLen=length;
-                                if(isNaN(spaceIndex) || (!spaceLen>0)){
-                                    res.send({error: "OK."});
+                function tri(){
+                    xgFileModel.findByIdAndUpdate(fid, {$set: {addingChunk: true}}, {new: false}, function(e, s){
+                        if(s && s.addingChunk){
+                            setTimeout(tri,2);
+                            return;
+                        }
+                        if(!s){
+                            res.send({error: "File("+fid+") Not find."});
+                        }else{
+                            s.hasPrem(wi,function(t){
+                                if(!t){
+                                    res.send({error: "Access denied"});
                                 }else{
-                                    s.allocedLength(function(lad){
-                                        if(lad+spaceLen-(s.chunks[spaceIndex]?s.chunks[spaceIndex].length:0)> s.length){
-                                            res.send({error: "May overflow."});
-                                        }else{
-                                            var xgFileChunkModel = dbc.model('xgFileChunk');
-                                            var chk=new xgFileChunkModel({file: s._id.toString(),
-                                                index: spaceIndex,
-                                                length: spaceLen,
-                                                data: bff});
-                                            chk.save(function(){
-                                                s.chunks[spaceIndex]=chk._id.toString();
-                                                s.markModified("chunks");
-                                                s.save(function(){
-                                                    console.info(s.chunks);
-                                                    res.send({lengthReceived: spaceLen});
+                                    var spaceIndex=parseInt(req.body.i);
+                                    var spaceLen=length;
+                                    if(isNaN(spaceIndex) || (!spaceLen>0)){
+                                        res.send({error: "OK."});
+                                    }else{
+                                        s.allocedLength(function(lad){
+                                            if(lad+spaceLen-(s.chunks[spaceIndex]?s.chunks[spaceIndex].length:0)> s.length){
+                                                res.send({error: "May overflow."});
+                                            }else{
+                                                var xgFileChunkModel = dbc.model('xgFileChunk');
+                                                var chk=new xgFileChunkModel({file: s._id.toString(),
+                                                    index: spaceIndex,
+                                                    length: spaceLen,
+                                                    data: bff});
+                                                chk.save(function(){
+                                                    s.chunks[spaceIndex]=chk._id.toString();
+                                                    s.markModified("chunks");
+                                                    s.save(function(){
+                                                        xgFileModel.findByIdAndUpdate(fid, {$set: {addingChunk: false}},function(){
+                                                            console.info(s.chunks);
+                                                            res.send({lengthReceived: spaceLen});
+                                                        });
+                                                    });
                                                 });
-                                            });
-                                        }
-                                    });
+                                            }
+                                        });
+                                    }
                                 }
-                            }
-                        });
-                    }
-                });
+                            });
+                        }
+                    });
+                }
+                tri();
             });
         }catch (e){
             res.send({error: e});
@@ -1144,7 +1153,8 @@ module.exports = function (d) {
         chunks: [String],
         uploader: String,
         uploaddate: Date,
-        uploadip: String
+        uploadip: String,
+        addingChunk: {type: Boolean, default: false}
     });
     var xgFileChunk = new mon.Schema({
         file: String,
