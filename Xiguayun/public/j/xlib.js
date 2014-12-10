@@ -106,12 +106,13 @@ XLIB.reflashLight = function () {
             });
         })($(hls[i]));
     }
-
-    var mde=$('.m');
-    mde.find('h1').addClass('mh1');
-    mde.find('h2').addClass('mh2');
-    mde.find('h3').addClass('mh3');
-    mde.find('h4').addClass('mh4');
+    $('.m img').css({cursor: "pointer"}).attr({title:"查看原图"}).click(function(){
+        window.open(this.src);
+    }).mouseenter(function(){
+        $(this).stop(true,false,false).animate({opacity:0.8},350);
+    }).mouseleave(function(){
+        $(this).stop(true,false,false).animate({opacity:1},350);
+    });
 };
 
 XLIB.centEditCf=function(ct,on){

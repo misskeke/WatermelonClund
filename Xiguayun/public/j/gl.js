@@ -98,4 +98,37 @@ $(function () {
         }).call($(this));
     });
     $('.lognplas').attr("href","/login?redirect="+encodeURIComponent(window.location));
+    var wlzdding=false;
+    function checkInternet(){
+        var ro=setTimeout(function(){
+            setTimeout(checkInternet,150);
+            if(wlzdding){
+                return;
+            }
+            wlzdding=true;
+            var bbc=$('<div class="winbox padding8"></div>');
+            bbc.append($('<h2>网络已断开。</h2>'));
+            bbc.append($('<p>请放心，您在编辑器中输入的内容都将自动保存。</p>'));
+            bbc.append($('<p class="opsi">网络恢复后，此对话框将自动<button class="xui-buttom">关闭</button>。</p>'));
+            bbc.find('button').click(function(){
+                $('.wlzdd').animate({opacity: 0},180,function(){
+                    $('.wlzdd').css({display:"none"});
+                });
+            });
+            $('body').append($('<div class="bbgr wlzdd"></div>').css({opacity:0}).animate({opacity: 1},150).append(bbc));
+        },1500);
+        $.get('/dev/ping',function(j){
+            if(j.ok=="OK"){
+                if(wlzdding){
+                    $('.wlzdd').animate({opacity: 0},180,function(){
+                        $('.wlzdd').remove();
+                        wlzdding=false;
+                    });
+                }
+                clearTimeout(ro);
+                setTimeout(checkInternet,4000);
+            }
+        },'json');
+    }
+    checkInternet();
 });

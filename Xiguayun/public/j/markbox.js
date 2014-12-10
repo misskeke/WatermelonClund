@@ -222,8 +222,12 @@
         $.getScript("/j/fileupd.js",function(){
             pp.click(function(){
                 console.info("= =");
-                XLIB.showFileUpd(function(fid){
-                    //TODO: handle uploaded.
+                XLIB.showFileUpd(function(fids,fnames){
+                    var bff="";
+                    for(var i=0;i<fids.length;i++){
+                        bff+="!["+fnames[i]+"](/f/"+fids[i]+")\n";
+                    }
+                    selection(bff);
                 });
             });
         });
@@ -233,7 +237,20 @@
             if(e.keyCode == 9){
                 e.preventDefault();
                 var ss=ddt.selectionStart;
-                selection("\t");
+                var ee=ddt.selectionEnd;
+                var pd=seldef("");
+                if(pd.length>0){
+                    var mdt=tl.getMarkdownText();
+                    var selctstart=Math.max(0,mdt.substr(0,ss).lastIndexOf("\n"));
+                    var selctend=Math.max(0,mdt.substr(ee).indexOf("\n")-1+ee);
+                    var selt=mdt.substring(selctstart,selctend);
+                    var replacment=(e.shiftKey?selt.replace(/\n\t/g,"\n"):selt.replace(/\n/g,"\n\t"));
+                    console.info(selt,mdt,replacment,ss,ee,selctstart,selctend);
+                    var rpm=(selctstart==0?"\t":"")+replacment;
+                    tl.setMarkdownText(mdt.substr(0,selctstart-1)+rpm+mdt.substr(selctend));
+                }else{
+                    selection("\t");
+                }
                 ddt.setSelectionRange(ss+1,ss+1);
             }else if(e.keyCode == 13){
                 if(ddt.selectionStart != undefined){

@@ -741,7 +741,6 @@ router.post('/f/touch/:fname', function(req, res){
     });
 });
 var bodyParser = require('body-parser');
-///// !!!!!!!!!!!!!!!TODO: Add an Mutex lock!!!!
 router.post('/f/write/:fid', function(req, res){
     wisChk(req, res, function () {
         var wi = res.sessWi;
@@ -832,11 +831,49 @@ router.get('/f/:fid/:fname?', function(req, res){
             ersp(res, er, 404);
         }else{
             s.content(function(ct){
-                res.header("Content-Disposition","attachment;filename="+strlib.strsftrim(s.name));
+                var ext=s.name.match(/\.([a-zA-Z0-9]+)$/);
+                if(ext){
+                    ext=ext[1];
+                    var memtype="";
+                    memtype={
+                        "bmp":"image/bmp",
+                        "cod":"image/cis-cod",
+                        "gif":"image/gif",
+                        "ief":"image/ief",
+                        "jpe":"image/jpeg",
+                        "jpeg":"image/jpeg",
+                        "jpg":"image/jpeg",
+                        "jfif":"image/pipeg",
+                        "svg":"image/svg+xml",
+                        "tif":"image/tiff",
+                        "tiff":"image/tiff",
+                        "ras":"image/x-cmu-raster",
+                        "cmx":"image/x-cmx",
+                        "ico":"image/x-icon",
+                        "pnm":"image/x-portable-anymap",
+                        "pbm":"image/x-portable-bitmap",
+                        "pgm":"image/x-portable-graymap",
+                        "ppm":"image/x-portable-pixmap",
+                        "rgb":"image/x-rgb",
+                        "xbm":"image/x-xbitmap",
+                        "xpm":"image/x-xpixmap",
+                        "xwd":"image/x-xwindowdump",
+                        "png":"image/png"
+                    }[ext];
+                    console.info(memtype);
+                    if(memtype.length>0){
+                        res.header("Content-Type",memtype);
+                    }
+                }
+                res.header("Content-Disposition","filename="+strlib.strsftrim(s.name));
                 res.send(ct);
             });
         }
     });
+});
+
+router.get('/dev/ping', function(req, res){
+    res.send({ok: "OK"});
 });
 module.exports = function (d) {
     mon = d.mongo;

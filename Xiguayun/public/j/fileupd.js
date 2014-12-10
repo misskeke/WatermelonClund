@@ -1,7 +1,7 @@
 $(function(){
     console.info("fileupd.js");
     var showing=false;
-    $('body').append($('<script src="https://static.websint.org/j/jquery.byteuitys.js" type="text/javascript"></script>'));
+    // $('body').append($('<script src="https://static.websint.org/j/jquery.byteuitys.js" type="text/javascript"></script>'));
     XLIB.showFileUpd=function(callb){
         if(showing)
             return;
@@ -46,6 +46,7 @@ $(function(){
             console.info(files);
             startUpload();
         });
+        var filecount, filedone=0;
         function startUpload(){
             appe.remove();
             fbox.remove();
@@ -53,8 +54,16 @@ $(function(){
             for(var i=0;i<files.length;i++){
                 processFile(files[i]);
             }
+            filecount=files.length;
         }
         var plen=30*1024*4;
+        function closedhk(){
+            man.animate({opacity: 0},150,function(){
+                man.remove();
+                showing=false;
+            });
+        }
+        var fids=[],fnames=[];
         function processFile(file){
             var reader = new FileReader();
             reader.onload=function(e){
@@ -64,7 +73,8 @@ $(function(){
                 $.post("/f/touch/"+encodeURIComponent(file.name),{wisChk: pdWisChk, len: file.size},function(e){
                     if(e.id){
                         var fileid=e.id;
-                        console.info(fileid);
+                        fids.push(fileid);
+                        fnames.push(file.name);
                         ftgr.animate({backgroundColor:"#d0d0d0"},150);
                         ftgr.css({position: "relative"});
                         ftgr.text(file.name);
@@ -78,17 +88,29 @@ $(function(){
                         var pcou=parts.length;
                         var npc=1/pcou;
                         var finishPartc=0;
+                        var thisdone=false;
                         function callFinish(){
                             if(finishPartc>=pcou){
+                                if(thisdone){
+                                    return;
+                                }
+                                thisdone=true;
                                 ftgr.html("Finish.");
+                                filedone++;
+                                if(filecount<=filedone){
+                                    closedhk();
+                                    console.info(fids,filedone,filecount);
+                                    callb(fids,fnames);
+                                }
                             }
                         }
                         function dg(i){
                             if(i>=pcou){
                                 callFinish();
+                                return;
                             }
                             var ps=$('<div>&nbsp;</div>');
-                            ps.css({position:"absolute", width:(npc*100)+"%", left: (i*(npc*100))+"%", backgroundColor: "#"+$.md5(parts[i]), top:"0"});
+                            ps.css({position:"absolute", width:(npc*100)+"%", left: (i*(npc*100))+"%", backgroundColor: "#"+Math.max(0x100000,(Math.random()*0xffffff)).toString(16).substr(0,6), top:"0"});
                             parts[i].ps=ps;
                             ftgr.append(ps);
                             $.post("/f/write/"+fileid,{wisChk: pdWisChk, blob: parts[i], i:i},function(){
