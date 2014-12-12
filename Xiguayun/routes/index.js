@@ -861,7 +861,7 @@ router.get('/f/:fid/:fname?', function(req, res){
                         "png":"image/png"
                     }[ext];
                     console.info(memtype);
-                    if(memtype.length>0){
+                    if(memtype && memtype.length>0){
                         res.header("Content-Type",memtype);
                     }
                 }
