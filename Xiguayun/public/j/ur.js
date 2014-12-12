@@ -13,7 +13,7 @@ $(function(){
             },'json');
         });
         XLIB.centEditCf($('.sign'),function(){
-            var bc=XLIB.mbm("保存……");
+            var bc=XLIB.mbm("保存……保存");
             $.post("/usetx/"+xgrid,{wisChk: pdWisChk, sign: $('.sign').text()},function(q){
                 if(!q.error){
                     bc.ok();
@@ -82,7 +82,7 @@ $(function(){
                 }
             }
         });
-        function metProc(procname,newname,val,failt){
+        function metProc(procname,newname,val,failt,ok){
             if(newname.length<1 || val.length<1){
                 var bc=XLIB.mbm("保存……");
                 $.post("/usetx/"+xgrid,{wisChk: pdWisChk, iName: procname, iUnset: 1},function(q){
@@ -93,6 +93,7 @@ $(function(){
                         bc.closeTimeout(1500);
                         failt();
                     }
+                    ok?ok():0;
                 },'json');
             }else if(newname==procname){
                 var bc=XLIB.mbm("保存……");
@@ -104,6 +105,7 @@ $(function(){
                         bc.closeTimeout(1500);
                         failt();
                     }
+                    ok?ok():0;
                 },'json');
             }else if(newname!=procname){
                 var bc=XLIB.mbm("保存……");
@@ -115,6 +117,7 @@ $(function(){
                         bc.closeTimeout(1500);
                         failt();
                     }
+                    ok?ok():0;
                 },'json');
             }
         }
@@ -184,6 +187,105 @@ $(function(){
             ta.append(xxname);
             xxname.mousedown();
             um.after(ta);
+        });
+        var lttc=$('.loadppc');
+        var cl=$('.clear');
+        lttc.click(function(){
+            var confirm=$('<button class="xui-buttom">确定</button>');
+            var no=$('<button class="xui-buttom">取消</button>');
+            var xx=$('<div></div>').append(confirm);
+            lttc.before(xx);
+            confirm.before($('<div style="height: 40px; line-height: 40px;">确定？</div>'));
+            confirm.after(no);
+            no.click(function(){
+                xx.remove();
+                lttc.css({display: "block"});
+            });
+            confirm.click(function(){
+                $('.u-xx').remove();
+                var bc=XLIB.mbm("应用模板中……");
+                function addps(p,v,ok){
+                    metProc(p,p,v,function(){
+                        XLIB.mbm(p+"：失败。");
+                    },ok);
+                }
+                var tps=[
+                    {"攻受":"受"},
+                    {"学历":"初中"},
+                    {"在线时间":"由于学业原因每天很少/没有。"},
+                    {"编程":"不会"},
+                    {"QQ":"10000"},
+                    {"Email":"someone@gmail.com"},
+                    {"网址":"blogs.websint.org/"+xgrn},
+                    {"翻墙":"已翻，手段=IPv6 + vpn"},
+                    {"生日":"1-01"},
+                    {"作息时间":"星期1~5： 睡觉=23:00 起床=7:00 放假/星期6~7： 睡觉=+2:00 起床=11:00"},
+                    {"赶紧开始吧！":"点击这里编辑，加上更多有趣的信息，或者点击这里编辑并清空以删除此栏。"}
+                ];
+                function gcr(i){
+                    console.info(i,tps.length);
+                    if(i>=tps.length){
+                        XLIB.mbm("完成……");
+                        setTimeout(function(){
+                            window.location.reload();
+                        },800);
+                        return;
+                    }
+                    var obj=tps[i];
+                    var t=i;
+                    for(var i in obj){
+                        if(obj.hasOwnProperty(i)){
+                            addps(i,obj[i],function(){
+                                gcr(t+1);
+                            });
+                            break;
+                        }
+                    }
+                }
+                gcr(0);
+            });
+            lttc.css({display: "none"});
+        });
+        cl.click(function(){
+            var confirm=$('<button class="xui-buttom">确定</button>');
+            var no=$('<button class="xui-buttom">取消</button>');
+            var xx=$('<div></div>').append(confirm);
+            cl.before(xx);
+            confirm.before($('<div style="height: 40px; line-height: 40px;">确定？</div>'));
+            confirm.after(no);
+            no.click(function(){
+                xx.remove();
+                cl.css({display: "block"});
+            });
+            confirm.click(function(){
+                var bc=XLIB.mbm("清空中……");
+                function addps(p,v,ok){
+                    metProc(p,p,v,function(){
+                        XLIB.mbm(p+"：失败。");
+                    },ok);
+                }
+                var lts=$('.usper').children('.tit');
+                var bjs=[];
+                for(var i=0;i<lts.length;i++){
+                    bjs.push($(lts[i]).children('.proc').text());
+                }
+                $('.u-xx').remove();
+                function gcr(i){
+                    if(i>=bjs.length){
+                        XLIB.mbm("完成……");
+                        setTimeout(function(){
+                            window.location.reload();
+                        },800);
+                        return;
+                    }
+                    var obj=bjs[i];
+                    addps(obj,"",function(){
+                        gcr(i+1);
+                    });
+                }
+                gcr(0);
+            });
+            cl.css({display: "none"});
         });
     }
 });
