@@ -677,6 +677,45 @@ router.post('/usetx/:usrid?', function (req, res) {
                                     });
                                 });
                             }
+                        }else if(req.body.hasOwnProperty("iName")){
+                            var proname=strlib.strsftrim(req.body.iName);
+                            if(proname.length<1 || proname.length>50){
+                                res.send({error: -2});
+                            }else{
+                                var proval=strlib.strsftrim(req.body.iVal);
+                                if(req.body.iUnset){
+                                    var xgUserXzModel = dbc.model('xgUserXz');
+                                    var ust={};
+                                    ust["i"+proname]=1;
+                                    xgUserXzModel.findByIdAndUpdate(ir._id,{$unset:ust},function(){
+                                        res.send({});
+                                    });
+                                }else if(req.body.iRename){
+                                    var iren=strlib.strsftrim(req.body.iRename);
+                                    if(iren.length<1 || iren.length > 255 || iren==proname){
+                                        res.send({error: -3});
+                                    }else{
+                                        var xgUserXzModel = dbc.model('xgUserXz');
+                                        var ust={};
+                                        ust["i"+proname]=1;
+                                        var st={};
+                                        st["i"+iren]=ir.get("i"+proname);
+                                        xgUserXzModel.findByIdAndUpdate(ir._id,{$unset:ust, $set:st},function(){
+                                            res.send({});
+                                        });
+                                    }
+                                }else{
+                                    if(proval.length<1 || proval.length > 255){
+                                        res.send({error: -3});
+                                    }else{
+                                        ir.set("i"+proname,proval);
+                                        ir.markModified("i"+proname);
+                                        ir.save(function(){
+                                            res.send({});
+                                        });
+                                    }
+                                }
+                            }
                         }else{
                             res.send({});
                         }
@@ -1174,7 +1213,7 @@ module.exports = function (d) {
         sex: {type: String, default: "性别未知"},
         sign: {type: String,default:"窝正在完善资料！"},
         welcomeuserpage: {type: String, default:"欢迎访问窝的**用户页**！"}
-    });
+    }, { strict: false });
     xgMil.methods.canShow = function (usr, wis) {
         return this.readFromWeb_can && ((usr == this.auth_user && this.auth_user != "") || (this.auth_user.length < 0 && this.auth_wis == wis));
     };

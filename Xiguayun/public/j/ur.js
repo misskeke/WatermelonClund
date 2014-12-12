@@ -82,5 +82,108 @@ $(function(){
                 }
             }
         });
+        function metProc(procname,newname,val,failt){
+            if(newname.length<1 || val.length<1){
+                var bc=XLIB.mbm("保存……");
+                $.post("/usetx/"+xgrid,{wisChk: pdWisChk, iName: procname, iUnset: 1},function(q){
+                    if(!q.error){
+                        bc.ok();
+                    }else{
+                        bc.text("失败……"+ q.error);
+                        bc.closeTimeout(1500);
+                        failt();
+                    }
+                },'json');
+            }else if(newname==procname){
+                var bc=XLIB.mbm("保存……");
+                $.post("/usetx/"+xgrid,{wisChk: pdWisChk, iName: procname, iVal: val},function(q){
+                    if(!q.error){
+                        bc.ok();
+                    }else{
+                        bc.text("失败……"+ q.error);
+                        bc.closeTimeout(1500);
+                        failt();
+                    }
+                },'json');
+            }else if(newname!=procname){
+                var bc=XLIB.mbm("保存……");
+                $.post("/usetx/"+xgrid,{wisChk: pdWisChk, iName: procname, iRename: newname},function(q){
+                    if(!q.error){
+                        bc.ok();
+                    }else{
+                        bc.text("失败……"+ q.error);
+                        bc.closeTimeout(1500);
+                        failt();
+                    }
+                },'json');
+            }
+        }
+        function gged(tr){
+            var tdp=tr.children('.proc');
+            var tdv=tr.children('.valu');
+            tdp.addClass('editable');
+            tdv.addClass('editable');
+            XLIB.centEditCf(tdp,function(odt){
+                if(tdp.text().length<1){
+                    tr.remove();
+                }
+                metProc(odt,tdp.text(),tdv.text(),function(){
+                    tdv.mousedown();
+                });
+            });
+            XLIB.centEditCf(tdv,function(){
+                if(tdv.text().length<1){
+                    tr.remove();
+                }
+                metProc(tdp.text(),tdp.text(),tdv.text(),function(){
+                    tdv.mousedown();
+                });
+            });
+        }
+        var tp=$('.usper');
+        var rds=tp.children('.tit');
+        for(var i=0;i<rds.length;i++){
+            gged($(rds[i]));
+        }
+        var um=$('.umore').click(function(){
+            um.css({display: "none"});
+            var ta=$('<tr></tr>');
+            var xxname=$('<td class="editable"></td>');
+            XLIB.centEditCf(xxname,function(){
+                var proname=xxname.text();
+                var pp=$('<td class="proc"></td>');
+                pp.text(proname);
+                if(proname.length<1){
+                    ta.remove();
+                    um.css({display: ""});
+                    return;
+                }
+                xxname.remove();
+                ta.append(pp);
+                var da=$('<td class="editable"></td>');
+                ta.append(da);
+                XLIB.centEditCf(da,function(){
+                    var proval=da.text();
+                    var pa=$('<td class="valu"></td>');
+                    pa.text(proval);
+                    if(proval.length<1){
+                        ta.remove();
+                        um.css({display: ""});
+                        return;
+                    }
+                    da.remove();
+                    ta.append(pa);
+                    gged(ta);
+                    metProc(proname,proname,proval,function(){
+                        ta.remove();
+                    });
+                    um.css({display: ""});
+                });
+                da.mousedown();
+            });
+            ta.append(xxname);
+            xxname.mousedown();
+            um.after(ta);
+        });
     }
 });

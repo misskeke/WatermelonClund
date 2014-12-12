@@ -36,3 +36,17 @@ block content
                 span.sign=sign
                 | ”
                 .padding8!= wel
+        .u-xx
+            table.tbdy.tbl
+                tbody.tbdy.usper
+                    tr.ttr
+                        td.ftd 属性
+                        td.std 值
+                    - for(var t in xzN._doc)
+                        - if(xzN._doc.hasOwnProperty(t) && t.substr(0,1)=="i")
+                            tr.tit
+                                td.proc #{t.substr(1)}
+                                td.valu #{xzN._doc[t]}
+                    tr.umore
+                        td.editable 增加更多
+                        td.editable --

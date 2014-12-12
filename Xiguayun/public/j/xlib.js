@@ -127,23 +127,29 @@ XLIB.centEditCf=function(ct,on){
                         var width=ct.width();
                         ipt.css({width: width+"px"});
                         editing=true;
-                        ipt.val(ct.text());
-                        ct.html("");
-                        ct.append(ipt);
-                        ipt.animate({width: "200px"},125);
-                        ipt.focus();
-                        ipt.blur(function(){
-                            ipt.val(ipt.val().trim());
-                            ct.text(ipt.val());
-                            if(ipt.val().length<1){
-                                ct.addClass("editable-empty");
-                            }
-                            ipt.remove();
-                            editing=false;
-                            ct.removeClass("editable-focus");
-                            on?setTimeout(on,1):0;
-                        });
-                        ct.addClass("editable-focus");
+                        var oldtext=ct.text();
+                        ipt.val(oldtext);
+                        var ctw=ct.width();
+                        setTimeout(function(){
+                            ct.html("");
+                            ct.append(ipt);
+                            ipt.animate({width: Math.max(200,ctw)+"px"},125);
+                            ipt.focus();
+                            ipt.blur(function(){
+                                ipt.val(ipt.val().trim());
+                                ct.text(ipt.val());
+                                if(ipt.val().length<1){
+                                    ct.addClass("editable-empty");
+                                }
+                                ipt.remove();
+                                editing=false;
+                                ct.removeClass("editable-focus");
+                                on?setTimeout(function(){
+                                    on(oldtext);
+                                },1):0;
+                            });
+                            ct.addClass("editable-focus");
+                        },2);
                     }
                 },1);
             });
