@@ -54,7 +54,7 @@ $(function () {
             console.info(name+" .uid="+uid);
             var alertbox=$('<div class="alertboxusr alertboxusrx"></div>');
             var headpicbox=$('<div class="headpicbox"></div>');
-            headpicbox.append($('<img>').attr("src","/uid/"+xgrid+"/pic"));
+            headpicbox.append($('<img>').attr("src","/uid/"+uid+"/pic"));
             function process(c){
                 headpicbox.remove();
                 var lv=$('<div class="alewalt">请稍候</div>');

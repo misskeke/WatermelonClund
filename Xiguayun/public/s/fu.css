@@ -1,0 +1,13 @@
+.xx-fpm {
+    border-bottom: solid #aaa 1px;
+    height: auto;
+    padding: 1px;
+    margin: 4px;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.hp-sel {
+    max-height: 24px;
+    vertical-align: middle;
+    margin-right: 4px;
+}

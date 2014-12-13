@@ -287,5 +287,8 @@ $(function(){
             });
             cl.css({display: "none"});
         });
+        $('.hpic').css({cursor:"pointer"}).click(function(){
+            window.location.assign("/uid/"+xgrid+"/picset");
+        });
     }
 });

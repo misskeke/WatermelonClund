@@ -1,0 +1,20 @@
+extends layout
+block head
+    script.
+        var xgrid="#{usr._id.toString()}";
+        var xgn="#{usr.name}";
+    link(rel="stylesheet",href="/s/fu.css")
+    script(src="/j/fileupd.js",type="text/javascript")
+    script(src="/j/picset.js",type="text/javascript")
+block content
+    .xx-fpm
+        - for(var i=0;i<usr.headPics.length;i++)
+            img.hp-sel(data-hpid="#{usr.headPics[i].picid}",src="/f/#{usr.headPics[i].picid}",title="#{usr.headPics[i].text}")
+        a.rmall x
+    button.xui-buttom.updbtn 上传
+    .prev
+        img.xx-pic16(src=picn)
+        img.xx-pic32(src=picn)
+        img.xx-pic64(src=picn)
+        img.xx-pic128(src=picn)
+        img.xx-picfull(src=picn)

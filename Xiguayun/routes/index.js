@@ -595,7 +595,9 @@ router.get('/u/:usr?', function(req,res)    {
         xusr.getXz(function(xzs){
             wi.isLoginName(xusr.name,function(hasPrem){
                 marked(new xgUserXzModel(xzs[0]).get('welcomeuserpage'), function (err, content) {
-                    res.render("usrpage",{title: xusr.name, xusr: xusr, xzs: xzs,wel: content,hasPrem: hasPrem});
+                    xusr.getPic(function(pic){
+                        res.render("usrpage",{title: xusr.name, xusr: xusr, xzs: xzs,wel: content,hasPrem: hasPrem, pic:pic});
+                    });
                 });
             });
         });
@@ -860,6 +862,7 @@ router.post('/f/write/:fid', function(req, res){
         }
     });
 });
+
 router.get('/f/:fid/:fname?', function(req, res){
     var fid=strlib.strsftrim(req.params.fid);
     var xgFileModel = dbc.model('xgFile');
@@ -974,11 +977,40 @@ router.get('/uid/:usrid/pic', function(req, res){
     var xgUserModel = dbc.model('xgUser');
     xgUserModel.findById(usr,function(e,s){
         if(!s || e){
-            res.send({error:"-"});
+            var ep = new Error("用户不存在");
+            ep.status = "ITEM_NOTFIND";
+            ersp(res, ep, 404);
             return;
         }
         s.getPic(function(pc){
             res.redirect("/f/"+pc.picid);
+        });
+    });
+});
+router.get('/uid/:usrid/picset', function(req ,res){
+    var usr=req.params.usrid;
+    var xgUserModel = dbc.model('xgUser');
+    var wi = res.sessWi;
+    xgUserModel.findById(usr,function(e,s){
+        if(!s || e){
+            var ep = new Error("用户不存在");
+            ep.status = "ITEM_NOTFIND";
+            ersp(res, ep, 404);
+            return;
+        }
+        wi.isLoginId(usr,function(hasPrem){
+            if(!hasPrem){
+                var epa = new Error("拒绝访问");
+                epa.status = "ACCESS_DENIED";
+                ersp(res, epa, 401);
+            }else{
+                var xgUserModel = dbc.model('xgUser');
+                xgUserModel.findById(usr,function(e,s){
+                    s.getPic(function(picn){
+                        res.render('picuset', {uid: usr, usr: s, title: "设置"+s.name+"的头像",picn:"/f/"+picn.picid});
+                    });
+                });
+            }
         });
     });
 });
@@ -1304,7 +1336,7 @@ module.exports = function (d) {
         if(pics[pics.length-1]){
             c(pics[pics.length-1]);
         }else{
-            c({picid: 0, text: "-"});
+            c({picid: "548bc1f81324aae176d9ce70", text: "-"});
         }
     };
     var xgUserModel = dbc.model('xgUser', xgUser);

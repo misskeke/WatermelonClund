@@ -387,3 +387,28 @@ code {
     top: 0;
     bottom: 0;
 }
+
+.xx-pic16 {
+    vertical-align: middle;
+    max-width: 16px;
+    max-height: 16px;
+}
+.xx-pic32 {
+    vertical-align: middle;
+    max-width: 32px;
+    max-height: 32px;
+}
+.xx-pic64 {
+    vertical-align: middle;
+    max-width: 64px;
+    max-height: 64px;
+}
+.xx-pic128 {
+    vertical-align: middle;
+    max-width: 128px;
+    max-height: 128px;
+}
+.xx-picfull {
+    vertical-align: middle;
+    max-width: 100%;
+}
