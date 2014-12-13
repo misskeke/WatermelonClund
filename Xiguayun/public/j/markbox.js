@@ -85,6 +85,8 @@
         }));
         var pp=$('<span class="markBoxBut">传图</span>');
         ddMb.append(pp);
+        var ddat=$('<span class="markBoxBut">附件</span>');
+        ddMb.append(ddat);
         moBar.append($('<span class="markBoxBut">帮助·提示</span>').click(function(){
             window.open("https://websint.org/markdown/helptips");
         }));
@@ -221,11 +223,19 @@
 
         $.getScript("/j/fileupd.js",function(){
             pp.click(function(){
-                console.info("= =");
                 XLIB.showFileUpd(function(fids,fnames){
                     var bff="";
                     for(var i=0;i<fids.length;i++){
                         bff+="!["+fnames[i]+"](/f/"+fids[i]+")\n";
+                    }
+                    selection(bff);
+                });
+            });
+            ddat.click(function(){
+                XLIB.showFileUpd(function(fids,fnames){
+                    var bff="";
+                    for(var i=0;i<fids.length;i++){
+                        bff+="[下载 "+fnames[i]+"](/f/"+fids[i]+")\n";
                     }
                     selection(bff);
                 });

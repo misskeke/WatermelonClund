@@ -3,12 +3,14 @@ extends layout
 block head
     link(rel="stylesheet",href="/s/i.css")
 block content
-    .indextpb
-        h2.htit 推吧
-        .czz 帖子，微博
-        .rit 已有 #{tieAmount} 篇帖子
+    - if(!lognUsn || lognUsn.length<1)
+        .indextpb
+            h2.htit 推吧
+            .czz 帖子，微博
+                p 登录或注册 查看更多精彩
+            .rit 已有 #{tieAmount} 篇帖子
     .boxclc
-        .gbox
+        .gbox(style="width: 320px; height: 180px;")
             h2 开发状态
             ul
                 li Status=开发中

@@ -914,6 +914,74 @@ router.get('/f/:fid/:fname?', function(req, res){
 router.get('/dev/ping', function(req, res){
     res.send({ok: "OK"});
 });
+
+router.post('/ux/:usrid/setPic', function(req, res){
+    wisChk(req, res, function (){
+        var picid=strlib.strsftrim(req.body.pid);
+        var text=strlib.strsftrim(req.body.text);
+        var usr=req.params.usrid;
+        var wi = res.sessWi;
+        wi.isLoginId(usr,function(hasPrem){
+            if(!hasPrem){
+                res.send({error: "请先登录。"});
+            }else{
+                var xgUserModel = dbc.model('xgUser');
+                xgUserModel.findById(usr,function(e,s){
+                    if(e){
+                        res.send({error: e.message});
+                        return;
+                    }
+                    if(!s){
+                        res.send({error:"-"});
+                        return;
+                    }
+                    s.addHeadpic(picid,text,function(){
+                        res.send({});
+                    });
+                });
+            }
+        });
+    });
+});
+router.post('/ux/:usrid/rmallPic', function(req, res){
+    wisChk(req, res, function (){
+        var usr=req.params.usrid;
+        var wi = res.sessWi;
+        wi.isLoginId(usr,function(hasPrem){
+            if(!hasPrem){
+                res.send({error: "请先登录。"});
+            }else{
+                var xgUserModel = dbc.model('xgUser');
+                xgUserModel.findById(usr,function(e,s){
+                    if(e){
+                        res.send({error: e.message});
+                        return;
+                    }
+                    if(!s){
+                        res.send({error:"-"});
+                        return;
+                    }
+                    s.picRemoveall(function(){
+                        res.send({});
+                    });
+                });
+            }
+        });
+    });
+});
+router.get('/uid/:usrid/pic', function(req, res){
+    var usr=req.params.usrid;
+    var xgUserModel = dbc.model('xgUser');
+    xgUserModel.findById(usr,function(e,s){
+        if(!s || e){
+            res.send({error:"-"});
+            return;
+        }
+        s.getPic(function(pc){
+            res.redirect("/f/"+pc.picid);
+        });
+    });
+});
 module.exports = function (d) {
     mon = d.mongo;
     dbc = d.db;
@@ -925,13 +993,6 @@ module.exports = function (d) {
         uA: String,
         value: {}
     });
-    var uHeadPic = new mon.Schema({
-        date: Date,
-        ip: String,
-        picid: String,
-        text: String,
-        size: [Number, Number]
-    });
     var xgUser = new mon.Schema({
         name: String,
         password: String,
@@ -940,7 +1001,7 @@ module.exports = function (d) {
         lastIp: String,
         log: [uLog],
         email: String,
-        headPics: [uHeadPic]
+        headPics: [{}]
     });
     var xgRegTask = new mon.Schema({
         name: String,
@@ -1217,6 +1278,35 @@ module.exports = function (d) {
     xgMil.methods.canShow = function (usr, wis) {
         return this.readFromWeb_can && ((usr == this.auth_user && this.auth_user != "") || (this.auth_user.length < 0 && this.auth_wis == wis));
     };
+    xgUser.methods.picRemoveall=function(callback){
+        var pp=this.get("headPics");
+        pp.splice(0,pp.length-1);
+        console.info(pp);
+        this.set("headPics",pp);
+        this.markModified("headPics");
+        this.save(callback);
+    };
+    xgUser.methods.addHeadpic=function(picid,text,callback){
+        var pics=this.get("headPics");
+        if(!pics){
+            pics=[];
+        }
+        pics.push({picid: picid, text: text});
+        this.set("headPics",pics);
+        this.markModified("headPics");
+        this.save(callback);
+    };
+    xgUser.methods.getPic=function(c){
+        var pics=this.get("headPics");
+        if(!pics){
+            pics=[];
+        }
+        if(pics[pics.length-1]){
+            c(pics[pics.length-1]);
+        }else{
+            c({picid: 0, text: "-"});
+        }
+    };
     var xgUserModel = dbc.model('xgUser', xgUser);
     var xgRegTaskModel = dbc.model('xgRegTask', xgRegTask);
     var xgWisModel = dbc.model('xgWis', xgWis);
@@ -1306,3 +1396,4 @@ module.exports = function (d) {
     });
     return router;
 };
+

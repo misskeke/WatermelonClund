@@ -14,8 +14,10 @@ $(function(){
         man.append($('<h2>上传文件</h2>'));
         var appe=$('<div class="border1 center padding8 dashbgr">拖动文件到此处</div>');
         man.append(appe);
+        var cancbtn=$('<button class="xui-buttom margin8 padding8 lineheight12 height30">取消</button>')
         var filebtn=$('<button class="xui-buttom margin8 padding8 lineheight12 height30">选择文件</button>');
         appe.append(filebtn);
+        appe.append(cancbtn);
         var fbox=$('<input type="file" multiple>');
         filebtn.click(function(){
             fbox.click();
@@ -28,12 +30,14 @@ $(function(){
             if($(e.target).hasClass("dashbgr")){
                 appe.css({opacity:1});
                 filebtn.css({display:"none"});
+                cancbtn.css({display:"none"});
             }
         });
         appe.bind('dragleave', function(e){
             if($(e.target).hasClass("dashbgr")){
                 appe.css({opacity:0.5});
                 filebtn.css({display:"inline-block"});
+                cancbtn.css({display:""});
             }
         });
         appe.bind('drop', function(e){
@@ -46,6 +50,9 @@ $(function(){
             console.info(files);
             startUpload();
         });
+        cancbtn.click(function(){
+            closedhk();
+        });
         var filecount, filedone=0;
         function startUpload(){
             appe.remove();
@@ -56,7 +63,6 @@ $(function(){
             }
             filecount=files.length;
         }
-        var plen=30*1024*4;
         function closedhk(){
             man.animate({opacity: 0},150,function(){
                 man.remove();
@@ -72,6 +78,7 @@ $(function(){
                 var ftgr=$('<div>Allocing space</div>');
                 $.post("/f/touch/"+encodeURIComponent(file.name),{wisChk: pdWisChk, len: file.size},function(e){
                     if(e.id){
+                        var plen=Math.min(Math.floor((file.size/15)/4)*4,12*1024*1024);
                         var fileid=e.id;
                         fids.push(fileid);
                         fnames.push(file.name);
@@ -120,7 +127,7 @@ $(function(){
                             });
                             setTimeout(function(){
                                 dg(i+1);
-                            },100);
+                            },10);
                         }
                         dg(0);
                     }else{

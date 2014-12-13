@@ -106,7 +106,7 @@ XLIB.reflashLight = function () {
             });
         })($(hls[i]));
     }
-    $('.m img').css({cursor: "pointer"}).attr({title:"查看原图"}).click(function(){
+    $('.m img').not('a img').css({cursor: "pointer"}).attr({title:"查看原图"}).click(function(){
         window.open(this.src);
     }).mouseenter(function(){
         $(this).stop(true,false,false).animate({opacity:0.8},350);

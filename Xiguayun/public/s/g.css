@@ -135,3 +135,14 @@ body {
     text-align: center;
     cursor: default;
 }
+.headpicbox {
+    position: absolute;
+    border: solid 1px #000;
+    box-shadow: -1px 1px 2px rgba(0, 0, 0, 0.60);
+}
+.headpicbox img {
+    min-width: 40px;
+    max-width: 188px;
+    min-height: 30px;
+    max-height: 65px;
+}

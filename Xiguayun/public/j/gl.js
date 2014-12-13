@@ -53,7 +53,10 @@ $(function () {
             var uid=this.data("uid");
             console.info(name+" .uid="+uid);
             var alertbox=$('<div class="alertboxusr alertboxusrx"></div>');
+            var headpicbox=$('<div class="headpicbox"></div>');
+            headpicbox.append($('<img>').attr("src","/uid/"+xgrid+"/pic"));
             function process(c){
+                headpicbox.remove();
                 var lv=$('<div class="alewalt">请稍候</div>');
                 alertbox.animate({width: "300px",height: "50px",left: $(window).width()-320,top: 50+(60*XLIB.chiJs)},250);
                 XLIB.chiJs++;
@@ -93,11 +96,13 @@ $(function () {
             $('body').append(alertbox).mousedown(function(e){
                 if($(e.target).parents(".alertboxusr").length<1 && !$(e.target).hasClass("alertboxusr")){
                     $(".alertboxusrx").remove();
+                    headpicbox.remove();
                 }
-            });
+            }).append(headpicbox);
+            headpicbox.css({left: (ltp>$(window).width()-190?$(window).width()-190:ltp)-30,top: thlc.top+25+4});
         }).call($(this));
     });
-    $('.lognplas').attr("href","/login?redirect="+encodeURIComponent(window.location));
+    $('.lognplas, .lgonbt').attr("href","/login?redirect="+encodeURIComponent(window.location));
     var wlzdding=false;
     function checkInternet(){
         var ro=setTimeout(function(){
@@ -130,5 +135,4 @@ $(function () {
             }
         },'json');
     }
-    checkInternet();
 });
