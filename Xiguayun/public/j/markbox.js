@@ -257,11 +257,12 @@
                     var replacment=(e.shiftKey?selt.replace(/\n\t/g,"\n"):selt.replace(/\n/g,"\n\t"));
                     console.info(selt,mdt,replacment,ss,ee,selctstart,selctend);
                     var rpm=(selctstart==0?"\t":"")+replacment;
-                    tl.setMarkdownText(mdt.substr(0,selctstart-1)+rpm+mdt.substr(selctend));
+                    tl.setMarkdownText(mdt.substr(0,selctstart)+rpm+mdt.substr(selctend));
+                    ddt.setSelectionRange(selctstart+1,rpm.length);
                 }else{
                     selection("\t");
+                    ddt.setSelectionRange(ss+1,ss+1);
                 }
-                ddt.setSelectionRange(ss+1,ss+1);
             }else if(e.keyCode == 13){
                 if(ddt.selectionStart != undefined){
                     e.preventDefault();

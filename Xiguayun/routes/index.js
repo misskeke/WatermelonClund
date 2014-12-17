@@ -868,7 +868,7 @@ router.get('/f/:fid/:fname?', function(req, res){
     var xgFileModel = dbc.model('xgFile');
     xgFileModel.findById(fid, function(e, s){
         if(!s){
-            var er=new Error("用户不存在");
+            var er=new Error("文件不存在");
             er.status="ITEM_NOTFIND";
             ersp(res, er, 404);
         }else{
@@ -1013,6 +1013,16 @@ router.get('/uid/:usrid/picset', function(req ,res){
             }
         });
     });
+});
+
+router.get('/d/:fname/create', function(req, res){
+    res.render('fcreate',{fname: strlib.strsftrim(req.params.fname), title: "创建 "+strlib.strsftrim(req.params.fname)});
+});
+router.get('/d/:fname/*',function(req, res){
+    var ep = new Error("操作不存在");
+    ep.status = "ITEM_NOTFIND";
+    ersp(res, ep, 404);
+    return;
 });
 module.exports = function (d) {
     mon = d.mongo;
