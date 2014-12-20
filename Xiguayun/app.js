@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var errpc = require('./bin/errrsp.js');
 var mongo = require('mongoose');
-
+var concat = require('concat-stream');
 var passR=require('./bin/passR');
 
 var nodpath=path.join(__dirname);
@@ -20,7 +20,21 @@ app.set('view engine', 'jade');
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false, limit: '15mb' }));
+app.use(function(req, res, next){
+    if(req.method=="POST"){
+        if(req.is("application/x-www-form-urlencoded")){
+            req.isParsedBody=true;
+            bodyParser.urlencoded({ extended: false, limit: '1mb' })(req,res,next);
+        }else{
+            req.pipe(concat(function(data){
+                req.body = data.toString();
+                next();
+            }));
+        }
+    }else{
+        next();
+    }
+});
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

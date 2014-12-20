@@ -95,6 +95,7 @@ function markusedVcode(wi, cbc) {
 /* router.use(function (req, res, next) {
      setTimeout(next,250);
 }); */
+
 router.use(function (req, res, next) {
     wisGen(req, res, function (wis, chk, wi) {
         res.locals.wisChk = chk;
@@ -117,6 +118,20 @@ router.use(function (req, res, next) {
     }else{
         next();
     }
+});
+router.use(function(req, res, next){
+    if(req.body && req.isParsedBody){
+        for(var i in req.body){
+            if(req.body.hasOwnProperty(i)){
+                if(req.body[i].length>10000){
+                    var errstr="字段 "+i+" 过长（超过10000）";
+                    res.send({error: errstr, err: errstr, error_msg: errstr, preview:"", ok: false, successed: false, successful: false});
+                    return;
+                }
+            }
+        }
+    }
+    next();
 });
 router.get('/', function (req, res) {
     res.render('index', { title: "推吧 - 帖子，微博", dTitle: true, SpecH1: "",
@@ -781,86 +796,73 @@ router.post('/f/touch/:fname', function(req, res){
         });
     });
 });
-var bodyParser = require('body-parser');
-router.post('/f/write/:fid', function(req, res){
-    wisChk(req, res, function () {
-        var wi = res.sessWi;
-        var fid=strlib.strsftrim(req.params.fid);
-        var length=parseInt(req.body.len);
-        if(!length>0){
-            length=0;
+router.post('/f/write/:fid/:i/:type', function(req, res){
+    var wi = res.sessWi;
+    var fid=strlib.strsftrim(req.params.fid);
+    var baseed=strlib.strsftrim(req.body);
+    var datatype=strlib.strsftrim(req.params.type);
+    try{
+        var bff=new Buffer(baseed, 'base64');
+        if(bff.length<1){
+            res.send({error: "No data send."});
+            return;
         }
-        var baseed=strlib.strsftrim(req.body.blob);
-        try{
-            var bff=new Buffer(baseed, 'base64');
-            if(bff.length<1){
-                res.send({error: "No data send."});
+        var length=bff.length;
+        var xgFileModel = dbc.model('xgFile');
+        wi.users(function(c){
+            if(c.length<1){
+                res.send({error: "未登录。"});
                 return;
             }
-            if(length==0){
-                length=bff.length;
-            }
-            if(bff.length!=length){
-                res.send({error: "data length not match."});
-                return;
-            }
-            var xgFileModel = dbc.model('xgFile');
-            wi.users(function(c){
-                if(c.length<1){
-                    res.send({error: "未登录。"});
-                    return;
-                }
-                function tri(){
-                    xgFileModel.findByIdAndUpdate(fid, {$set: {addingChunk: true}}, {new: false}, function(e, s){
-                        if(s && s.addingChunk){
-                            setTimeout(tri,2);
-                            return;
-                        }
-                        if(!s){
-                            res.send({error: "File("+fid+") Not find."});
-                        }else{
-                            s.hasPrem(wi,function(t){
-                                if(!t){
-                                    res.send({error: "Access denied"});
+            function tri(){
+                xgFileModel.findByIdAndUpdate(fid, {$set: {addingChunk: true}}, {new: false}, function(e, s){
+                    if(s && s.addingChunk){
+                        setTimeout(tri,2);
+                        return;
+                    }
+                    if(!s){
+                        res.send({error: "File("+fid+") Not find."});
+                    }else{
+                        s.hasPrem(wi,function(t){
+                            if(!t){
+                                res.send({error: "Access denied"});
+                            }else{
+                                var spaceIndex=parseInt(req.params.i);
+                                var spaceLen=length;
+                                if(isNaN(spaceIndex) || (!spaceLen>0)){
+                                    res.send({error: "OK."});
                                 }else{
-                                    var spaceIndex=parseInt(req.body.i);
-                                    var spaceLen=length;
-                                    if(isNaN(spaceIndex) || (!spaceLen>0)){
-                                        res.send({error: "OK."});
-                                    }else{
-                                        s.allocedLength(function(lad){
-                                            if(lad+spaceLen-(s.chunks[spaceIndex]?s.chunks[spaceIndex].length:0)> s.length){
-                                                res.send({error: "May overflow."});
-                                            }else{
-                                                var xgFileChunkModel = dbc.model('xgFileChunk');
-                                                var chk=new xgFileChunkModel({file: s._id.toString(),
-                                                    index: spaceIndex,
-                                                    length: spaceLen,
-                                                    data: bff});
-                                                chk.save(function(){
-                                                    s.chunks[spaceIndex]=chk._id.toString();
-                                                    s.markModified("chunks");
-                                                    s.save(function(){
-                                                        xgFileModel.findByIdAndUpdate(fid, {$set: {addingChunk: false}},function(){
-                                                            console.info(s.chunks);
-                                                            res.send({lengthReceived: spaceLen});
-                                                        });
+                                    s.allocedLength(function(lad){
+                                        if(lad+spaceLen-(s.chunks[spaceIndex]?s.chunks[spaceIndex].length:0)> s.length){
+                                            res.send({error: "May overflow."});
+                                        }else{
+                                            var xgFileChunkModel = dbc.model('xgFileChunk');
+                                            var chk=new xgFileChunkModel({file: s._id.toString(),
+                                                index: spaceIndex,
+                                                length: spaceLen,
+                                                data: bff});
+                                            chk.save(function(){
+                                                s.chunks[spaceIndex]=chk._id.toString();
+                                                s.markModified("chunks");
+                                                s.save(function(){
+                                                    xgFileModel.findByIdAndUpdate(fid, {$set: {addingChunk: false}},function(){
+                                                        res.send({lengthReceived: spaceLen});
                                                     });
                                                 });
-                                            }
-                                        });
-                                    }
+                                            });
+                                        }
+                                    });
                                 }
-                            });
-                        }
-                    });
-                }
-                tri();
-            });
-        }catch (e){
-            res.send({error: e});
-        }
-    });
+                            }
+                        });
+                    }
+                });
+            }
+            tri();
+        });
+    }catch (e){
+        res.send({error: e});
+    }
 });
 
 router.get('/f/:fid/:fname?', function(req, res){

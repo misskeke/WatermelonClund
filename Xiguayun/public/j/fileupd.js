@@ -120,10 +120,17 @@ $(function(){
                             ps.css({position:"absolute", width:(npc*100)+"%", left: (i*(npc*100))+"%", backgroundColor: "#"+Math.max(0x100000,(Math.random()*0xffffff)).toString(16).substr(0,6), top:"0"});
                             parts[i].ps=ps;
                             ftgr.append(ps);
-                            $.post("/f/write/"+fileid,{wisChk: pdWisChk, blob: parts[i], i:i},function(){
-                                ps.animate({backgroundColor: "rgb(138, 237, 142)"},200);
-                                finishPartc++;
-                                callFinish();
+                            $.ajax({
+                                contentType: "text/base64",
+                                data: parts[i],
+                                dataType: "json",
+                                type: "POST",
+                                url: "/f/write/"+fileid+"/"+i+"/base64",
+                                success: function(){
+                                    ps.animate({backgroundColor: "rgb(138, 237, 142)"},200);
+                                    finishPartc++;
+                                    callFinish();
+                                }
                             });
                             setTimeout(function(){
                                 dg(i+1);
