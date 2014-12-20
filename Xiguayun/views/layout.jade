@@ -34,7 +34,8 @@ html
             - if (!uud)
                 - if(!lognUsn || lognUsn.length<1)
                     a.lgonbt(href="/login") 登录
-                    a(href="/register") 注册
+                    - if(lgonIsReg)
+                        a(href="/register") 注册
                 -else
                     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-----&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     - for (var i=0;i<lognUsn.length;i++)
@@ -45,9 +46,8 @@ html
                         - else
                             a.usrlgned.sexxulr(href="javascript:;",data-uid=lognUsn[i].xUsr._id.toString())= lognUsn[i]
                     a.lognplas(href="/login") +
-                    - if (lognIsReg)
-                        | ，
-                        a(href="/register") 完成注册
+                - if (lognIsReg)
+                    a(href="/register") 完成注册
             block czz
         - if (typeof SpecH1 == "string")
             - if (SpecH1.length > 0)

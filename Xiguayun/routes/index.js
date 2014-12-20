@@ -107,6 +107,7 @@ router.use(function (req, res, next) {
     res.sessWi.usersWithZx(function(un, isn){
         res.locals.lognUsn = un;
         res.locals.lognIsReg = isn;
+        console.info(isn);
         res.locals.dbdStyle= (un.length>0?"text-align: right;":"");
         next();
     });
@@ -1121,7 +1122,7 @@ module.exports = function (d) {
             if(u.length<1){
                 callback([]);
             }else if(s){
-                callback([]);
+                callback([],s);
             }else{
                 function bm(i){
                     if(i>= u.length){

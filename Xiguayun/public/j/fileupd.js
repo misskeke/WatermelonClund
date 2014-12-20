@@ -78,11 +78,11 @@ $(function(){
                 var ftgr=$('<div>Allocing space</div>');
                 $.post("/f/touch/"+encodeURIComponent(file.name),{wisChk: pdWisChk, len: file.size},function(e){
                     if(e.id){
-                        var plen=Math.min(Math.floor((file.size/15)/4)*4,12*1024*1024);
+                        var plen=Math.min(Math.floor((file.size/48)/4)*4,7*1024*1024+(1024*1023));
                         var fileid=e.id;
                         fids.push(fileid);
                         fnames.push(file.name);
-                        ftgr.animate({backgroundColor:"#d0d0d0"},150);
+                        ftgr.animate({backgroundColor:"#ffffff"},150);
                         ftgr.css({position: "relative"});
                         ftgr.text(file.name);
                         var parts=[];
@@ -117,7 +117,7 @@ $(function(){
                                 return;
                             }
                             var ps=$('<div>&nbsp;</div>');
-                            ps.css({position:"absolute", width:(npc*100)+"%", left: (i*(npc*100))+"%", backgroundColor: "#"+Math.max(0x100000,(Math.random()*0xffffff)).toString(16).substr(0,6), top:"0"});
+                            ps.css({position:"absolute", width:(npc*100)+"%", left: (i*(npc*100))+"%", backgroundColor: "#eeeeee", top:"0"});
                             parts[i].ps=ps;
                             ftgr.append(ps);
                             $.ajax({
@@ -134,7 +134,7 @@ $(function(){
                             });
                             setTimeout(function(){
                                 dg(i+1);
-                            },10);
+                            },30);
                         }
                         dg(0);
                     }else{
