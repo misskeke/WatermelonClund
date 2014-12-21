@@ -87,9 +87,10 @@
         ddMb.append(pp);
         var ddat=$('<span class="markBoxBut">附件</span>');
         ddMb.append(ddat);
-        moBar.append($('<span class="markBoxBut">帮助·提示</span>').click(function(){
+        var adddoc=$('<span class="markBoxBut">帮助·提示</span>').click(function(){
             window.open("https://websint.org/markdown/helptips");
-        }));
+        });
+        moBar.append(adddoc);
         var moBfar=$('<span class="markBoxFlort"></span>');
         moBar.append(moBfar);
         var tl=this;
@@ -114,6 +115,15 @@
             height = height.toString()+"px";
             editBox.stop(true,false,false).animate({height: height},150);
         },150);
+        var sav2=true;
+        function dcc(){
+            var mbo=parseInt(moBar.offset().top)-(parseInt(moBar.css("top")) || 0);
+            moBar.css({top:(Math.max(0-(mbo-window.scrollY-50),0) || Math.min(0-(mbo-window.scrollY-$(window).height()+29),0))+"px"});
+            if(sav2){
+                ((requestAnimationFrame || webkitRequestAnimationFrame) || setTimeout)(dcc);
+            }
+        }
+        dcc();
         var lastState=true;
         var selint=setInterval(function(){
             if(selection().length>0 && !lastState){
@@ -127,6 +137,7 @@
         this.markboxFal=function(){
             clearInterval(savint);
             clearInterval(selint);
+            sav2=false;
             moBar.animate({right: "-100%"},350,function(){
                 tl.remove();
             });
@@ -156,30 +167,46 @@
         this.preview=function(swi){
             if(swi && !this.previewing){
                 this.previewing=true;
-                xPrev.html("Loading");
-                xPrev.css({opacity: 1, padding: "8px"});
-                xPrev.animate({height: editBox.height()*2}, 450);
-                bout.animate({height: "15px", margin: "0", padding: "0"}, 450);
+                xPrev.html("");
+                var m=XLIB.mbm("正在预览……");
                 $.post('/@md/preview', {md: this.getMarkdownText()}, function (q) {
+                    moBar.animate({backgroundColor:"#2E2F3B"},450);
+                    m.ok();
                     xPrev.html(q.preview);
                     if (q.error) {
                         xPrev.append($('<div class="wigWitherror"></div>').text(q.error));
                     }
+                    xPrev.css({height:"auto"});
+                    var xHigh=xPrev.height();
+                    xPrev.css({height:"0"});
+                    xPrev.css({opacity: 1, padding: "8px"});
+                    xPrev.animate({height: xHigh+20},450);
+                    bout.animate({height: "15px", margin: "0", padding: "0"}, 450);
                     XLIB.reflashLight();
                 }, 'json');
                 prev.addClass("markBoxRevHowedBtn");
-                ddMb.css({display: "none"});
+                ddMb.animate({height: "0"}, 450, function(){
+                    ddMb.css({display: "none",height:""});
+                    adddoc.css({marginLeft:"617px"}).animate({marginLeft:"1px"},450);
+                });
             }else if(!swi && this.previewing){
                 this.previewing=false;
-                xPrev.animate({height: 0, opacity: 0}, 450, function(){
+                moBar.animate({backgroundColor:"#3F2E36"},450);
+                xPrev.animate({height: 0, opacity: 0, padding: 0}, 450, function(){
+                    adddoc.css({marginLeft:"1px"}).animate({marginLeft:"617px"},450,function(){
+                        ddMb.css({display: ""});
+                        adddoc.css({marginLeft:"1px"});
+                        var ddmbheight=ddMb.height();
+                        ddMb.css({height:0}).animate({height: ddmbheight},450);
+                    });
                     xPrev.html("");
-                    ddMb.css({display: ""});
                 });
-                setTimeout(function(){
-                    xPrev.animate({padding: 0}, 100);
-                },700);
                 bout.css({height: "", opacity:1});
-                bout.animate({padding: "4px", margin: "8px", opacity: 1}, 450);
+                var bouthigh=bout.height();
+                bout.css({height:0});
+                bout.animate({padding: "4px", margin: "8px", opacity: 1, height:bouthigh}, 450, function(){
+                    bout.css({height:""});
+                });
                 prev.removeClass("markBoxRevHowedBtn");
             }
         };
@@ -218,7 +245,9 @@
         });
         this.append(manDoma);
 
-        moBar.animate({right: "0"},350);
+        moBar.animate({right: "0"},350, function(){
+            moBar.animate({backgroundColor:"#3F2E36"},450);
+        });
         manDoma.animate({opacity: "1"},350);
 
         $.getScript("/j/fileupd.js",function(){
