@@ -34,7 +34,7 @@ html
             - if (!uud)
                 - if(!lognUsn || lognUsn.length<1)
                     a.lgonbt(href="/login") 登录
-                    - if(lgonIsReg)
+                    - if(!lgonIsReg)
                         a(href="/register") 注册
                 -else
                     | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-----&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
