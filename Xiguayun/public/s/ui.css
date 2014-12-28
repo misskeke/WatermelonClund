@@ -412,3 +412,22 @@ code {
     vertical-align: middle;
     max-width: 100%;
 }
+.lui-smailldbd {
+    background-color: rgba(0,0,0,0.8);
+    color: #ffffff;
+    line-height: 28px;
+    overflow: hidden;
+    height: 28px;
+}
+.lui-smailldbd .iop {
+    display: none;
+}
+.lui-smailldbd a{
+    text-shadow: 0 0 2px #fff;
+    -webkit-transition: none;
+    transition: none;
+    color: #fff;
+    padding: 5px;
+    background-color: rgba(255,255,255,0.2);
+    margin: 4px;
+}

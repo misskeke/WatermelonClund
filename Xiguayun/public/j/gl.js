@@ -145,4 +145,16 @@ $(function () {
         }
     });
     window.pdWisChk=pagedata.wisck;
+    function doLUI(){
+        var width=$(window).width();
+        if(width<480){
+            $('.dbd').addClass('lui-smailldbd');
+            $('body').css({padding:"2px", minWidth: "250px"});
+        }else{
+            $('.dbd').removeClass('lui-smailldbd');
+            $('body').css({padding:""});
+        }
+    }
+    $(window).bind('resize', doLUI);
+    doLUI();
 });

@@ -28,14 +28,15 @@ html
         a#top
         block hct
         .dbd(style=dbdStyle)
-            a(href="/") Yoghourt
+            a.iop(href="/") Yoghourt
             - if (!uud)
                 - if(!lognUsn || lognUsn.length<1)
                     a.lgonbt(href="/login") 登录
                     - if(!lgonIsReg)
                         a(href="/register") 注册
                 -else
-                    | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-----&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    span.iop
+                        | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-----&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     - for (var i=0;i<lognUsn.length;i++)
                         - if (lognUsn[i].uxz[0].sex=="女")
                             a.usrlgned.sexgulr(href="javascript:;",data-uid=lognUsn[i].xUsr._id.toString())= lognUsn[i]
