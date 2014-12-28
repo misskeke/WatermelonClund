@@ -1,4 +1,7 @@
 $(function(){
+    var hasPrem=pagedata.hasOwnProperty("hasprem");
+    var xgrn=pagedata.xgrn;
+    var xgrid=pagedata.xgrid;
     if(hasPrem){
         XLIB.centEditCf($('.sex'),function(){
             var bc=XLIB.mbm("保存……");

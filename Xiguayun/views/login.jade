@@ -2,8 +2,7 @@ extends layout
 block head
     link(rel="stylesheet",href="/s/l.css")
     script(src="/j/login.js",type="text/javascript")
-    script.
-        var redir="#{redir}";
+    meta.pagedata(data-redir=redir)
 block content
     .rgp
         .rgs

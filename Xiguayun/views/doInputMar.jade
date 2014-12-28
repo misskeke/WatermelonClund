@@ -4,7 +4,7 @@ html
         script(src="https://upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.3.min.js",type="text/javascript")
         script.
             $(function(){
-                $.post("/register/doConfirm",{code: "#{code}", wisChk: "#{wisChk}"},function(q){
+                $.post("/register/doConfirm",{code: "#{parseInt(code)}", wisChk: "#{wisChk}"},function(q){
                     if(q.error){
                         window.location.assign("/register/2");
                     }else{

@@ -2,10 +2,7 @@ extends layout
 block head
     link(rel="stylesheet",href="/s/ur.css")
     script(src="/j/ur.js",type="text/javascript")
-    script.
-        var xgrn="#{xusr.name}";
-        var xgrid="#{xusr.id.toString()}";
-        var hasPrem=#{hasPrem};
+    meta.pagedata(data-xgrn=xusr.name,data-xgrid=xusr.id.toString(),data-hasPrem=hasPrem)
 block content
     <!-- Username=#{xusr.name} -->
     <!-- Has #{xzs.length} -->

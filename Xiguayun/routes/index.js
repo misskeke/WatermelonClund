@@ -1019,7 +1019,7 @@ router.get('/uid/:usrid/picset', function(req ,res){
 });
 
 router.get('/d/:fname/create', function(req, res){
-    res.render('fcreate',{fname: strlib.strsftrim(req.params.fname), title: "创建 "+strlib.strsftrim(req.params.fname)});
+    res.render('fcreate',{fname: strlib.strsftrim(req.params.fname), title: "创建 "+strlib.strsftrim(req.params.fname), dTitle: true, SpecH1: ""});
 });
 router.get('/d/:fname/*',function(req, res){
     var ep = new Error("操作不存在");
