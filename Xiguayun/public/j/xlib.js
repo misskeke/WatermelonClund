@@ -158,24 +158,21 @@ XLIB.centEditCf=function(ct,on){
 };
 XLIB.dinit=function(){
     setTimeout(function(){
-        var f=function(){
-            // console.clear();
-            for(var i=0;i<50;i++){
-                console.log("                                                            ".substr(i));
-            }
-            console.log("  Welcome to Xgy's F12 Scripting Platform!");
-            for(i=0;i<3;i++){
-                console.log("                                                            ".substr(i));
-            }
-            console.log("         For help, type help()");
-            for(i=0;i<3;i++){
-                console.log("                                                            ".substr(i));
-            }
-        };
-        eval("("+f.toString()+")();");
+        // console.clear();
+        for(var i=0;i<50;i++){
+            console.log("                                                            ".substr(i));
+        }
+        console.log("  Welcome to Xgy's F12 Scripting Platform!");
+        for(i=0;i<3;i++){
+            console.log("                                                            ".substr(i));
+        }
+        console.log("         For help, type help()");
+        for(i=0;i<3;i++){
+            console.log("                                                            ".substr(i));
+        }
     },1);
+    clearInterval(tx);
 };
-XLIB.dinit();
 $(XLIB.reflashLight);
 XLIB.chiJs=0;
 XLIB.mbm=function(text){
@@ -197,3 +194,15 @@ $(function(){
         this.removeClass("editable-empty");
     };
 });
+var tx=setInterval(function(){
+    console.clear();
+    for(var i=1;i<20;i++)
+        console.log(new Array(i).join(" "));
+    console.log("%cSTOP!","font-size: 230%; color: red; text-shadow: 1px 1px 4px red;");
+    console.log("%cThis is a develop tool for enginners. Don't paste anything otherone give you here. Else you may lose your account.",
+               "font-size: 120%; text-shadow: 1px 1px 1px rgba(0,0,0,0.5);");
+    console.log("%cIf you want to coding here, use XLIB.dinit() to stop this.","font-style: oblique; font-size: 90%;");
+    for(var i=1;i<4;i++)
+        console.log(new Array(i).join(" "));
+},1000);
+XLIB.dinit();

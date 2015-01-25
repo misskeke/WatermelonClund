@@ -31,6 +31,7 @@ module.exports = function(dbcc,monc,passR){
                     html: jade.renderFile(jadef, { MailTitle:subject,tdlink:tdlink,content:content,
                         readonl: (canNotReadOnLine?undefined:"https://websint.org/dev/mailView/"+mlc._id.toString()) })
                 };
+                console.info(mailOptions.html);
                 smtpTransport.sendMail(mailOptions, function(error, response){
                     if (error) {
                         console.log(error.stack);

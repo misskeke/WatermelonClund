@@ -188,6 +188,11 @@
             return editBox.val(q);
         };
         this.setSubmit=function(st){
+            if(typeof st == "string" && st.length<1){
+                submitBtn.css({display:"none"});
+            }else{
+                submitBtn.css({display:""});
+            }
             return submitBtn.text(st);
         };
         this.submCilck=function(t){

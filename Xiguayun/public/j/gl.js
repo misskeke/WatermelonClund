@@ -137,10 +137,8 @@ $(function () {
     }
     window.pagedata={};
     $('.pagedata').each(function(a,b){
-        console.info(b.dataset);
         for(var i in b.dataset){
             var dd=b.dataset[i];
-            console.info(i+"="+dd);
             pagedata[i]=dd;
         }
     });

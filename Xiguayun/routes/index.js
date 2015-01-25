@@ -797,7 +797,7 @@ router.post('/f/touch/:fname', function(req, res){
         });
     });
 });
-router.post('/f/write/:fid/:i/:type', function(req, res){
+router.post('/f/write/:fid/:i/:type?', function(req, res){
     var wi = res.sessWi;
     var fid=strlib.strsftrim(req.params.fid);
     var baseed=strlib.strsftrim(req.body);
@@ -1019,7 +1019,19 @@ router.get('/uid/:usrid/picset', function(req ,res){
 });
 
 router.get('/d/:fname/create', function(req, res){
+    res.status(404);
     res.render('fcreate',{fname: strlib.strsftrim(req.params.fname), title: "创建 "+strlib.strsftrim(req.params.fname), dTitle: true, SpecH1: ""});
+});
+router.post('/d/:fname/docreate', function(req, res){
+    wisChk(req, res, function (){
+        var wi = res.sessWi;
+        var name = strlib.strsftrim(req.params.fname);
+        if(name.length<1 || name.length>20){
+            res.send({error:"名字过长"});
+        }else{
+            res.send({nRecived: name});
+        }
+    });
 });
 router.get('/d/:fname/*',function(req, res){
     var ep = new Error("操作不存在");

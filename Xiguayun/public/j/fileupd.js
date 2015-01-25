@@ -69,7 +69,7 @@ $(function(){
                 showing=false;
             });
         }
-        var fids=[],fnames=[];
+        var fids=[],fnames=[],nowtask=0;
         function processFile(file){
             var reader = new FileReader();
             reader.onload=function(e){
@@ -78,7 +78,8 @@ $(function(){
                 var ftgr=$('<div>Allocing space</div>');
                 $.post("/f/touch/"+encodeURIComponent(file.name),{wisChk: pdWisChk, len: file.size},function(e){
                     if(e.id){
-                        var plen=Math.min(Math.floor((file.size/48)/4)*4,7*1024*1024+(1024*1023));
+                        var plen=Math.min(Math.floor((file.size/16)/4)*4,Math.floor((2*1024*1024)/4)*4);
+                        console.info(Math.floor((file.size/16)/4)*4,Math.floor((2*1024*1024)/4)*4);
                         var fileid=e.id;
                         fids.push(fileid);
                         fnames.push(file.name);
@@ -120,6 +121,7 @@ $(function(){
                             ps.css({position:"absolute", width:(npc*100)+"%", left: (i*(npc*100))+"%", backgroundColor: "#eeeeee", top:"0"});
                             parts[i].ps=ps;
                             ftgr.append(ps);
+                            nowtask++;
                             $.ajax({
                                 contentType: "text/base64",
                                 data: parts[i],
@@ -127,13 +129,21 @@ $(function(){
                                 type: "POST",
                                 url: "/f/write/"+fileid+"/"+i+"/base64",
                                 success: function(){
+                                    nowtask--;
                                     ps.animate({backgroundColor: "rgb(138, 237, 142)"},200);
                                     finishPartc++;
                                     callFinish();
                                 }
                             });
                             setTimeout(function(){
-                                dg(i+1);
+                                function te(){
+                                    if(nowtask<16){
+                                        dg(i+1);
+                                    }else{
+                                        setTimeout(te,30);
+                                    }
+                                }
+                                te();
                             },30);
                         }
                         dg(0);

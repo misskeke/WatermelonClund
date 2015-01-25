@@ -1,0 +1,31 @@
+.oh1 {
+   font-weight: lighter;
+   font-size: 120%;
+   border-bottom: #E25725 solid 1px;
+   line-height: 230%;
+   color: #444;
+   cursor: default;
+}
+.op {
+    font-size: 90%;
+    color: #666;
+    font-weight: lighter;
+    padding: 2px 16px 2px 16px;
+}
+.oh2 {
+   font-weight: normal;
+   font-size: 110%;
+   border-bottom: #209EFF solid 1px;
+   line-height: 150%;
+   color: #222;
+   cursor: default;
+   padding: 1px 8px 1px 8px;
+}
+.oa {
+    color: #000117;
+    text-shadow: none;
+}
+.oa:hover {
+    color: #37b2c4;
+    text-shadow: none;
+}

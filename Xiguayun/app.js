@@ -43,7 +43,7 @@ app.use(function (req, res, next) {
     res.locals.res = res;
     next();
 });
-var db = mongo.createConnection("mongodb://root@localhost:27017/websint",{user:"root",pass:passR.MongodbPass});
+var db = mongo.createConnection("mongodb://root@127.1.23.1:27017/websint",{user:"root",pass:passR.MongodbPass});
 db.on('error', console.error.bind(console, '连接错误:'));
 db.once('open', function () {
     var routes = require('./routes/index')({mongo: mongo, db: db, passR: passR});

@@ -1,9 +1,33 @@
 extends layout
 
 block head
+    link(rel="stylesheet",href="/s/mb.css")
+    script(src="/j/markbox.js",type="text/javascript")
     script(src="/j/fcre.js",type="text/javascript")
+    link(rel="stylesheet",href="/s/opt.css")
     meta.pagedata(data-fname=fname)
 block content
-    h1
+    h1.oh1
         | 创建&nbsp;
         span.rename.editable= fname
+        | 吧
+    p.op
+        | 推把是一个大或者小的主题（如动漫、日漫、柯南，墙外、Google、gmail）。可以在推吧里发推。
+        br
+        | 创建前请确认没有重复话题（
+        a.oa 搜索推吧
+        | ，
+        a.oa 创建重定向
+        | ）
+        | 请尽量使用全称（如“
+        a.oa(href="http://xgy.co/wkgfw" target="_blank") 防火长城
+        ”而不是“GFW”），必要时将简称重定向到全称。
+    h2.oh2 百科描述
+    | 粘贴定义部分
+    br
+    .di
+    input.xui-input-text(placeholder="百科地址 https://zh.wikipedia.org/wiki/#{fname}")
+    h2.oh2 子吧
+    p.op 如果此推吧有父吧（如“柯南”的父吧是“日漫”），请填写名称
+    input.xui-input-text(placeholder="父吧")
+    button.xui-buttom.create 创建
