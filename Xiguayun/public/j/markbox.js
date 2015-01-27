@@ -109,12 +109,24 @@
         if(localStorage["cvg"+d]){
             editBox.val(localStorage["cvg"+d]);
         }
+        var lahei=0;
         var savint=setInterval(function(){
             localStorage["cvg"+d]=tl.getMarkdownText();
-            var linenum=tl.getMarkdownText().split('\n').length+1;
-            var height=linenum * 24;
-            height = height.toString()+"px";
-            editBox.stop(true,false,false).animate({height: height},150);
+            // var linenum=tl.getMarkdownText().split('\n').length+1;
+            // var height=linenum * 24;
+            // height = height.toString()+"px";\
+            var dmy=$('<div class="markBoxEdit"></div>');
+            var mdteee=$('<span>').text(tl.getMarkdownText()).html().replace(/\n/g,'<br>');
+            dmy.html(mdteee);
+            $('body').append(dmy);
+            dmy.css({height: "auto", width: editBox.width()+"px"});
+            var height=dmy.height()+40;
+            console.info(height);
+            dmy.remove();
+            if(height!=lahei){
+                editBox.stop(true,false,false).animate({height: height},150);
+                lahei=height;
+            }
         },150);
         var sav2=true;
         function dcc(){
@@ -165,7 +177,7 @@
                 lastState=false;
                 ddMb.stop(true,false,false).animate({backgroundColor: "rgba(255, 255, 255, 0)", opacity: 0.9},200);
             }
-        },1);
+        },50);
         this.markboxFal=function(){
             clearInterval(savint);
             clearInterval(selint);
