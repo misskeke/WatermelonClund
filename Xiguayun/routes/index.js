@@ -254,11 +254,15 @@ router.get('/register/3', function (req, res) {
 router.post('/register', function (req, res) {
     wisChk(req, res, function () {
         var wi = res.sessWi;
-        var mbname = strlib.strsftrim(req.body.username);
+        var mbname = strlib.strsftrim(req.body.username).toUpperCase();
         var mbemill = strlib.strsftrim(req.body.emill);
         var mbpasswd = req.body.password;
         if (mbname.length < 3 || mbname.length > 15) {
             res.send({successed: false, errName: "用户名不符合格式要求。请勿包括ASCII控制字符等。"});
+            return;
+        }
+        if (mbname.match(/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/)){
+            res.send({successed: false, errName: "用户名不能是邮箱啊0 0"});
             return;
         }
         if (!mbemill.match(/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/)) {
@@ -318,7 +322,12 @@ router.post("/register/undoTask", function (req, res) {
                         if (e) {
                             res.send({error: -2});
                         } else {
-                            res.send({error: 0});
+                            delete wi.session.reg;
+                            wi.markModified("session.reg");
+                            wi.markModified('session');
+                            wi.save(function(){
+                                res.send({error: 0});
+                            });
                         }
                     });
                 } else {
@@ -588,18 +597,28 @@ router.post('/usr/login',function(req,res){
         var mName = strlib.strsftrim(req.body.name);
         var mPass = req.body.passwd;
         var xgUserModel = dbc.model('xgUser');
-        xgUserModel.find({name:mName},function(e,s){
+        function lgon(xusr){
+            wi.tryLogin(xusr,mPass,req.headers['user-agent'],{type: "web"},function(b){
+                if(b){
+                    res.send({});
+                }else{
+                    res.send({perror: "密码错误"});
+                }
+            });
+        }
+        xgUserModel.find({name:mName.toUpperCase()},function(e,s){
             if(e){s=[]}
             if(s.length<1){
-                res.send({unerror: "用户不存在"});
-            }else{
-                wi.tryLogin(s[0],mPass,req.headers['user-agent'],{type: "web"},function(b){
-                    if(b){
-                        res.send({});
+                xgUserModel.find({email:mName},function(e,s){
+                    if(e){s=[]}
+                    if(s.length<1){
+                        res.send({unerror: "用户不存在"});
                     }else{
-                        res.send({perror: "密码错误"});
+                        lgon(s[0]);
                     }
                 });
+            }else{
+                lgon(s[0]);
             }
         });
     });

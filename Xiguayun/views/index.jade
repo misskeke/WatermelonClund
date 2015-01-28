@@ -19,16 +19,29 @@ block content
                 .czz
                     | 帖子，微博
                     br
-                    | 非新人，请登录
+                    | 非新人，请
+                    a(href="/login") 登录
                 .rit 已有 #{tieAmount} 篇帖子
         .idber
         .xinqu
             input.xui-input-text(placeholder="搜索兴趣")
             h2.lite 汇集知音
+            h3.lite 已有0个吧
             p.lite
                 | 通过将推文分类到吧，实现
                 code 看你喜欢的
         .speo
+            input.xui-input-text(placeholder="搜索推文")
+            h2.lite 可小可大
+            p.lite
+                | 推文没有140字的限制，可以吐槽可以写作。
+        .sarp
+            input.xui-input-text(placeholder="搜索人")
+            h2.lite 完全自由
+            p.lite
+                | 无政治审查，本站不禁止任何政治偏向（若是大量群众反对遭到大量提删，根据本站程序可能会被删除）
+        .sall
+            input.xui-input-text(placeholder="搜索全部")
     - else
         .boxclc
             .gbox(style="width: 320px; height: 180px;")
