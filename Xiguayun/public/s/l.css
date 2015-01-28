@@ -42,8 +42,7 @@
 }
 .rgg {
     width: 100%;
-    background: url("https://static.websint.org/i/cpi/rgbgr.jpg") no-repeat;
-    background-size: cover;
+    background-color: #7a2323;
     left: 0;
     right: 0;
     bottom: 0;
@@ -52,5 +51,9 @@
     position: fixed;
 }
 .dbd {
-    background-color: #ffffff;
+    background-color: #d4b018;
+    color: #6f6f6f;
+}
+.dbd a {
+    color: #7e3a3a;
 }

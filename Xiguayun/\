@@ -10,10 +10,10 @@ block content
         .pbr
             .indextpb
                 .lgb
-                    | 您正在使用中文 - 您的浏览器语言浏览该页&nbsp;
+                    | 您正在使用中文 - 您的浏览器语言浏览该页
                     a 切换语言
                     br
-                    | You are visiting this page in Chinese - your browser language.&nbsp;
+                    | You are visiting this page in Chinese - your browser language.
                     a Change language setting
                 h2.pbtit 推吧
                 .czz
@@ -22,13 +22,6 @@ block content
                     | 非新人，请登录
                 .rit 已有 #{tieAmount} 篇帖子
         .idber
-        .xinqu
-            input.xui-input-text(placeholder="搜索兴趣")
-            h2.lite 汇集知音
-            p.lite
-                | 通过将推文分类到吧，实现
-                code 看你喜欢的
-        .speo
     - else
         .boxclc
             .gbox(style="width: 320px; height: 180px;")

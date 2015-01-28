@@ -1,0 +1,69 @@
+body {
+    background-color: #1a4272;
+    padding: 0;
+    margin: 0;
+}
+.dbd {
+    background-color: #00ba3e;
+}
+.dbd a {
+    color: #222222;
+    text-shadow: none;
+}
+.dbd a:hover {
+    color: #1a4272;
+}
+.pbr {
+    height: 420px;
+    overflow-y: hidden;
+}
+.indextpb {
+    color: #ffffff;
+    text-align: center;
+    padding: 64px;
+    margin-top: 42px;
+    height: 420px;
+    overflow-y: hidden;
+    background: url(/i/indexbgr.png) no-repeat center, #0F210D;
+    text-shadow: 0 0 8px rgba(0,0,0,0.7);
+    position: relative;
+}
+.pbtit, .czz, .rit {
+    margin-top: 320px;
+    opacity: 0;
+}
+.rit {
+    padding-top: 12px;
+}
+.idber {
+    background-color: #99ccff;
+    height: 4px;
+}
+.lgb {
+    margin-top: -24px;
+    margin-bottom: 12px;
+    font-size: 85%;
+    text-shadow: none;
+    background-color: rgba(0,0,0,0.5);
+}
+.xinqu, .speo {
+    padding: 18px;
+    border-bottom: dashed 1px #aaa;
+}
+.xinqu {
+    background-color: #eee5e5;
+}
+.speo {
+    background-color: #d6d6d6;
+}
+h2.lite {
+    color: #444444;
+    font-size: 200%;
+    font-weight: lighter;
+    padding-left: 50px;
+}
+p.lite {
+    color: #222222;
+    padding-left: 20px;
+    font-weight: lighter;
+}
