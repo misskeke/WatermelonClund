@@ -135,8 +135,10 @@ router.use(function(req, res, next){
     next();
 });
 router.use(function(req, res, next){
-    if(req.get('host').match(/^.+websint\.org.+$/)){
+    if(req.get('host')=="websint.org"){
         ersp(res, new Error("This site is still developing. for more information, go to our org homepage j.websint.org."),500);
+    }else{
+        next();
     }
 });
 router.get('/', function (req, res) {
