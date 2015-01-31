@@ -20,6 +20,7 @@ app.set('view engine', 'jade');
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
+app.enable('trust proxy');
 app.use(function(req, res, next){
     if(req.method=="POST"){
         if(req.is("application/x-www-form-urlencoded")){
