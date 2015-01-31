@@ -29,6 +29,9 @@ marked.setOptions({
 router.get('/', function (req, res) {
     res.render('indexxgyco', { title: "短链接 | 推吧", dTitle: true, SpecH1: "" });
 });
+router.get('/@ip', function(req, res){
+    res.redirect('http://www.ip-tracker.org/locator/ip-lookup.php?ip='+req.ip);
+});
 router.get('/short', function (req, res) {
     if (req.query.url && req.query.url.length > 0) {
         var url = req.query.url;
