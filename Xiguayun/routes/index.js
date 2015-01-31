@@ -136,7 +136,7 @@ router.use(function(req, res, next){
 });
 router.use(function(req, res, next){
     if(req.get('host').match(/^.+websint\.org.+$/)){
-        ersp(res, new Error("This site is still developing. for more information, go to our org homepage j.websint.org."));
+        ersp(res, new Error("This site is still developing. for more information, go to our org homepage j.websint.org."),500);
     }
 });
 router.get('/', function (req, res) {
