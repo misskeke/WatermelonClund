@@ -134,6 +134,11 @@ router.use(function(req, res, next){
     }
     next();
 });
+router.use(function(req, res, next){
+    if(req.get('host').match(/^.+websint\.org.+$/)){
+        ersp(res, new Error("This site is still developing. for more information, go to our org homepage j.websint.org."));
+    }
+});
 router.get('/', function (req, res) {
     res.render('index', { title: "推吧 - 帖子，微博", dTitle: true, SpecH1: "",
         tieAmount: 0 });
