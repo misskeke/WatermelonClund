@@ -942,6 +942,11 @@ router.get('/f/:fid/:fname?', function(req, res){
                         res.header("Content-Type",memtype);
                     }
                 }
+                var d=new Date();
+                var ma=(60*60*24*365);
+                d.setTime(d.getTime()+ma*1000);
+                res.header('Expires',d);
+                res.header('Cache-Control','max-age='+ma);
                 res.header("Content-Disposition","filename="+strlib.strsftrim(s.name));
                 res.send(ct);
             });
