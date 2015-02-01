@@ -7,7 +7,12 @@ $(function(){
     });
     $('.di').markboxInit("ctb-"+fname).setSubmit("");
     $('.create').click(function(){
-        XLIB.mbm('正在提交……');
-        $.post('/d/'+fname+'/docreate',{wisChk: pdWisChk}, function(q){});
+        var tjing=XLIB.mbm('正在提交……');
+        $.post('/d/'+fname+'/docreate',{wisChk: pdWisChk}, function(q){
+            if(q.error){
+                tjing.text(q.error);
+                tjing.closeTimeout(3000);
+            }
+        });
     });
 });

@@ -107,7 +107,6 @@ $(function(){
                                 filedone++;
                                 if(filecount<=filedone){
                                     closedhk();
-                                    console.info(fids,filedone,filecount);
                                     callb(fids,fnames);
                                 }
                             }
@@ -149,6 +148,11 @@ $(function(){
                         dg(0);
                     }else{
                         ftgr.text(file.name+" - "+e.error);
+                        filedone++;
+                        if(filecount<=1){
+                            closedhk();
+                            callb(fids,fnames);
+                        }
                     }
                 },'json');
                 man.append(ftgr);

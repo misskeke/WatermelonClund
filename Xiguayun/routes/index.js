@@ -135,6 +135,8 @@ router.use(function(req, res, next){
     next();
 });
 router.use(function(req, res, next){
+    next();
+    return;
     if(req.get('host')=="websint.org"){
         ersp(res, new Error("This site is still developing. for more information, go to our org homepage j.websint.org."),500);
     }else{
@@ -804,6 +806,10 @@ router.post('/f/touch/:fname', function(req, res){
         var length=parseInt(req.body.len);
         if(!length>0){
             res.send({error: "Length inv."});
+            return;
+        }
+        if(length>1024*1024*20){
+            res.send({error: "File must to be smaller than 20MiB."});
             return;
         }
         var xgFileModel = dbc.model('xgFile');
