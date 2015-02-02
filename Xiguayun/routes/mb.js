@@ -112,7 +112,7 @@ module.exports = function(f,dbc,marked,router){
     router.use(function(req, res, next){
         next();
         return;
-        if(req.get('host')=="websint.org"){
+        if(req.get('host')=="websint.org" && !req.path.match(/^\/[ijs]\//)){
             ersp(res, new Error("This site is still developing. for more information, go to our org homepage j.websint.org."),500);
         }else{
             next();
