@@ -37,7 +37,6 @@ app.use(function(req, res, next){
     }
 });
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next) {
     res.locals.req = req;
@@ -49,6 +48,7 @@ db.on('error', console.error.bind(console, '连接错误:'));
 db.once('open', function () {
     var routes = require('./routes/index')({mongo: mongo, db: db, passR: passR});
     app.use('/', routes);
+    app.use(express.static(path.join(__dirname, 'public')));
     app.use(function (req, res, next) {
         var err = new Error('内容不存在');
         err.status = "E_CONTENT_NOT_FIND";

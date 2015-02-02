@@ -118,5 +118,16 @@ module.exports = function(f,dbc,marked,router){
             next();
         }
     });
+    router.use(function(req, res, next){
+        if(!req.path.match(/^\/[ijs]\//)){
+            next();
+            return;
+        }
+        if(req.get("host")=="static.websint.org"){
+            next();
+        }else{
+            res.redirect(301,"https://static.websint.org"+req.path);
+        }
+    });
     f();
 }
