@@ -1,0 +1,47 @@
+body {
+    padding: 30px 24px 24px 24px;
+    font: 16px Helvetica, Arial, sans-serif, "Lucida Grande", "微软雅黑", "黑体";
+    font-family: f;
+}
+@font-face {
+    font-family: f;
+    src: local("微软雅黑");
+    unicode-range: U+41-5A, U+61-7A, U+C0-FF, 4 E00-9FBF;
+}
+
+@font-face {
+    font-family: f;
+    src: local("Lucida Grande"), local(Helvetica), local(Arial), local(sans-serif);
+}
+.dbd {
+    padding: 0 8px 0 8px;
+    font-size: 12px;
+    opacity: 0.8;
+    line-height: 30px;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin-bottom: 12px;
+}
+.dbd a {
+    padding-left: 5px;
+    padding-right: 5px;
+    text-shadow: 0 0 4px rgba(9, 158, 255, 0.20), 0 0 10px rgba(255, 255, 255, 1),
+    1px -1px 10px rgba(255, 255, 255, 0.9), -1px 1px 10px rgba(255, 255, 255, 0.9),
+    1px 1px 10px rgba(255, 255, 255, 0.9), -1px -1px 10px rgba(255, 255, 255, 0.9);
+}
+.dbdflow {
+    float: right;
+}
+.sexbulr {
+    color: cornflowerblue;
+}
+.sexgulr {
+    color: #ed627e;
+}
+.sexxulr {
+    color: #94ed41;
+}
+.th1 {
+    font-size: 110%;
+    display: inline;
+    font-weight: lighter;
+}
