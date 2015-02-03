@@ -21,7 +21,6 @@ module.exports = function (res, err, s) {
                         "错误码是" + err.status + "。";
             }
         })(), httpste: err.httpste || s},
-        title: err.message,
-        SpecH1: ""
+        title: err.message
     });
 };

@@ -10,7 +10,14 @@ module.exports = function (d) {
     marked(conts.mdHelp, function (err, content) {
         conts.mdHelpmded=content;
     });
-    require('./mb')(function(){
+    require('./mb')(function(wisChk,markusedVcode){
+        router.use(function(req, res, next){
+            if(req.get('host')=="websint.org" && !req.path.match(/^\/[ijs]\//)){
+                ersp(res, new Error("This site is still developing. for more information, go to our org homepage j.websint.org."),500);
+            }else{
+                next();
+            }
+        });
         router.get('/', function (req, res) {
             res.render('index', { title: "推吧 - 帖子，微博", dTitle: true, SpecH1: "",
                 tieAmount: 0 });
@@ -805,7 +812,6 @@ module.exports = function (d) {
                                 "xwd":"image/x-xwindowdump",
                                 "png":"image/png"
                             }[ext];
-                            console.info(memtype);
                             if(memtype && memtype.length>0){
                                 res.header("Content-Type",memtype);
                             }
@@ -944,7 +950,7 @@ module.exports = function (d) {
             ersp(res, ep, 404);
             return;
         });
-    },dbc,marked,router);
+    },dbc,marked,router,ersp,cy);
     return router;
 };
 

@@ -13,7 +13,7 @@ module.exports = function (d) {
         router.get('/',function(req, res){
             res.send("= =");
         });
-    },dbc,marked,router);
+    },dbc,marked,router,ersp,cy);
     return router;
 };
 

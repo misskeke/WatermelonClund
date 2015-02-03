@@ -1,4 +1,4 @@
-module.exports = function(f,dbc,marked,router){
+module.exports = function(f,dbc,marked,router,ersp,cy){
     marked.setOptions({
         renderer: new marked.Renderer(),
         gfm: true,
@@ -82,7 +82,6 @@ module.exports = function(f,dbc,marked,router){
         res.sessWi.usersWithZx(function(un, isn){
             res.locals.lognUsn = un;
             res.locals.lognIsReg = isn;
-            console.info(isn);
             res.locals.dbdStyle= (un.length>0?"text-align: right;":"");
             next();
         });
@@ -110,13 +109,6 @@ module.exports = function(f,dbc,marked,router){
         next();
     });
     router.use(function(req, res, next){
-        if(req.get('host')=="websint.org" && !req.path.match(/^\/[ijs]\//)){
-            ersp(res, new Error("This site is still developing. for more information, go to our org homepage j.websint.org."),500);
-        }else{
-            next();
-        }
-    });
-    router.use(function(req, res, next){
         if(!req.path.match(/^\/[ijs]\//)){
             next();
             return;
@@ -127,5 +119,5 @@ module.exports = function(f,dbc,marked,router){
             res.redirect(301,"https://static.websint.org"+req.path);
         }
     });
-    f();
+    f(wisChk,markusedVcode);
 }

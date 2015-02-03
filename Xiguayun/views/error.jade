@@ -3,9 +3,7 @@ extends layother
 block head
     link(rel="stylesheet",href="/s/e.css")
 block content
-    h1 啊咧……
     <!-- #{error.httpste} #{error.status} -->
-    h2= message
     div(style="white-space: pre;")= error.stack
-        div(style="color: #5f97cf") 我们只知道这些……
+        div(style="color: #5f97cf") That’s all we know.
     .errstu= error.httpste
