@@ -1,3 +1,4 @@
+var strlib = require('../bin/str.js');
 module.exports = function(dbc,mon){
     var uLog = new mon.Schema({
         date: Date,
@@ -403,4 +404,26 @@ module.exports = function(dbc,mon){
     };
     var xgFileModel = dbc.model('xgFile', xgFile);
     var xgFileChunkModel = dbc.model('xgFileChunk', xgFileChunk);
+    var xgBar = new mon.Schema({
+        name: String,
+        wikiDef: String,
+        wikiUrl: String,
+        parent: String,
+        creatoTask: String,
+        vail: {type: Boolean, default: true}
+    });
+    var xgSenwTask = new mon.Schema({
+        uid: String,
+        reason: String,
+        type: String,
+        ip: String,
+        info: {},
+        opSw: Number,
+        undone: Boolean,
+        undoOpDoerSw: Number,
+        undoTask: String
+    });
+    var xgBarModel = dbc.model('xgBar', xgBar);
+    var xgSenwTaskModel = dbc.model('xgSenwTask', xgSenwTask);
 }
+

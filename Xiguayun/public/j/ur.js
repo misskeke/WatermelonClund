@@ -76,7 +76,7 @@ $(function(){
                         type: 'text/css',
                         href: '/s/mb.css'
                     }).appendTo('head');
-                    $.getScript('/j/markbox.js',function(){
+                    XLIB.getS('/j/markbox.js',function(){
                         markboxload=true;
                         ddr();
                     });

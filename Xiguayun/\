@@ -1,11 +1,8 @@
 var XLIB = {};
-$.getScript = XLIB.getS = function(j,s){
-    var d=document.createElement("script");
-    d.src=j;
-    document.getElementsByTagName('head')[0].appendChild(d);
-    d.onload=function(){
+$.getScript = function(j,s){
+    $('head').append($('<script type="text/javascript"></script>').attr("src",j).onload(function(){
         s && s();
-    };
+    }))
 };
 XLIB.chgUrl = function (url) {
     history.replaceState({}, {}, url);

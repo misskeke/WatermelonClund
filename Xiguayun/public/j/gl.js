@@ -1,13 +1,4 @@
 $(function () {
-    $.getScript = function(j,s){
-        jQuery.ajax({
-            url: j,
-            dataType: "script",
-            cache: true
-        }).done(function() {
-            s && s();
-        });
-    };
     var intel;
     $('.dbd').mousedown(function () {
         if (!intel) {
